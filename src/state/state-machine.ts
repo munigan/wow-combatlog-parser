@@ -32,7 +32,12 @@ export class CombatLogStateMachine {
     this._trackPlayer(event.destGuid, event.destName);
 
     // 2. Detect class/spec from spell usage (only for player sources)
-    if (isPlayer(event.sourceGuid)) {
+    // Exclude SPELL_AURA_REMOVED — the source GUID on aura removal may not
+    // reliably indicate who owns the ability (e.g., buffs cast by others).
+    if (
+      isPlayer(event.sourceGuid) &&
+      event.eventType !== "SPELL_AURA_REMOVED"
+    ) {
       const spellId = getSpellId(event);
       if (spellId !== null) {
         this._detectClassSpec(event.sourceGuid, spellId);

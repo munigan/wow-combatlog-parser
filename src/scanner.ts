@@ -16,6 +16,13 @@ import { epochToIso } from "./utils/timestamp.js";
 /** Tolerance (ms) before a segment start for matching encounters to raids. */
 const ENCOUNTER_PRE_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
 
+/**
+ * Minimum encounter duration (seconds) to include in scan results.
+ * Encounters shorter than this are typically brief pull-and-resets or
+ * proximity boss triggers, not real combat attempts.
+ */
+const MIN_ENCOUNTER_DURATION_S = 5;
+
 /** Jaccard similarity threshold for grouping segments into one DetectedRaid. */
 const GROUP_JACCARD_THRESHOLD = 0.5;
 
@@ -207,8 +214,11 @@ function buildDetectedRaid(
   players.sort((a, b) => a.name.localeCompare(b.name));
 
   // Filter encounters: an encounter belongs to this raid if its start timestamp
-  // falls within any of the raid's time ranges (with pre-tolerance)
+  // falls within any of the raid's time ranges (with pre-tolerance).
+  // Also exclude encounters shorter than MIN_ENCOUNTER_DURATION_S — these are
+  // typically brief pull-and-resets or proximity triggers, not real attempts.
   const raidEncounters = allEncounters.filter((enc) => {
+    if (enc.duration < MIN_ENCOUNTER_DURATION_S) return false;
     const encStart = new Date(enc.startTime).getTime();
     return group.segments.some(
       (seg) =>

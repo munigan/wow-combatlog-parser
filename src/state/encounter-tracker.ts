@@ -41,6 +41,26 @@ function isCombatEvent(eventType: string): boolean {
 /** Number of consecutive SPELL_AURA_REMOVED events to count as a coward boss kill. */
 const COWARD_AURA_REMOVAL_THRESHOLD = 15;
 
+/**
+ * After a boss kill, suppress new encounters for the same boss within this
+ * window (ms). Prevents phantom encounters from lingering DoT ticks and
+ * aura removals that still reference the dead boss GUID.
+ */
+const POST_KILL_COOLDOWN_MS = 30_000;
+
+/**
+ * Event types that should NOT trigger a new encounter start.
+ * Lingering aura events after a boss kill are the primary cause of
+ * phantom encounters.
+ */
+const NON_COMBAT_START_EVENTS = new Set([
+  "SPELL_AURA_REMOVED",
+  "SPELL_AURA_APPLIED",
+  "SPELL_AURA_REFRESH",
+  "SPELL_AURA_REMOVED_DOSE",
+  "SPELL_AURA_APPLIED_DOSE",
+]);
+
 export class EncounterTracker {
   // Active encounter state
   private _bossName: string | null = null;
@@ -53,6 +73,12 @@ export class EncounterTracker {
   private _isMultiBoss: boolean = false;
   private _isCoward: boolean = false;
   private _consecutiveAuraRemovals: number = 0;
+
+  /**
+   * Tracks recent boss kills: bossName → kill timestamp.
+   * Used to suppress phantom encounters from post-kill lingering events.
+   */
+  private _recentKills = new Map<string, number>();
 
 
   isInEncounter(): boolean {
@@ -120,6 +146,7 @@ export class EncounterTracker {
 
           // Boss killed → end encounter
           const encounter = this._buildEncounter(event.timestamp);
+          this._recentKills.set(encounter.bossName, event.timestamp);
           this._reset();
           result.encounterEnded = true;
           result.encounter = encounter;
@@ -135,6 +162,7 @@ export class EncounterTracker {
             ) {
               this._bossKilled = true;
               const encounter = this._buildEncounter(event.timestamp);
+              this._recentKills.set(encounter.bossName, event.timestamp);
               this._reset();
               result.encounterEnded = true;
               result.encounter = encounter;
@@ -183,6 +211,23 @@ export class EncounterTracker {
     result: EncounterProcessResult,
   ): EncounterProcessResult {
     if (bossNpcId === null) return result;
+
+    // Don't start encounters from aura events (lingering buffs/debuffs)
+    if (NON_COMBAT_START_EVENTS.has(event.eventType)) return result;
+
+    // Resolve boss name for cooldown check
+    const candidateName = isMultiBoss(bossNpcId)
+      ? getMultiBossName(bossNpcId)!
+      : getBossName(bossNpcId)!;
+
+    // Post-kill cooldown: suppress re-detection of recently killed bosses
+    const killTime = this._recentKills.get(candidateName);
+    if (
+      killTime !== undefined &&
+      event.timestamp - killTime < POST_KILL_COOLDOWN_MS
+    ) {
+      return result;
+    }
 
     // Start a new encounter
     if (isMultiBoss(bossNpcId)) {
