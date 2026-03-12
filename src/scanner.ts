@@ -20,11 +20,23 @@ const ENCOUNTER_PRE_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
  * Minimum encounter duration (seconds) to include in scan results.
  * Encounters shorter than this are typically brief pull-and-resets or
  * proximity boss triggers, not real combat attempts.
+ *
+ * Set to 10s to filter out Grobbulus hallway poison cloud triggers (exactly
+ * 6s in WotLK 3.3.5) and similar proximity-based phantom encounters.
  */
-const MIN_ENCOUNTER_DURATION_S = 5;
+const MIN_ENCOUNTER_DURATION_S = 10;
 
 /** Jaccard similarity threshold for grouping segments into one DetectedRaid. */
 const GROUP_JACCARD_THRESHOLD = 0.5;
+
+/**
+ * Maximum time gap (ms) between a group's latest segment and a candidate
+ * segment for them to be merged. Prevents merging raids from different
+ * nights that happen to share the same roster (e.g., same guild raiding
+ * weekly). 4 hours is generous for within-night instance swaps but
+ * prevents cross-day merging.
+ */
+const MAX_GROUP_TIME_GAP_MS = 4 * 60 * 60 * 1000; // 4 hours
 
 function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
   if (a.size === 0 && b.size === 0) return 1;
@@ -115,6 +127,7 @@ interface SegmentGroup {
   segments: RaidSegment[];
   raidInstance: string | null;
   allPlayerGuids: Set<string>;
+  lastTimestamp: number;
 }
 
 /**
@@ -135,6 +148,11 @@ function groupSegmentsIntoRaids(
     let merged = false;
 
     for (const group of groups) {
+      // Don't merge segments that are too far apart in time, even if
+      // rosters overlap (e.g., same guild raiding on different nights).
+      const timeGap = segment.firstTimestamp - group.lastTimestamp;
+      if (timeGap > MAX_GROUP_TIME_GAP_MS) continue;
+
       const sameInstance =
         group.raidInstance === segment.raidInstance ||
         group.raidInstance === null ||
@@ -153,6 +171,9 @@ function groupSegmentsIntoRaids(
           if (group.raidInstance === null && segment.raidInstance !== null) {
             group.raidInstance = segment.raidInstance;
           }
+          if (segment.lastTimestamp > group.lastTimestamp) {
+            group.lastTimestamp = segment.lastTimestamp;
+          }
           merged = true;
           break;
         }
@@ -165,6 +186,7 @@ function groupSegmentsIntoRaids(
         segments: [segment],
         raidInstance: segment.raidInstance,
         allPlayerGuids: allGuids,
+        lastTimestamp: segment.lastTimestamp,
       });
     }
   }
