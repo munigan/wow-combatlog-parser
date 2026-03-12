@@ -1,0 +1,117 @@
+// === Enums ===
+
+export type WowClass =
+  | "warrior"
+  | "paladin"
+  | "hunter"
+  | "rogue"
+  | "priest"
+  | "death-knight"
+  | "shaman"
+  | "mage"
+  | "warlock"
+  | "druid";
+
+export type WowSpec =
+  | "warrior-arms"
+  | "warrior-fury"
+  | "warrior-protection"
+  | "paladin-holy"
+  | "paladin-protection"
+  | "paladin-retribution"
+  | "hunter-beast-mastery"
+  | "hunter-marksmanship"
+  | "hunter-survival"
+  | "rogue-assassination"
+  | "rogue-combat"
+  | "rogue-subtlety"
+  | "priest-discipline"
+  | "priest-holy"
+  | "priest-shadow"
+  | "death-knight-blood"
+  | "death-knight-frost"
+  | "death-knight-unholy"
+  | "shaman-elemental"
+  | "shaman-enhancement"
+  | "shaman-restoration"
+  | "mage-arcane"
+  | "mage-fire"
+  | "mage-frost"
+  | "warlock-affliction"
+  | "warlock-demonology"
+  | "warlock-destruction"
+  | "druid-balance"
+  | "druid-feral"
+  | "druid-restoration";
+
+export type RaidDifficulty = "10N" | "10H" | "25N" | "25H";
+
+export type EncounterResult = "kill" | "wipe";
+
+// === Common ===
+
+export interface TimeRange {
+  startTime: string; // ISO-8601
+  endTime: string; // ISO-8601
+}
+
+export interface PlayerInfo {
+  guid: string;
+  name: string;
+  class: WowClass | null;
+  spec: WowSpec | null;
+}
+
+export interface EncounterSummary {
+  bossName: string;
+  startTime: string; // ISO-8601
+  endTime: string; // ISO-8601
+  duration: number; // seconds
+  result: EncounterResult;
+  difficulty: RaidDifficulty | null;
+}
+
+// === Scan API ===
+
+export interface ScanOptions {
+  onProgress?: (bytesRead: number, totalBytes?: number) => void;
+}
+
+export interface ScanResult {
+  raids: DetectedRaid[];
+}
+
+export interface DetectedRaid {
+  raidInstance: string | null;
+  dates: string[];
+  startTime: string; // ISO-8601
+  endTime: string; // ISO-8601
+  timeRanges: TimeRange[];
+  playerCount: number;
+  players: PlayerInfo[];
+  encounters: EncounterSummary[];
+}
+
+// === Parse API ===
+
+export interface ParseOptions {
+  onProgress?: (bytesRead: number, totalBytes?: number) => void;
+}
+
+export interface RaidSelection {
+  dates: string[];
+  startTime: string; // ISO-8601
+  endTime: string; // ISO-8601
+  timeRanges?: TimeRange[];
+}
+
+export interface ParseResult {
+  raids: ParsedRaid[];
+}
+
+export interface ParsedRaid {
+  raidInstance: string | null;
+  raidDate: Date;
+  players: PlayerInfo[];
+  encounters: EncounterSummary[];
+}
