@@ -53,7 +53,7 @@ export class EncounterTracker {
   private _isMultiBoss: boolean = false;
   private _isCoward: boolean = false;
   private _consecutiveAuraRemovals: number = 0;
-  private _cowardKillDetected: boolean = false;
+
 
   isInEncounter(): boolean {
     return this._bossName !== null;
@@ -133,7 +133,6 @@ export class EncounterTracker {
             if (
               this._consecutiveAuraRemovals >= COWARD_AURA_REMOVAL_THRESHOLD
             ) {
-              this._cowardKillDetected = true;
               this._bossKilled = true;
               const encounter = this._buildEncounter(event.timestamp);
               this._reset();
@@ -206,7 +205,6 @@ export class EncounterTracker {
     this._difficulty = null;
     this._isCoward = isCowardBoss(this._bossName);
     this._consecutiveAuraRemovals = 0;
-    this._cowardKillDetected = false;
 
     // Try detecting difficulty from the first event
     this._detectDifficulty(event);
@@ -248,6 +246,5 @@ export class EncounterTracker {
     this._isMultiBoss = false;
     this._isCoward = false;
     this._consecutiveAuraRemovals = 0;
-    this._cowardKillDetected = false;
   }
 }
