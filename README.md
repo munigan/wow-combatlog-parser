@@ -95,6 +95,8 @@ pnpm run test        # vitest
 pnpm run typecheck   # tsc --noEmit
 ```
 
+Example logs live in `tests/example-logs/` (gitignored, `example-log-{1..6}.txt`).
+
 ### Scripts
 
 ```bash

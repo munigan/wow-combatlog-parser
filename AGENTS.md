@@ -20,7 +20,7 @@ pnpm run test        # vitest (114 tests)
 pnpm run typecheck   # tsc --noEmit
 ```
 
-**Important**: `scripts/scan-all.ts` imports from `../dist/index.js` — always run `pnpm run build` before running scan scripts.
+**Important**: Scripts import from `../dist/index.js` — always run `pnpm run build` before running scan scripts. Example logs live in `tests/example-logs/` (gitignored).
 
 ## Project Structure
 
@@ -52,10 +52,10 @@ src/
 tests/
   unit/                 # 13 unit test files
   integration/          # Real log file tests
+  example-logs/         # WoW combat log files (gitignored, example-log-{1..6}.txt)
 scripts/
   scan-all.ts           # Scans all example logs → JSON
   summarize.ts          # Pretty-prints scan results
-example-logs/           # WoW combat log files (not committed)
 docs/plans/             # Design doc and implementation plan
 ```
 

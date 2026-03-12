@@ -17,15 +17,15 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
   });
 }
 
-const LOGS_DIR = join(__dirname, "../../example-logs");
+const LOGS_DIR = join(__dirname, "../example-logs");
 
 describe("parseLog", () => {
   it("parses a specific raid selection", async () => {
-    const scanStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const scanResult = await scanLog(scanStream);
     const firstRaid = scanResult.raids[0];
 
-    const parseStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const parseStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const parseResult = await parseLog(parseStream, [
       {
         dates: firstRaid.dates,
@@ -41,11 +41,11 @@ describe("parseLog", () => {
   });
 
   it("includes encounters in parse results", async () => {
-    const scanStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const scanResult = await scanLog(scanStream);
     const firstRaid = scanResult.raids[0];
 
-    const parseStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const parseStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const parseResult = await parseLog(parseStream, [
       {
         dates: firstRaid.dates,
@@ -60,14 +60,14 @@ describe("parseLog", () => {
 
   it("filters players to the selected time range", async () => {
     const scanStream = fileToStream(
-      join(LOGS_DIR, "example-multiple-raids.txt"),
+      join(LOGS_DIR, "example-log-6.txt"),
     );
     const scanResult = await scanLog(scanStream);
 
     if (scanResult.raids.length >= 2) {
       const raid1 = scanResult.raids[0];
       const parseStream = fileToStream(
-        join(LOGS_DIR, "example-multiple-raids.txt"),
+        join(LOGS_DIR, "example-log-6.txt"),
       );
       const parseResult = await parseLog(parseStream, [
         {

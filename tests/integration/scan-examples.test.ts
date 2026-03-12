@@ -16,12 +16,12 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
   });
 }
 
-const LOGS_DIR = join(__dirname, "../../example-logs");
+const LOGS_DIR = join(__dirname, "../example-logs");
 
 describe("integration: scan example logs", () => {
-  describe("WoWCombatLog3.txt - Vault of Archavon", () => {
+  describe("example-log-3 - Vault of Archavon", () => {
     it("detects at least one raid on date 2/22", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const result = await scanLog(stream);
       expect(result.raids.length).toBeGreaterThanOrEqual(1);
       // Find a raid containing date 2/22
@@ -30,7 +30,7 @@ describe("integration: scan example logs", () => {
     });
 
     it("detects boss encounters", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const result = await scanLog(stream);
       const allEncounters = result.raids.flatMap(r => r.encounters);
       expect(allEncounters.length).toBeGreaterThan(0);
@@ -45,7 +45,7 @@ describe("integration: scan example logs", () => {
     });
 
     it("detects players with classes", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const result = await scanLog(stream);
       const allPlayers = result.raids.flatMap(r => r.players);
       expect(allPlayers.length).toBeGreaterThan(5);
@@ -54,9 +54,9 @@ describe("integration: scan example logs", () => {
     });
   });
 
-  describe("WoWCombatLog.txt - Naxxramas raid", () => {
+  describe("example-log-1 - Naxxramas raid", () => {
     it("detects Naxxramas as the raid instance", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-1.txt"));
       const result = await scanLog(stream);
       expect(result.raids.length).toBeGreaterThanOrEqual(1);
       const naxxRaid = result.raids.find(r => r.raidInstance === "Naxxramas");
@@ -64,7 +64,7 @@ describe("integration: scan example logs", () => {
     }, 30000);
 
     it("has encounters from Naxxramas bosses", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-1.txt"));
       const result = await scanLog(stream);
       const naxxRaid = result.raids.find(r => r.raidInstance === "Naxxramas");
       if (naxxRaid) {
@@ -78,9 +78,9 @@ describe("integration: scan example logs", () => {
     }, 30000);
   });
 
-  describe("example-multiple-raids.txt - multiple raids", () => {
+  describe("example-log-6 - multiple raids", () => {
     it("detects multiple raids across different dates", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "example-multiple-raids.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-6.txt"));
       const result = await scanLog(stream);
       expect(result.raids.length).toBeGreaterThan(1);
       // Should have raids from at least a few different dates
@@ -89,7 +89,7 @@ describe("integration: scan example logs", () => {
     }, 60000);
 
     it("all timestamps are valid ISO strings", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "example-multiple-raids.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-6.txt"));
       const result = await scanLog(stream);
       for (const raid of result.raids) {
         expect(new Date(raid.startTime).getTime()).not.toBeNaN();
@@ -102,7 +102,7 @@ describe("integration: scan example logs", () => {
     }, 60000);
 
     it("encounters are sorted chronologically within each raid", async () => {
-      const stream = fileToStream(join(LOGS_DIR, "example-multiple-raids.txt"));
+      const stream = fileToStream(join(LOGS_DIR, "example-log-6.txt"));
       const result = await scanLog(stream);
       for (const raid of result.raids) {
         for (let i = 1; i < raid.encounters.length; i++) {
@@ -117,12 +117,12 @@ describe("integration: scan example logs", () => {
   describe("scan + parse roundtrip", () => {
     it("parse returns consistent data with scan results", async () => {
       // Scan first
-      const scanStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+      const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const scanResult = await scanLog(scanStream);
       const firstRaid = scanResult.raids[0];
 
       // Parse the same file with scan results
-      const parseStream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+      const parseStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const parseResult = await parseLog(parseStream, [{
         dates: firstRaid.dates,
         startTime: firstRaid.startTime,

@@ -16,11 +16,11 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
   });
 }
 
-const LOGS_DIR = join(__dirname, "../../example-logs");
+const LOGS_DIR = join(__dirname, "../example-logs");
 
 describe("scanLog", () => {
   it("detects raids from a single-raid log file", async () => {
-    const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     expect(result.raids.length).toBeGreaterThanOrEqual(1);
     const raid = result.raids[0];
@@ -30,7 +30,7 @@ describe("scanLog", () => {
   });
 
   it("detects encounters within raids", async () => {
-    const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     const raid = result.raids[0];
     expect(raid.encounters.length).toBeGreaterThan(0);
@@ -45,7 +45,7 @@ describe("scanLog", () => {
   });
 
   it("detects player classes", async () => {
-    const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     const raid = result.raids[0];
     const withClass = raid.players.filter((p) => p.class !== null);
@@ -53,14 +53,14 @@ describe("scanLog", () => {
   });
 
   it("reports progress", async () => {
-    const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const progress: number[] = [];
     await scanLog(stream, { onProgress: (bytes) => progress.push(bytes) });
     expect(progress.length).toBeGreaterThan(0);
   });
 
   it("produces valid ISO timestamps", async () => {
-    const stream = fileToStream(join(LOGS_DIR, "WoWCombatLog3.txt"));
+    const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     for (const raid of result.raids) {
       expect(new Date(raid.startTime).getTime()).not.toBeNaN();
@@ -74,7 +74,7 @@ describe("scanLog", () => {
 
   it("detects multiple raids from a multi-raid log file", async () => {
     const stream = fileToStream(
-      join(LOGS_DIR, "example-multiple-raids.txt"),
+      join(LOGS_DIR, "example-log-6.txt"),
     );
     const result = await scanLog(stream);
     expect(result.raids.length).toBeGreaterThan(1);

@@ -1,0 +1,800 @@
+{
+  "file": "tests/example-logs/example-log-3.txt",
+  "raidCount": 5,
+  "raids": [
+    {
+      "raidInstance": "Vault of Archavon",
+      "dates": [
+        "2/22"
+      ],
+      "startTime": "2026-02-22T15:17:32.750Z",
+      "endTime": "2026-02-22T15:24:42.949Z",
+      "playerCount": 20,
+      "players": [
+        {
+          "name": "Asclemago",
+          "class": "mage",
+          "spec": "mage-arcane"
+        },
+        {
+          "name": "Assu",
+          "class": "rogue",
+          "spec": "rogue-assassination"
+        },
+        {
+          "name": "Babolatka",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Colonazpam",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Delinastra",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Funkcjonariu",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Golger",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Gutallax",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Hrob",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Nyxae",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Pathia",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Peppamilgrau",
+          "class": "hunter",
+          "spec": "hunter-beast-mastery"
+        },
+        {
+          "name": "Racemosa",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Raelios",
+          "class": "druid",
+          "spec": "druid-balance"
+        },
+        {
+          "name": "Snakepriest",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Stranglol",
+          "class": "death-knight",
+          "spec": "death-knight-blood"
+        },
+        {
+          "name": "Twpal",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Urzock",
+          "class": "warrior",
+          "spec": "warrior-arms"
+        },
+        {
+          "name": "Wavejutsu",
+          "class": "shaman",
+          "spec": "shaman-restoration"
+        },
+        {
+          "name": "Zirkumflex",
+          "class": null,
+          "spec": null
+        }
+      ],
+      "encounters": [
+        {
+          "bossName": "Archavon the Stone Watcher",
+          "startTime": "2026-02-22T15:22:42.458Z",
+          "endTime": "2026-02-22T15:24:08.353Z",
+          "duration": 86,
+          "result": "kill",
+          "difficulty": "25N"
+        }
+      ]
+    },
+    {
+      "raidInstance": "Vault of Archavon",
+      "dates": [
+        "2/23"
+      ],
+      "startTime": "2026-02-23T20:22:17.683Z",
+      "endTime": "2026-02-23T20:37:30.999Z",
+      "playerCount": 21,
+      "players": [
+        {
+          "name": "Beijatoba",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Brockpala",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Dannygtt",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Delidk",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Dudubane",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Duffoo",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Emilstorm",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Emorya",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Gorilladave",
+          "class": "priest",
+          "spec": null
+        },
+        {
+          "name": "Jbeto",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Loveen",
+          "class": "priest",
+          "spec": null
+        },
+        {
+          "name": "Malkerino",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Mareshal",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Mareshall",
+          "class": "rogue",
+          "spec": "rogue-assassination"
+        },
+        {
+          "name": "Maveryck",
+          "class": "shaman",
+          "spec": "shaman-enhancement"
+        },
+        {
+          "name": "Nyrene",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Strifall",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Tonraq",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Vandu",
+          "class": "hunter",
+          "spec": "hunter-beast-mastery"
+        },
+        {
+          "name": "Yarida",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Ztantz",
+          "class": "paladin",
+          "spec": "paladin-retribution"
+        }
+      ],
+      "encounters": []
+    },
+    {
+      "raidInstance": "Naxxramas",
+      "dates": [
+        "2/23"
+      ],
+      "startTime": "2026-02-23T20:37:31.865Z",
+      "endTime": "2026-02-23T23:07:11.204Z",
+      "playerCount": 23,
+      "players": [
+        {
+          "name": "Beijatoba",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Brockpala",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Dannygtt",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Delidk",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Dudubane",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Duffoo",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Emilstorm",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Holyfrenzy",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Jbeta",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Jbeto",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Loveen",
+          "class": "priest",
+          "spec": null
+        },
+        {
+          "name": "Magiemommel",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Malkerino",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Mareshal",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Mareshall",
+          "class": "rogue",
+          "spec": "rogue-assassination"
+        },
+        {
+          "name": "Maveryck",
+          "class": "shaman",
+          "spec": "shaman-enhancement"
+        },
+        {
+          "name": "Nydgaard",
+          "class": "warlock",
+          "spec": "warlock-demonology"
+        },
+        {
+          "name": "Rohanboy",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Santhil",
+          "class": "paladin",
+          "spec": "paladin-holy"
+        },
+        {
+          "name": "Strifall",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Vandu",
+          "class": "hunter",
+          "spec": "hunter-beast-mastery"
+        },
+        {
+          "name": "Yarida",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Ztantz",
+          "class": "paladin",
+          "spec": "paladin-retribution"
+        }
+      ],
+      "encounters": [
+        {
+          "bossName": "Instructor Razuvious",
+          "startTime": "2026-02-23T21:20:57.375Z",
+          "endTime": "2026-02-23T21:22:49.639Z",
+          "duration": 112,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Gothik the Harvester",
+          "startTime": "2026-02-23T21:33:21.304Z",
+          "endTime": "2026-02-23T21:33:50.773Z",
+          "duration": 29,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Four Horsemen",
+          "startTime": "2026-02-23T21:40:19.932Z",
+          "endTime": "2026-02-23T21:42:19.007Z",
+          "duration": 119,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Anub'Rekhan",
+          "startTime": "2026-02-23T21:44:01.285Z",
+          "endTime": "2026-02-23T21:45:09.194Z",
+          "duration": 68,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Grand Widow Faerlina",
+          "startTime": "2026-02-23T21:51:14.386Z",
+          "endTime": "2026-02-23T21:52:26.102Z",
+          "duration": 72,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Maexxna",
+          "startTime": "2026-02-23T22:03:45.763Z",
+          "endTime": "2026-02-23T22:05:41.821Z",
+          "duration": 116,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Patchwerk",
+          "startTime": "2026-02-23T22:09:10.450Z",
+          "endTime": "2026-02-23T22:11:00.582Z",
+          "duration": 110,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Noth the Plaguebringer",
+          "startTime": "2026-02-23T22:20:13.128Z",
+          "endTime": "2026-02-23T22:21:30.025Z",
+          "duration": 77,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Grobbulus",
+          "startTime": "2026-02-23T22:26:51.364Z",
+          "endTime": "2026-02-23T22:28:26.956Z",
+          "duration": 96,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Gluth",
+          "startTime": "2026-02-23T22:30:06.793Z",
+          "endTime": "2026-02-23T22:32:10.528Z",
+          "duration": 124,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Thaddius",
+          "startTime": "2026-02-23T22:37:46.328Z",
+          "endTime": "2026-02-23T22:39:03.790Z",
+          "duration": 77,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Heigan the Unclean",
+          "startTime": "2026-02-23T22:42:21.745Z",
+          "endTime": "2026-02-23T22:44:56.286Z",
+          "duration": 155,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Loatheb",
+          "startTime": "2026-02-23T22:46:23.904Z",
+          "endTime": "2026-02-23T22:49:27.773Z",
+          "duration": 184,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Sapphiron",
+          "startTime": "2026-02-23T22:51:10.206Z",
+          "endTime": "2026-02-23T22:53:12.389Z",
+          "duration": 122,
+          "result": "kill",
+          "difficulty": "25N"
+        },
+        {
+          "bossName": "Kel'Thuzad",
+          "startTime": "2026-02-23T23:03:08.058Z",
+          "endTime": "2026-02-23T23:05:45.641Z",
+          "duration": 158,
+          "result": "kill",
+          "difficulty": "25N"
+        }
+      ]
+    },
+    {
+      "raidInstance": "Naxxramas",
+      "dates": [
+        "2/24"
+      ],
+      "startTime": "2026-02-24T19:49:20.937Z",
+      "endTime": "2026-02-24T19:56:01.441Z",
+      "playerCount": 29,
+      "players": [
+        {
+          "name": "Aryawininson",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Badhead",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Bdxama",
+          "class": "shaman",
+          "spec": "shaman-restoration"
+        },
+        {
+          "name": "Blitera",
+          "class": "warlock",
+          "spec": "warlock-demonology"
+        },
+        {
+          "name": "Darkblud",
+          "class": "death-knight",
+          "spec": "death-knight-blood"
+        },
+        {
+          "name": "Delipala",
+          "class": "paladin",
+          "spec": "paladin-retribution"
+        },
+        {
+          "name": "Dotzdotz",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Egarotu",
+          "class": "warrior",
+          "spec": "warrior-fury"
+        },
+        {
+          "name": "Gatoajato",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Jbeto",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Jbetu",
+          "class": "druid",
+          "spec": "druid-feral"
+        },
+        {
+          "name": "Joelnewboy",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Ksiadzmarek",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Malkerino",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Mallevolence",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Mopper",
+          "class": "rogue",
+          "spec": "rogue-assassination"
+        },
+        {
+          "name": "Mulltilator",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Munigaan",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Omegachicken",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Orzhovv",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Riponga",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Romain",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Rorkino",
+          "class": "hunter",
+          "spec": "hunter-beast-mastery"
+        },
+        {
+          "name": "Runics",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Sewek",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Yamanski",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Yarida",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Ztantz",
+          "class": "paladin",
+          "spec": "paladin-retribution"
+        },
+        {
+          "name": "Ztintz",
+          "class": null,
+          "spec": null
+        }
+      ],
+      "encounters": []
+    },
+    {
+      "raidInstance": "Vault of Archavon",
+      "dates": [
+        "2/24"
+      ],
+      "startTime": "2026-02-24T19:56:01.442Z",
+      "endTime": "2026-02-24T19:59:59.265Z",
+      "playerCount": 26,
+      "players": [
+        {
+          "name": "Aryawininson",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Badhead",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Bdxama",
+          "class": "shaman",
+          "spec": "shaman-restoration"
+        },
+        {
+          "name": "Blitera",
+          "class": "warlock",
+          "spec": "warlock-demonology"
+        },
+        {
+          "name": "Darkblud",
+          "class": "death-knight",
+          "spec": "death-knight-blood"
+        },
+        {
+          "name": "Delipala",
+          "class": "paladin",
+          "spec": "paladin-retribution"
+        },
+        {
+          "name": "Dotzdotz",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Egarotu",
+          "class": "warrior",
+          "spec": "warrior-fury"
+        },
+        {
+          "name": "Gatoajato",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Jbeto",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Jbetu",
+          "class": "druid",
+          "spec": "druid-feral"
+        },
+        {
+          "name": "Joelnewboy",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Ligmakum",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Lrp",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Malkerino",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Mallevolence",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Mathusalem",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Mopper",
+          "class": "rogue",
+          "spec": "rogue-assassination"
+        },
+        {
+          "name": "Munigaan",
+          "class": "death-knight",
+          "spec": "death-knight-unholy"
+        },
+        {
+          "name": "Orzhovv",
+          "class": "paladin",
+          "spec": "paladin-protection"
+        },
+        {
+          "name": "Riponga",
+          "class": "warlock",
+          "spec": "warlock-affliction"
+        },
+        {
+          "name": "Romain",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Rorkino",
+          "class": "hunter",
+          "spec": "hunter-beast-mastery"
+        },
+        {
+          "name": "Setecopas",
+          "class": null,
+          "spec": null
+        },
+        {
+          "name": "Yarida",
+          "class": "priest",
+          "spec": "priest-discipline"
+        },
+        {
+          "name": "Ztintz",
+          "class": null,
+          "spec": null
+        }
+      ],
+      "encounters": [
+        {
+          "bossName": "Archavon the Stone Watcher",
+          "startTime": "2026-02-24T19:56:59.464Z",
+          "endTime": "2026-02-24T19:59:36.837Z",
+          "duration": 157,
+          "result": "kill",
+          "difficulty": "25N"
+        }
+      ]
+    }
+  ]
+}
