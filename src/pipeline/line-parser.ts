@@ -103,3 +103,12 @@ export function getSpellId(event: LogEvent): string | null {
   const commaIdx = event.rawFields.indexOf(",");
   return commaIdx === -1 ? event.rawFields : event.rawFields.substring(0, commaIdx);
 }
+
+/**
+ * Check if an aura event has a BUFF aura type.
+ * For SPELL_AURA_* events, rawFields ends with ",BUFF" or ",DEBUFF".
+ * Returns true if the aura type is BUFF, false otherwise.
+ */
+export function isBuffAura(event: LogEvent): boolean {
+  return event.rawFields.endsWith(",BUFF");
+}

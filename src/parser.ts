@@ -4,10 +4,18 @@ import type {
   ParsedRaid,
   RaidSelection,
   PlayerInfo,
+  ConsumableSummaryEntry,
 } from "./types.js";
 import { CombatLogStateMachine } from "./state/state-machine.js";
 import { createLineSplitter } from "./pipeline/line-splitter.js";
 import { parseLine } from "./pipeline/line-parser.js";
+
+/**
+ * Minimum encounter duration (seconds) to include in parse results.
+ * Matches the same threshold used by scanLog in scanner.ts.
+ * Filters out Grobbulus hallway poison (6s), brief pull-and-resets, etc.
+ */
+const MIN_ENCOUNTER_DURATION_S = 10;
 
 /** Per-selection context: time ranges in epoch ms for fast comparison. */
 interface SelectionContext {
@@ -52,7 +60,7 @@ export async function parseLog(
       selection: sel,
       dateSet,
       epochRanges,
-      stateMachine: new CombatLogStateMachine(),
+      stateMachine: new CombatLogStateMachine(true /* trackConsumables */),
     };
   });
 
@@ -145,6 +153,7 @@ export async function parseLog(
     const segments = ctx.stateMachine.getRaidSegments();
     const encounters = ctx.stateMachine.getEncounters();
     const playerMap = ctx.stateMachine.getDetectedPlayers();
+    const encounterParticipants = ctx.stateMachine.getEncounterParticipants();
 
     // Find the raid instance from segments (first non-null)
     let raidInstance: string | null = null;
@@ -159,23 +168,60 @@ export async function parseLog(
     const firstDate = ctx.selection.dates[0] ?? "";
     const raidDate = parseDateString(firstDate, year);
 
-    // Build player list from the state machine's detected players
+    // Build per-player consumable summaries from encounter data
+    const playerConsumableSummaries = new Map<string, Record<number, ConsumableSummaryEntry>>();
+    for (const enc of encounters) {
+      if (enc.consumables === undefined) continue;
+      for (const [guid, uses] of Object.entries(enc.consumables)) {
+        let summary = playerConsumableSummaries.get(guid);
+        if (summary === undefined) {
+          summary = {};
+          playerConsumableSummaries.set(guid, summary);
+        }
+        for (const use of uses) {
+          const existing = summary[use.spellId];
+          if (existing !== undefined) {
+            existing.totalUses += use.count;
+            if (use.prePot) existing.prePotCount += use.count;
+          } else {
+            summary[use.spellId] = {
+              spellName: use.spellName,
+              type: use.type,
+              totalUses: use.count,
+              prePotCount: use.prePot ? use.count : 0,
+            };
+          }
+        }
+      }
+    }
+
+    // Build player list: only include players who participated in encounters
     const players: PlayerInfo[] = [];
     for (const record of playerMap.values()) {
+      if (!encounterParticipants.has(record.guid)) continue;
+      const consumables = playerConsumableSummaries.get(record.guid);
       players.push({
         guid: record.guid,
         name: record.name,
         class: record.class,
         spec: record.spec,
+        ...(consumables !== undefined && Object.keys(consumables).length > 0
+          ? { consumables }
+          : {}),
       });
     }
     players.sort((a, b) => a.name.localeCompare(b.name));
 
-    // Sort encounters chronologically
-    const sortedEncounters = [...encounters].sort(
-      (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
-    );
+    // Filter out phantom encounters (< 10s wipes from proximity triggers,
+    // Grobbulus hallway poison, brief pull-and-resets, etc.) — same threshold
+    // used by scanLog in scanner.ts.
+    // Sort remaining encounters chronologically.
+    const sortedEncounters = encounters
+      .filter((enc) => enc.duration >= MIN_ENCOUNTER_DURATION_S)
+      .sort(
+        (a, b) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+      );
 
     return {
       raidInstance,

@@ -48,6 +48,23 @@ export type RaidDifficulty = "10N" | "10H" | "25N" | "25H";
 
 export type EncounterResult = "kill" | "wipe";
 
+export type ConsumableType = "potion" | "mana_potion" | "flame_cap" | "engineering";
+
+export interface ConsumableUse {
+  spellId: number;
+  spellName: string;
+  type: ConsumableType;
+  prePot: boolean;
+  count: number;
+}
+
+export interface ConsumableSummaryEntry {
+  spellName: string;
+  type: ConsumableType;
+  totalUses: number;
+  prePotCount: number;
+}
+
 // === Common ===
 
 export interface TimeRange {
@@ -60,15 +77,19 @@ export interface PlayerInfo {
   name: string;
   class: WowClass | null;
   spec: WowSpec | null;
+  /** Raid-wide consumable summary (parseLog only). */
+  consumables?: Record<number, ConsumableSummaryEntry>;
 }
 
 export interface EncounterSummary {
   bossName: string;
   startTime: string; // ISO-8601
   endTime: string; // ISO-8601
-  duration: number; // seconds
+  duration: number; // seconds (decimal, millisecond precision)
   result: EncounterResult;
   difficulty: RaidDifficulty | null;
+  /** Per-player consumable usage during this encounter (parseLog only). */
+  consumables?: Record<string, ConsumableUse[]>;
 }
 
 // === Scan API ===

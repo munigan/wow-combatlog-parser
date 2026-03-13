@@ -116,9 +116,10 @@ export async function scanLog(
   const segments = stateMachine.getRaidSegments();
   const encounters = stateMachine.getEncounters();
   const playerMap = stateMachine.getDetectedPlayers();
+  const encounterParticipants = stateMachine.getEncounterParticipants();
 
   // Group segments into DetectedRaid[]
-  const raids = groupSegmentsIntoRaids(segments, encounters, playerMap);
+  const raids = groupSegmentsIntoRaids(segments, encounters, playerMap, encounterParticipants);
 
   return { raids };
 }
@@ -138,6 +139,7 @@ function groupSegmentsIntoRaids(
   segments: RaidSegment[],
   encounters: EncounterSummary[],
   playerMap: Map<string, PlayerRecord>,
+  encounterParticipants: Set<string>,
 ): DetectedRaid[] {
   if (segments.length === 0) return [];
 
@@ -193,7 +195,7 @@ function groupSegmentsIntoRaids(
 
   // Convert each group to a DetectedRaid
   return groups.map((group) =>
-    buildDetectedRaid(group, encounters, playerMap),
+    buildDetectedRaid(group, encounters, playerMap, encounterParticipants),
   );
 }
 
@@ -201,6 +203,7 @@ function buildDetectedRaid(
   group: SegmentGroup,
   allEncounters: EncounterSummary[],
   playerMap: Map<string, PlayerRecord>,
+  encounterParticipants: Set<string>,
 ): DetectedRaid {
   // Collect unique dates
   const dateSet = new Set<string>();
@@ -218,9 +221,12 @@ function buildDetectedRaid(
     });
   }
 
-  // Filter players to only those active in this raid's segments
+  // Filter players to only those who actively participated in encounters.
+  // A player must be both in the raid's segment roster AND have appeared
+  // in at least one encounter's combat events.
   const players: PlayerInfo[] = [];
   for (const guid of group.allPlayerGuids) {
+    if (!encounterParticipants.has(guid)) continue;
     const record = playerMap.get(guid);
     if (record) {
       players.push({

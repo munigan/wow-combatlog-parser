@@ -126,7 +126,7 @@ describe("EncounterTracker", () => {
     expect(tracker.isInEncounter()).toBe(false);
   });
 
-  it("detects boss kill via PARTY_KILL", () => {
+  it("does NOT end encounter on PARTY_KILL (only UNIT_DIED ends kills)", () => {
     tracker.processEvent(
       makeEvent({
         timestamp: 1000000,
@@ -146,7 +146,8 @@ describe("EncounterTracker", () => {
       }),
     );
 
-    const result = tracker.processEvent(
+    // PARTY_KILL should NOT end the encounter
+    const partyKillResult = tracker.processEvent(
       makeEvent({
         timestamp: 1045000,
         eventType: "PARTY_KILL",
@@ -155,9 +156,22 @@ describe("EncounterTracker", () => {
       }),
     );
 
-    expect(result.encounterEnded).toBe(true);
-    expect(result.encounter!.result).toBe("kill");
-    expect(result.encounter!.duration).toBe(45);
+    expect(partyKillResult.encounterEnded).toBe(false);
+    expect(tracker.isInEncounter()).toBe(true);
+
+    // UNIT_DIED should end the encounter (comes ~14-60ms after PARTY_KILL in logs)
+    const diedResult = tracker.processEvent(
+      makeEvent({
+        timestamp: 1045050,
+        eventType: "UNIT_DIED",
+        destGuid: PATCHWERK_GUID,
+        destName: "Patchwerk",
+      }),
+    );
+
+    expect(diedResult.encounterEnded).toBe(true);
+    expect(diedResult.encounter!.result).toBe("kill");
+    expect(diedResult.encounter!.duration).toBe(45.05);
   });
 
   it("detects wipe via idle timeout", () => {
@@ -410,6 +424,151 @@ describe("EncounterTracker", () => {
     });
   });
 
+  describe("encounter start filtering", () => {
+    it("does NOT start encounter from BUFF SPELL_AURA_APPLIED", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          destName: "Patchwerk",
+          rawFields: "25898,Greater Blessing of Kings,0x2,BUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+      expect(tracker.isInEncounter()).toBe(false);
+    });
+
+    it("starts encounter from DEBUFF SPELL_AURA_APPLIED", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          destName: "Patchwerk",
+          rawFields: "770,Faerie Fire,0x8,DEBUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(true);
+      expect(tracker.isInEncounter()).toBe(true);
+      expect(tracker.getCurrentBossName()).toBe("Patchwerk");
+    });
+
+    it("does NOT start encounter from Hunter's Mark (ignored spell)", () => {
+      // Hunter's Mark rank 4 (spell 53338) — DEBUFF that should be ignored
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          destName: "Patchwerk",
+          rawFields: "53338,Hunter's Mark,0x1,DEBUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+      expect(tracker.isInEncounter()).toBe(false);
+    });
+
+    it("does NOT start encounter from any Hunter's Mark rank", () => {
+      // All Hunter's Mark ranks should be ignored
+      const hunterMarkSpellIds = ["1130", "14323", "14324", "14325", "19421", "19422", "19423", "53338"];
+
+      for (const spellId of hunterMarkSpellIds) {
+        const t = new EncounterTracker();
+        const result = t.processEvent(
+          makeEvent({
+            timestamp: 1000000,
+            eventType: "SPELL_AURA_APPLIED",
+            sourceGuid: PLAYER_GUID,
+            destGuid: PATCHWERK_GUID,
+            rawFields: `${spellId},Hunter's Mark,0x1,DEBUFF`,
+          }),
+        );
+
+        expect(result.encounterStarted, `Hunter's Mark spell ${spellId} should be ignored`).toBe(false);
+      }
+    });
+
+    it("does NOT start encounter from Mind Vision", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          rawFields: "2096,Mind Vision,0x20,DEBUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+    });
+
+    it("does NOT start encounter from Baby Spice", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          rawFields: "60122,Baby Spice,0x1,DEBUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+    });
+
+    it("does NOT start encounter from SPELL_AURA_REMOVED", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_AURA_REMOVED",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          rawFields: "770,Faerie Fire,0x8,DEBUFF",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+      expect(tracker.isInEncounter()).toBe(false);
+    });
+
+    it("does NOT start encounter from SPELL_CAST_SUCCESS", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_CAST_SUCCESS",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          rawFields: "47486,Mortal Strike,1",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+      expect(tracker.isInEncounter()).toBe(false);
+    });
+
+    it("does NOT start encounter from SPELL_CAST_START", () => {
+      const result = tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_CAST_START",
+          sourceGuid: PLAYER_GUID,
+          destGuid: PATCHWERK_GUID,
+          rawFields: "47486,Mortal Strike,1",
+        }),
+      );
+
+      expect(result.encounterStarted).toBe(false);
+      expect(tracker.isInEncounter()).toBe(false);
+    });
+  });
+
   describe("forceEnd", () => {
     it("returns null when no encounter is active", () => {
       expect(tracker.forceEnd(2000000)).toBeNull();
@@ -425,12 +584,13 @@ describe("EncounterTracker", () => {
         }),
       );
 
-      const encounter = tracker.forceEnd(1120000);
+      const forceResult = tracker.forceEnd(1120000);
 
-      expect(encounter).not.toBeNull();
-      expect(encounter!.bossName).toBe("Patchwerk");
-      expect(encounter!.result).toBe("wipe");
-      expect(encounter!.duration).toBe(120);
+      expect(forceResult).not.toBeNull();
+      expect(forceResult!.encounter.bossName).toBe("Patchwerk");
+      expect(forceResult!.encounter.result).toBe("wipe");
+      expect(forceResult!.encounter.duration).toBe(120);
+      expect(forceResult!.participants).toBeInstanceOf(Set);
       expect(tracker.isInEncounter()).toBe(false);
     });
   });

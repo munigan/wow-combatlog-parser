@@ -11,6 +11,7 @@ import { getRaidInstance } from "../data/boss-data.js";
 import { EncounterTracker } from "./encounter-tracker.js";
 import { RaidSeparator } from "./raid-separator.js";
 import type { RaidSegment } from "./raid-separator.js";
+import { ConsumableTracker } from "./consumable-tracker.js";
 
 export interface PlayerRecord {
   guid: string;
@@ -24,7 +25,19 @@ export class CombatLogStateMachine {
   private _encounters: EncounterSummary[] = [];
   private _encounterTracker = new EncounterTracker();
   private _raidSeparator = new RaidSeparator();
+  private _consumableTracker: ConsumableTracker | null = null;
   private _lastRaidInstance: string | null = null;
+  /** All player GUIDs that actively participated in at least one encounter. */
+  private _encounterParticipants = new Set<string>();
+
+  /**
+   * @param trackConsumables If true, enables consumable tracking (parseLog only).
+   */
+  constructor(trackConsumables = false) {
+    if (trackConsumables) {
+      this._consumableTracker = new ConsumableTracker();
+    }
+  }
 
   processEvent(event: LogEvent): void {
     // 1. Track players from source and dest GUIDs
@@ -32,22 +45,31 @@ export class CombatLogStateMachine {
     this._trackPlayer(event.destGuid, event.destName);
 
     // 2. Detect class/spec from spell usage (only for player sources)
-    // Exclude SPELL_AURA_REMOVED — the source GUID on aura removal may not
-    // reliably indicate who owns the ability (e.g., buffs cast by others).
-    if (
-      isPlayer(event.sourceGuid) &&
-      event.eventType !== "SPELL_AURA_REMOVED"
-    ) {
+    // Previously excluded SPELL_AURA_REMOVED, but for class-specific spells
+    // (which is all we match), the source GUID is reliably the original caster.
+    // The spell book itself filters out non-class spells.
+    if (isPlayer(event.sourceGuid)) {
       const spellId = getSpellId(event);
       if (spellId !== null) {
         this._detectClassSpec(event.sourceGuid, spellId);
       }
     }
 
-    // 3. Feed event to encounter tracker
+    // 3. Feed event to consumable tracker (before encounter tracker, so aura
+    //    state is up-to-date when onEncounterStart is called)
+    if (this._consumableTracker !== null) {
+      this._consumableTracker.processEvent(event);
+    }
+
+    // 4. Feed event to encounter tracker
     const encounterResult = this._encounterTracker.processEvent(event);
 
-    // 4. Determine raid instance from current boss
+    // 5. Notify consumable tracker of encounter start
+    if (encounterResult.encounterStarted && this._consumableTracker !== null) {
+      this._consumableTracker.onEncounterStart();
+    }
+
+    // 6. Determine raid instance from current boss
     if (this._encounterTracker.isInEncounter()) {
       const bossName = this._encounterTracker.getCurrentBossName();
       if (bossName !== null) {
@@ -58,7 +80,7 @@ export class CombatLogStateMachine {
       }
     }
 
-    // 5. Feed to raid separator — use player GUID if source is a player
+    // 7. Feed to raid separator — use player GUID if source is a player
     const playerGuid = isPlayer(event.sourceGuid)
       ? event.sourceGuid
       : isPlayer(event.destGuid)
@@ -72,26 +94,51 @@ export class CombatLogStateMachine {
       this._lastRaidInstance,
     );
 
-    // 6. Store completed encounters
+    // 8. Store completed encounters and their participants
     if (encounterResult.encounterEnded && encounterResult.encounter !== null) {
       // Apply fallback difficulty from player count if not detected
       if (encounterResult.encounter.difficulty === null) {
         encounterResult.encounter.difficulty =
           detectDifficultyByPlayerCount(this._players.size);
       }
+
+      // Collect consumable data for this encounter
+      if (this._consumableTracker !== null) {
+        encounterResult.encounter.consumables =
+          this._consumableTracker.onEncounterEnd();
+      }
+
       this._encounters.push(encounterResult.encounter);
+
+      // Accumulate encounter participants
+      if (encounterResult.participants !== null) {
+        for (const guid of encounterResult.participants) {
+          this._encounterParticipants.add(guid);
+        }
+      }
     }
   }
 
   finalize(lastTimestamp: number): void {
-    const encounter = this._encounterTracker.forceEnd(lastTimestamp);
-    if (encounter !== null) {
-      if (encounter.difficulty === null) {
-        encounter.difficulty = detectDifficultyByPlayerCount(
+    const forceResult = this._encounterTracker.forceEnd(lastTimestamp);
+    if (forceResult !== null) {
+      if (forceResult.encounter.difficulty === null) {
+        forceResult.encounter.difficulty = detectDifficultyByPlayerCount(
           this._players.size,
         );
       }
-      this._encounters.push(encounter);
+
+      // Collect consumable data for force-ended encounter
+      if (this._consumableTracker !== null) {
+        forceResult.encounter.consumables =
+          this._consumableTracker.forceEnd() ?? {};
+      }
+
+      this._encounters.push(forceResult.encounter);
+
+      for (const guid of forceResult.participants) {
+        this._encounterParticipants.add(guid);
+      }
     }
   }
 
@@ -105,6 +152,11 @@ export class CombatLogStateMachine {
 
   getRaidSegments(): RaidSegment[] {
     return this._raidSeparator.finalize();
+  }
+
+  /** Returns the set of player GUIDs that participated in at least one encounter. */
+  getEncounterParticipants(): Set<string> {
+    return this._encounterParticipants;
   }
 
   // --- Private helpers ---

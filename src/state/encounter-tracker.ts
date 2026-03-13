@@ -2,9 +2,9 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import type { EncounterSummary, RaidDifficulty } from "../types.js";
-import { isNpc, isVehicle, getNpcId } from "../utils/guid.js";
+import { isNpc, isVehicle, isPlayer, getNpcId } from "../utils/guid.js";
 import { epochToIso } from "../utils/timestamp.js";
-import { getSpellId } from "../pipeline/line-parser.js";
+import { getSpellId, isBuffAura } from "../pipeline/line-parser.js";
 import {
   getBossName,
   getBossIdleThreshold,
@@ -19,6 +19,8 @@ export interface EncounterProcessResult {
   encounterStarted: boolean;
   encounterEnded: boolean;
   encounter: EncounterSummary | null;
+  /** Player GUIDs that participated in the ended encounter (only set when encounterEnded=true). */
+  participants: Set<string> | null;
 }
 
 // Combat events that indicate an active boss fight
@@ -49,11 +51,72 @@ const COWARD_AURA_REMOVAL_THRESHOLD = 15;
 const POST_KILL_COOLDOWN_MS = 30_000;
 
 /**
- * Event types that should NOT trigger a new encounter start.
- * Lingering aura events after a boss kill are the primary cause of
- * phantom encounters.
+ * Event types that should NEVER trigger a new encounter start, regardless of
+ * aura type or spell ID.
+ *
+ * - Aura removal events: Lingering buffs/debuffs after a boss kill.
+ * - Cast events: Pre-pull abilities like Hunter's Mark target the boss NPC via
+ *   SPELL_CAST_SUCCESS seconds before the actual pull.
+ * - Dose events: Aura stack changes, not meaningful combat starts.
+ *
+ * Note: SPELL_AURA_APPLIED is handled separately — DEBUFF auras CAN start
+ * encounters (e.g., Faerie Fire landing on boss), but BUFF auras cannot.
+ * This matches uwu-logs' `get_more_precise_start()` behavior.
  */
-const NON_COMBAT_START_EVENTS = new Set([
+const NEVER_START_ENCOUNTER_EVENTS = new Set([
+  "SPELL_AURA_REMOVED",
+  "SPELL_AURA_REFRESH",
+  "SPELL_AURA_REMOVED_DOSE",
+  "SPELL_AURA_APPLIED_DOSE",
+  "SPELL_CAST_SUCCESS",
+  "SPELL_CAST_START",
+]);
+
+/**
+ * Aura-applied event types that need BUFF/DEBUFF discrimination.
+ * BUFF auras should not start encounters; DEBUFF auras can.
+ */
+const AURA_APPLIED_EVENTS = new Set([
+  "SPELL_AURA_APPLIED",
+]);
+
+/**
+ * Spell IDs that should never trigger encounter start detection.
+ * These are non-combat abilities that players use before pulls.
+ * Matches uwu-logs' IGNORED_SPELL_IDS.
+ *
+ * - Hunter's Mark (all ranks): ranged marking, often applied minutes before pull
+ * - Mind Vision: priest scouting ability
+ * - Flare: hunter AoE reveal
+ * - Baby Spice: fun item
+ * - Soothe Animal: druid utility
+ * - Lens: engineering item
+ * - Blood Power: ICC mechanic
+ */
+const IGNORED_ENCOUNTER_SPELL_IDS = new Set([
+  // Hunter's Mark (all ranks)
+  "1130", "14323", "14324", "14325", "19421", "19422", "19423", "53338",
+  // Mind Vision
+  "2096", "10909", "45468",
+  // Soothe Animal
+  "26995",
+  // Lens
+  "55346", "56190", "56191",
+  // Baby Spice
+  "60122",
+  // Flare
+  "1543", "28822", "55798",
+  // Blood Power (ICC)
+  "72371",
+]);
+
+/**
+ * Events excluded from player participation tracking during encounters.
+ * Pure aura management events don't indicate active combat participation.
+ * Note: SPELL_CAST_SUCCESS IS valid for participation (players casting combat
+ * spells) — it's only excluded from encounter START detection above.
+ */
+const NON_PARTICIPANT_EVENTS = new Set([
   "SPELL_AURA_REMOVED",
   "SPELL_AURA_APPLIED",
   "SPELL_AURA_REFRESH",
@@ -73,6 +136,8 @@ export class EncounterTracker {
   private _isMultiBoss: boolean = false;
   private _isCoward: boolean = false;
   private _consecutiveAuraRemovals: number = 0;
+  /** Player GUIDs that appeared in events during the current encounter. */
+  private _encounterParticipants: Set<string> = new Set();
 
   /**
    * Tracks recent boss kills: bossName → kill timestamp.
@@ -94,6 +159,7 @@ export class EncounterTracker {
       encounterStarted: false,
       encounterEnded: false,
       encounter: null,
+      participants: null,
     };
 
     if (!isCombatEvent(event.eventType)) return result;
@@ -111,12 +177,24 @@ export class EncounterTracker {
       ) {
         // Idle timeout → wipe
         const encounter = this._buildEncounter(this._lastBossEventTimestamp);
+        const participants = this._encounterParticipants;
         this._reset();
         result.encounterEnded = true;
         result.encounter = encounter;
+        result.participants = participants;
 
         // After ending, check if this event starts a new encounter
         return this._maybeStartNewEncounter(event, bossNpcId, result);
+      }
+
+      // Track player participation during encounter.
+      // Exclude pure aura/buff events — these indicate buff management
+      // (e.g., Prayer of Fortitude refreshing on a raid member), not
+      // actual combat participation. Casts, damage, healing, deaths
+      // etc. count as genuine encounter participation.
+      if (!NON_PARTICIPANT_EVENTS.has(event.eventType)) {
+        this._trackParticipant(event.sourceGuid);
+        this._trackParticipant(event.destGuid);
       }
 
       // Check if this event involves one of the tracked boss NPCs
@@ -127,9 +205,13 @@ export class EncounterTracker {
       if (involvesBoss) {
         this._lastBossEventTimestamp = event.timestamp;
 
-        // Kill detection: UNIT_DIED or PARTY_KILL targeting the boss
+        // Kill detection: UNIT_DIED targeting the boss.
+        // PARTY_KILL is NOT used here — it fires 14-60ms before UNIT_DIED and
+        // using it produces shorter durations than uwu-logs' reference timings.
+        // PARTY_KILL still updates _lastBossEventTimestamp above (keeping the
+        // encounter alive) but doesn't end it.
         if (
-          (event.eventType === "UNIT_DIED" || event.eventType === "PARTY_KILL") &&
+          event.eventType === "UNIT_DIED" &&
           destNpcId !== null &&
           this._bossNpcIds.has(destNpcId)
         ) {
@@ -146,10 +228,12 @@ export class EncounterTracker {
 
           // Boss killed → end encounter
           const encounter = this._buildEncounter(event.timestamp);
+          const participants = this._encounterParticipants;
           this._recentKills.set(encounter.bossName, event.timestamp);
           this._reset();
           result.encounterEnded = true;
           result.encounter = encounter;
+          result.participants = participants;
           return result;
         }
 
@@ -162,10 +246,12 @@ export class EncounterTracker {
             ) {
               this._bossKilled = true;
               const encounter = this._buildEncounter(event.timestamp);
+              const participants = this._encounterParticipants;
               this._recentKills.set(encounter.bossName, event.timestamp);
               this._reset();
               result.encounterEnded = true;
               result.encounter = encounter;
+              result.participants = participants;
               return result;
             }
           } else {
@@ -186,13 +272,14 @@ export class EncounterTracker {
 
   /**
    * Force-end the current encounter (e.g., at end of log file).
-   * Returns the encounter summary or null if no active encounter.
+   * Returns the encounter summary and participants, or null if no active encounter.
    */
-  forceEnd(lastTimestamp: number): EncounterSummary | null {
+  forceEnd(lastTimestamp: number): { encounter: EncounterSummary; participants: Set<string> } | null {
     if (this._bossName === null) return null;
     const encounter = this._buildEncounter(lastTimestamp);
+    const participants = this._encounterParticipants;
     this._reset();
-    return encounter;
+    return { encounter, participants };
   }
 
   // --- Private helpers ---
@@ -212,8 +299,15 @@ export class EncounterTracker {
   ): EncounterProcessResult {
     if (bossNpcId === null) return result;
 
-    // Don't start encounters from aura events (lingering buffs/debuffs)
-    if (NON_COMBAT_START_EVENTS.has(event.eventType)) return result;
+    // Never start encounters from these event types
+    if (NEVER_START_ENCOUNTER_EVENTS.has(event.eventType)) return result;
+
+    // For aura-applied events: BUFF auras don't start encounters, DEBUFF auras can
+    if (AURA_APPLIED_EVENTS.has(event.eventType) && isBuffAura(event)) return result;
+
+    // Filter out non-combat spells (Hunter's Mark, Mind Vision, Flare, etc.)
+    const spellId = getSpellId(event);
+    if (spellId !== null && IGNORED_ENCOUNTER_SPELL_IDS.has(spellId)) return result;
 
     // Resolve boss name for cooldown check
     const candidateName = isMultiBoss(bossNpcId)
@@ -274,10 +368,16 @@ export class EncounterTracker {
       bossName: this._bossName!,
       startTime: epochToIso(this._startTimestamp),
       endTime: epochToIso(endTimestamp),
-      duration: Math.round(durationMs / 1000),
+      duration: Math.round(durationMs) / 1000,
       result: this._bossKilled ? "kill" : "wipe",
       difficulty: this._difficulty,
     };
+  }
+
+  private _trackParticipant(guid: string): void {
+    if (isPlayer(guid)) {
+      this._encounterParticipants.add(guid);
+    }
   }
 
   private _reset(): void {
@@ -291,5 +391,6 @@ export class EncounterTracker {
     this._isMultiBoss = false;
     this._isCoward = false;
     this._consecutiveAuraRemovals = 0;
+    this._encounterParticipants = new Set();
   }
 }

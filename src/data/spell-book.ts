@@ -129,6 +129,20 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["48941", "paladin"], // Frost Resistance Aura
   ["10326", "paladin"], // Turn Evil
   ["10308", "paladin"], // Hammer of Justice (max rank)
+  // Raid buffs & auras (Greater Blessings)
+  ["25898", "paladin"], // Greater Blessing of Kings
+  ["25899", "paladin"], // Greater Blessing of Sanctuary
+  ["48934", "paladin"], // Greater Blessing of Might (max rank)
+  ["48938", "paladin"], // Greater Blessing of Wisdom (max rank)
+  ["32223", "paladin"], // Crusader Aura
+  ["25771", "paladin"], // Forbearance (debuff from DS/BoP/HoP)
+  ["31803", "paladin"], // Holy Vengeance (Seal of Vengeance proc dot)
+  ["57029", "paladin"], // Glyph of Holy Light (proc)
+  // Single-target blessings
+  ["48932", "paladin"], // Blessing of Might (max rank)
+  ["48936", "paladin"], // Blessing of Wisdom (max rank)
+  ["20217", "paladin"], // Blessing of Kings
+  ["20911", "paladin"], // Blessing of Sanctuary
 
   // ─── Hunter ────────────────────────────────────────────────────────────
   ["49050", "hunter"], // Aimed Shot (max rank)
@@ -204,6 +218,12 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["14251", "rogue"], // Riposte
   ["13877", "rogue"], // Blade Flurry
   ["8643", "rogue"], // Kidney Shot
+  // Poisons
+  ["57970", "rogue"], // Deadly Poison IX
+  ["57975", "rogue"], // Wound Poison VII
+  ["57968", "rogue"], // Instant Poison IX
+  ["57965", "rogue"], // Crippling Poison
+  ["57978", "rogue"], // Anesthetic Poison
 
   // ─── Priest ────────────────────────────────────────────────────────────
   ["48071", "priest"], // Flash Heal (max rank)
@@ -241,7 +261,7 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["34861", "priest"], // Circle of Healing (Rank 1)
   ["32379", "priest"], // Shadow Word: Death (Rank 1)
   ["10060", "priest"], // Power Infusion
-  ["48170", "priest"], // Mind Sear (max rank)
+  ["53023", "priest"], // Mind Sear (max rank)
   ["15286", "priest"], // Vampiric Embrace
   ["47585", "priest"], // Dispersion
   ["34914", "priest"], // Vampiric Touch (Rank 1)
@@ -249,6 +269,14 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["552", "priest"], // Abolish Disease
   ["527", "priest"], // Dispel Magic
   ["48171", "priest"], // Surge of Light (proc Flash Heal)
+  // Raid buffs (group versions)
+  ["48162", "priest"], // Prayer of Fortitude (max rank)
+  ["48074", "priest"], // Prayer of Spirit (max rank)
+  ["48170", "priest"], // Prayer of Shadow Protection (max rank)
+  // Single-target buff versions
+  ["48161", "priest"], // Power Word: Fortitude (max rank)
+  ["48073", "priest"], // Divine Spirit (max rank)
+  ["48169", "priest"], // Shadow Protection (max rank)
 
   // ─── Death Knight ──────────────────────────────────────────────────────
   ["49909", "death-knight"], // Icy Touch (max rank)
@@ -395,6 +423,13 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["43039", "mage"], // Ice Barrier (alt rank)
   ["44457", "mage"], // Living Bomb (Rank 1)
   ["48108", "mage"], // Hot Streak (proc)
+  // Raid buffs
+  ["43002", "mage"], // Arcane Brilliance (max rank)
+  ["42995", "mage"], // Arcane Intellect (max rank)
+  ["61316", "mage"], // Dalaran Brilliance
+  ["61024", "mage"], // Dalaran Intellect
+  ["1953", "mage"], // Blink
+  ["42956", "mage"], // Conjure Refreshment (max rank)
 
   // ─── Warlock ───────────────────────────────────────────────────────────
   ["47809", "warlock"], // Shadow Bolt (max rank)
@@ -506,6 +541,14 @@ export const SPELL_TO_CLASS = new Map<string, WowClass>([
   ["9634", "druid"], // Dire Bear Form
   ["768", "druid"], // Cat Form
   ["33891", "druid"], // Tree of Life
+  // Raid buffs
+  ["48470", "druid"], // Gift of the Wild (max rank)
+  ["21850", "druid"], // Gift of the Wild (Rank 2)
+  ["48469", "druid"], // Mark of the Wild (max rank)
+  ["26990", "druid"], // Mark of the Wild (Rank 8)
+  ["53307", "druid"], // Thorns (max rank)
+  ["53308", "druid"], // Thorns (Rank 7)
+  ["49804", "druid"], // Pounce Bleed (Feral)
 ]);
 
 /** Maps talent-tree specific spell IDs to WowSpec */
@@ -671,4 +714,5 @@ export const SPELL_TO_SPEC = new Map<string, WowSpec>([
   ["18562", "druid-restoration"], // Swiftmend
   ["33891", "druid-restoration"], // Tree of Life
   ["17116", "druid-restoration"], // Nature's Swiftness
+  ["49804", "druid-feral"], // Pounce Bleed
 ]);

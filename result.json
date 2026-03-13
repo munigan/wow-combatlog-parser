@@ -1,800 +1,3963 @@
-{
-  "file": "tests/example-logs/example-log-3.txt",
-  "raidCount": 5,
-  "raids": [
-    {
-      "raidInstance": "Vault of Archavon",
-      "dates": [
-        "2/22"
-      ],
-      "startTime": "2026-02-22T15:17:32.750Z",
-      "endTime": "2026-02-22T15:24:42.949Z",
-      "playerCount": 20,
-      "players": [
-        {
-          "name": "Asclemago",
-          "class": "mage",
-          "spec": "mage-arcane"
-        },
-        {
-          "name": "Assu",
-          "class": "rogue",
-          "spec": "rogue-assassination"
-        },
-        {
-          "name": "Babolatka",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Colonazpam",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Delinastra",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Funkcjonariu",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Golger",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Gutallax",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Hrob",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Nyxae",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Pathia",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Peppamilgrau",
-          "class": "hunter",
-          "spec": "hunter-beast-mastery"
-        },
-        {
-          "name": "Racemosa",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Raelios",
-          "class": "druid",
-          "spec": "druid-balance"
-        },
-        {
-          "name": "Snakepriest",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Stranglol",
-          "class": "death-knight",
-          "spec": "death-knight-blood"
-        },
-        {
-          "name": "Twpal",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Urzock",
-          "class": "warrior",
-          "spec": "warrior-arms"
-        },
-        {
-          "name": "Wavejutsu",
-          "class": "shaman",
-          "spec": "shaman-restoration"
-        },
-        {
-          "name": "Zirkumflex",
-          "class": null,
-          "spec": null
+[
+  {
+    "raidInstance": "Naxxramas",
+    "raidDate": "2026-03-12",
+    "playerCount": 25,
+    "encounterCount": 15,
+    "encounters": [
+      {
+        "bossName": "Instructor Razuvious",
+        "startTime": "2026-03-12T20:14:41.702Z",
+        "endTime": "2026-03-12T20:15:47.519Z",
+        "duration": 65.817,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ],
-      "encounters": [
-        {
-          "bossName": "Archavon the Stone Watcher",
-          "startTime": "2026-02-22T15:22:42.458Z",
-          "endTime": "2026-02-22T15:24:08.353Z",
-          "duration": 86,
-          "result": "kill",
-          "difficulty": "25N"
+      },
+      {
+        "bossName": "Gothik the Harvester",
+        "startTime": "2026-03-12T20:24:51.800Z",
+        "endTime": "2026-03-12T20:25:26.238Z",
+        "duration": 34.438,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ]
-    },
-    {
-      "raidInstance": "Vault of Archavon",
-      "dates": [
-        "2/23"
-      ],
-      "startTime": "2026-02-23T20:22:17.683Z",
-      "endTime": "2026-02-23T20:37:30.999Z",
-      "playerCount": 21,
-      "players": [
-        {
-          "name": "Beijatoba",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Brockpala",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Dannygtt",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Delidk",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Dudubane",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Duffoo",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Emilstorm",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Emorya",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Gorilladave",
-          "class": "priest",
-          "spec": null
-        },
-        {
-          "name": "Jbeto",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Loveen",
-          "class": "priest",
-          "spec": null
-        },
-        {
-          "name": "Malkerino",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Mareshal",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Mareshall",
-          "class": "rogue",
-          "spec": "rogue-assassination"
-        },
-        {
-          "name": "Maveryck",
-          "class": "shaman",
-          "spec": "shaman-enhancement"
-        },
-        {
-          "name": "Nyrene",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Strifall",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Tonraq",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Vandu",
-          "class": "hunter",
-          "spec": "hunter-beast-mastery"
-        },
-        {
-          "name": "Yarida",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Ztantz",
-          "class": "paladin",
-          "spec": "paladin-retribution"
+      },
+      {
+        "bossName": "Four Horsemen",
+        "startTime": "2026-03-12T20:40:26.766Z",
+        "endTime": "2026-03-12T20:42:30.066Z",
+        "duration": 123.3,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Mopex": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mayt": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 2
+            }
+          ]
         }
-      ],
-      "encounters": []
-    },
-    {
-      "raidInstance": "Naxxramas",
-      "dates": [
-        "2/23"
-      ],
-      "startTime": "2026-02-23T20:37:31.865Z",
-      "endTime": "2026-02-23T23:07:11.204Z",
-      "playerCount": 23,
-      "players": [
-        {
-          "name": "Beijatoba",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Brockpala",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Dannygtt",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Delidk",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Dudubane",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Duffoo",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Emilstorm",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Holyfrenzy",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Jbeta",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Jbeto",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Loveen",
-          "class": "priest",
-          "spec": null
-        },
-        {
-          "name": "Magiemommel",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Malkerino",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Mareshal",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Mareshall",
-          "class": "rogue",
-          "spec": "rogue-assassination"
-        },
-        {
-          "name": "Maveryck",
-          "class": "shaman",
-          "spec": "shaman-enhancement"
-        },
-        {
-          "name": "Nydgaard",
-          "class": "warlock",
-          "spec": "warlock-demonology"
-        },
-        {
-          "name": "Rohanboy",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Santhil",
-          "class": "paladin",
-          "spec": "paladin-holy"
-        },
-        {
-          "name": "Strifall",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Vandu",
-          "class": "hunter",
-          "spec": "hunter-beast-mastery"
-        },
-        {
-          "name": "Yarida",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Ztantz",
-          "class": "paladin",
-          "spec": "paladin-retribution"
+      },
+      {
+        "bossName": "Patchwerk",
+        "startTime": "2026-03-12T20:54:01.461Z",
+        "endTime": "2026-03-12T20:55:30.238Z",
+        "duration": 88.777,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Gatoajato": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Degustaroxo": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rorkino": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 43186,
+              "spellName": "Runic Mana Potion",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ],
-      "encounters": [
-        {
-          "bossName": "Instructor Razuvious",
-          "startTime": "2026-02-23T21:20:57.375Z",
-          "endTime": "2026-02-23T21:22:49.639Z",
-          "duration": 112,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Gothik the Harvester",
-          "startTime": "2026-02-23T21:33:21.304Z",
-          "endTime": "2026-02-23T21:33:50.773Z",
-          "duration": 29,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Four Horsemen",
-          "startTime": "2026-02-23T21:40:19.932Z",
-          "endTime": "2026-02-23T21:42:19.007Z",
-          "duration": 119,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Anub'Rekhan",
-          "startTime": "2026-02-23T21:44:01.285Z",
-          "endTime": "2026-02-23T21:45:09.194Z",
-          "duration": 68,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Grand Widow Faerlina",
-          "startTime": "2026-02-23T21:51:14.386Z",
-          "endTime": "2026-02-23T21:52:26.102Z",
-          "duration": 72,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Maexxna",
-          "startTime": "2026-02-23T22:03:45.763Z",
-          "endTime": "2026-02-23T22:05:41.821Z",
-          "duration": 116,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Patchwerk",
-          "startTime": "2026-02-23T22:09:10.450Z",
-          "endTime": "2026-02-23T22:11:00.582Z",
-          "duration": 110,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Noth the Plaguebringer",
-          "startTime": "2026-02-23T22:20:13.128Z",
-          "endTime": "2026-02-23T22:21:30.025Z",
-          "duration": 77,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Grobbulus",
-          "startTime": "2026-02-23T22:26:51.364Z",
-          "endTime": "2026-02-23T22:28:26.956Z",
-          "duration": 96,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Gluth",
-          "startTime": "2026-02-23T22:30:06.793Z",
-          "endTime": "2026-02-23T22:32:10.528Z",
-          "duration": 124,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Thaddius",
-          "startTime": "2026-02-23T22:37:46.328Z",
-          "endTime": "2026-02-23T22:39:03.790Z",
-          "duration": 77,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Heigan the Unclean",
-          "startTime": "2026-02-23T22:42:21.745Z",
-          "endTime": "2026-02-23T22:44:56.286Z",
-          "duration": 155,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Loatheb",
-          "startTime": "2026-02-23T22:46:23.904Z",
-          "endTime": "2026-02-23T22:49:27.773Z",
-          "duration": 184,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Sapphiron",
-          "startTime": "2026-02-23T22:51:10.206Z",
-          "endTime": "2026-02-23T22:53:12.389Z",
-          "duration": 122,
-          "result": "kill",
-          "difficulty": "25N"
-        },
-        {
-          "bossName": "Kel'Thuzad",
-          "startTime": "2026-02-23T23:03:08.058Z",
-          "endTime": "2026-02-23T23:05:45.641Z",
-          "duration": 158,
-          "result": "kill",
-          "difficulty": "25N"
+      },
+      {
+        "bossName": "Grobbulus",
+        "startTime": "2026-03-12T21:06:36.820Z",
+        "endTime": "2026-03-12T21:07:36.754Z",
+        "duration": 59.934,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ]
-    },
-    {
-      "raidInstance": "Naxxramas",
-      "dates": [
-        "2/24"
-      ],
-      "startTime": "2026-02-24T19:49:20.937Z",
-      "endTime": "2026-02-24T19:56:01.441Z",
-      "playerCount": 29,
-      "players": [
-        {
-          "name": "Aryawininson",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Badhead",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Bdxama",
-          "class": "shaman",
-          "spec": "shaman-restoration"
-        },
-        {
-          "name": "Blitera",
-          "class": "warlock",
-          "spec": "warlock-demonology"
-        },
-        {
-          "name": "Darkblud",
-          "class": "death-knight",
-          "spec": "death-knight-blood"
-        },
-        {
-          "name": "Delipala",
-          "class": "paladin",
-          "spec": "paladin-retribution"
-        },
-        {
-          "name": "Dotzdotz",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Egarotu",
-          "class": "warrior",
-          "spec": "warrior-fury"
-        },
-        {
-          "name": "Gatoajato",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Jbeto",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Jbetu",
-          "class": "druid",
-          "spec": "druid-feral"
-        },
-        {
-          "name": "Joelnewboy",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Ksiadzmarek",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Malkerino",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Mallevolence",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Mopper",
-          "class": "rogue",
-          "spec": "rogue-assassination"
-        },
-        {
-          "name": "Mulltilator",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Munigaan",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Omegachicken",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Orzhovv",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Riponga",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Romain",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Rorkino",
-          "class": "hunter",
-          "spec": "hunter-beast-mastery"
-        },
-        {
-          "name": "Runics",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Sewek",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Yamanski",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Yarida",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Ztantz",
-          "class": "paladin",
-          "spec": "paladin-retribution"
-        },
-        {
-          "name": "Ztintz",
-          "class": null,
-          "spec": null
+      },
+      {
+        "bossName": "Gluth",
+        "startTime": "2026-03-12T21:10:09.202Z",
+        "endTime": "2026-03-12T21:11:17.661Z",
+        "duration": 68.459,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ],
-      "encounters": []
-    },
-    {
-      "raidInstance": "Vault of Archavon",
-      "dates": [
-        "2/24"
-      ],
-      "startTime": "2026-02-24T19:56:01.442Z",
-      "endTime": "2026-02-24T19:59:59.265Z",
-      "playerCount": 26,
-      "players": [
-        {
-          "name": "Aryawininson",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Badhead",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Bdxama",
-          "class": "shaman",
-          "spec": "shaman-restoration"
-        },
-        {
-          "name": "Blitera",
-          "class": "warlock",
-          "spec": "warlock-demonology"
-        },
-        {
-          "name": "Darkblud",
-          "class": "death-knight",
-          "spec": "death-knight-blood"
-        },
-        {
-          "name": "Delipala",
-          "class": "paladin",
-          "spec": "paladin-retribution"
-        },
-        {
-          "name": "Dotzdotz",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Egarotu",
-          "class": "warrior",
-          "spec": "warrior-fury"
-        },
-        {
-          "name": "Gatoajato",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Jbeto",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Jbetu",
-          "class": "druid",
-          "spec": "druid-feral"
-        },
-        {
-          "name": "Joelnewboy",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Ligmakum",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Lrp",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Malkerino",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Mallevolence",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Mathusalem",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Mopper",
-          "class": "rogue",
-          "spec": "rogue-assassination"
-        },
-        {
-          "name": "Munigaan",
-          "class": "death-knight",
-          "spec": "death-knight-unholy"
-        },
-        {
-          "name": "Orzhovv",
-          "class": "paladin",
-          "spec": "paladin-protection"
-        },
-        {
-          "name": "Riponga",
-          "class": "warlock",
-          "spec": "warlock-affliction"
-        },
-        {
-          "name": "Romain",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Rorkino",
-          "class": "hunter",
-          "spec": "hunter-beast-mastery"
-        },
-        {
-          "name": "Setecopas",
-          "class": null,
-          "spec": null
-        },
-        {
-          "name": "Yarida",
-          "class": "priest",
-          "spec": "priest-discipline"
-        },
-        {
-          "name": "Ztintz",
-          "class": null,
-          "spec": null
+      },
+      {
+        "bossName": "Thaddius",
+        "startTime": "2026-03-12T21:16:38.042Z",
+        "endTime": "2026-03-12T21:19:07.535Z",
+        "duration": 149.493,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Degustaroxo": [
+            {
+              "spellId": 67490,
+              "spellName": "Runic Mana Injector",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 43186,
+              "spellName": "Runic Mana Potion",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 67490,
+              "spellName": "Runic Mana Injector",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ],
-      "encounters": [
-        {
-          "bossName": "Archavon the Stone Watcher",
-          "startTime": "2026-02-24T19:56:59.464Z",
-          "endTime": "2026-02-24T19:59:36.837Z",
-          "duration": 157,
-          "result": "kill",
-          "difficulty": "25N"
+      },
+      {
+        "bossName": "Anub'Rekhan",
+        "startTime": "2026-03-12T21:29:00.804Z",
+        "endTime": "2026-03-12T21:29:38.550Z",
+        "duration": 37.746,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Yuenmi": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
         }
-      ]
-    }
-  ]
-}
+      },
+      {
+        "bossName": "Grand Widow Faerlina",
+        "startTime": "2026-03-12T21:34:05.931Z",
+        "endTime": "2026-03-12T21:34:57.551Z",
+        "duration": 51.62,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Maexxna",
+        "startTime": "2026-03-12T21:39:08.556Z",
+        "endTime": "2026-03-12T21:40:00.144Z",
+        "duration": 51.588,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Yuenmi": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Degustaroxo": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Noth the Plaguebringer",
+        "startTime": "2026-03-12T21:44:27.151Z",
+        "endTime": "2026-03-12T21:45:27.160Z",
+        "duration": 60.009,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rorkino": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Pattz": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Heigan the Unclean",
+        "startTime": "2026-03-12T21:49:11.274Z",
+        "endTime": "2026-03-12T21:50:09.853Z",
+        "duration": 58.579,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Loatheb",
+        "startTime": "2026-03-12T21:54:40.218Z",
+        "endTime": "2026-03-12T21:56:50.191Z",
+        "duration": 129.973,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 2
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Gatoajato": [
+            {
+              "spellId": 28494,
+              "spellName": "Insane Strength Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 67490,
+              "spellName": "Runic Mana Injector",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Sapphiron",
+        "startTime": "2026-03-12T21:58:35.139Z",
+        "endTime": "2026-03-12T22:00:22.019Z",
+        "duration": 106.88,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": true,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Degustaroxo": [
+            {
+              "spellId": 67490,
+              "spellName": "Runic Mana Injector",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "bossName": "Kel'Thuzad",
+        "startTime": "2026-03-12T22:10:08.341Z",
+        "endTime": "2026-03-12T22:12:16.253Z",
+        "duration": 127.912,
+        "result": "kill",
+        "difficulty": "25N",
+        "consumables": {
+          "Delidk": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mopex": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mareshall": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Smalldpskekw": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Choijong": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Rahkdos": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Jbeto": [
+            {
+              "spellId": 53762,
+              "spellName": "Indestructible Potion",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Kenpach": [
+            {
+              "spellId": 56350,
+              "spellName": "Saronite Bomb",
+              "type": "engineering",
+              "prePot": false,
+              "count": 2
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Mulltilator": [
+            {
+              "spellId": 67490,
+              "spellName": "Runic Mana Injector",
+              "type": "mana_potion",
+              "prePot": false,
+              "count": 2
+            }
+          ],
+          "Mallevolence": [
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Munigan": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 28714,
+              "spellName": "Flame Cap",
+              "type": "flame_cap",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Egaroto": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Crismado": [
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Blitera": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Badhead": [
+            {
+              "spellId": 53908,
+              "spellName": "Potion of Speed",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ],
+          "Budega": [
+            {
+              "spellId": 56488,
+              "spellName": "Global Thermal Sapper Charge",
+              "type": "engineering",
+              "prePot": false,
+              "count": 1
+            },
+            {
+              "spellId": 53909,
+              "spellName": "Potion of Wild Magic",
+              "type": "potion",
+              "prePot": false,
+              "count": 1
+            }
+          ]
+        }
+      }
+    ],
+    "players": [
+      {
+        "name": "Badhead",
+        "class": "warlock",
+        "spec": "warlock-affliction",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 1,
+            "prePotCount": 0
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 5,
+            "prePotCount": 0
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 12,
+            "prePotCount": 7
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 3,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Blitera",
+        "class": "warlock",
+        "spec": "warlock-affliction",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 7,
+            "prePotCount": 2
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 1,
+            "prePotCount": 1
+          }
+        }
+      },
+      {
+        "name": "Budega",
+        "class": "mage",
+        "spec": "mage-arcane",
+        "consumables": {
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 15,
+            "prePotCount": 1
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 8,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Choijong",
+        "class": "druid",
+        "spec": "druid-balance",
+        "consumables": {
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 16,
+            "prePotCount": 8
+          }
+        }
+      },
+      {
+        "name": "Crismado",
+        "class": "priest",
+        "spec": "priest-shadow",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 2,
+            "prePotCount": 1
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 10,
+            "prePotCount": 7
+          }
+        }
+      },
+      {
+        "name": "Degustaroxo",
+        "class": "priest",
+        "spec": "priest-discipline",
+        "consumables": {
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 2,
+            "prePotCount": 2
+          },
+          "67490": {
+            "spellName": "Runic Mana Injector",
+            "type": "mana_potion",
+            "totalUses": 2,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Delidk",
+        "class": "death-knight",
+        "spec": "death-knight-unholy",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 10,
+            "prePotCount": 8
+          },
+          "53762": {
+            "spellName": "Indestructible Potion",
+            "type": "potion",
+            "totalUses": 6,
+            "prePotCount": 5
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 6,
+            "prePotCount": 0
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 7,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 12,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Dotahkiin",
+        "class": "shaman",
+        "spec": "shaman-restoration"
+      },
+      {
+        "name": "Egaroto",
+        "class": "hunter",
+        "spec": "hunter-beast-mastery",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 17,
+            "prePotCount": 9
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 5,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 8,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Gatoajato",
+        "class": "druid",
+        "spec": "druid-feral",
+        "consumables": {
+          "28494": {
+            "spellName": "Insane Strength Potion",
+            "type": "potion",
+            "totalUses": 9,
+            "prePotCount": 5
+          },
+          "53762": {
+            "spellName": "Indestructible Potion",
+            "type": "potion",
+            "totalUses": 2,
+            "prePotCount": 1
+          }
+        }
+      },
+      {
+        "name": "Jbeto",
+        "class": "paladin",
+        "spec": "paladin-protection",
+        "consumables": {
+          "53762": {
+            "spellName": "Indestructible Potion",
+            "type": "potion",
+            "totalUses": 4,
+            "prePotCount": 2
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 7,
+            "prePotCount": 3
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 1,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 10,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Kascerata",
+        "class": "shaman",
+        "spec": "shaman-enhancement"
+      },
+      {
+        "name": "Kenpach",
+        "class": "warrior",
+        "spec": "warrior-arms",
+        "consumables": {
+          "53762": {
+            "spellName": "Indestructible Potion",
+            "type": "potion",
+            "totalUses": 1,
+            "prePotCount": 1
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 11,
+            "prePotCount": 8
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 14,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Kurjin",
+        "class": "paladin",
+        "spec": "paladin-holy"
+      },
+      {
+        "name": "Mallevolence",
+        "class": "warlock",
+        "spec": "warlock-affliction",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 5,
+            "prePotCount": 0
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 12,
+            "prePotCount": 1
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 3,
+            "prePotCount": 2
+          }
+        }
+      },
+      {
+        "name": "Mareshall",
+        "class": "rogue",
+        "spec": "rogue-assassination",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 17,
+            "prePotCount": 0
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 2,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 13,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Mayt",
+        "class": "rogue",
+        "spec": "rogue-assassination",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 1,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Mopex",
+        "class": "death-knight",
+        "spec": "death-knight-unholy",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 7,
+            "prePotCount": 2
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 16,
+            "prePotCount": 7
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 7,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 12,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Mulltilator",
+        "class": "mage",
+        "spec": "mage-arcane",
+        "consumables": {
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 4,
+            "prePotCount": 1
+          },
+          "67490": {
+            "spellName": "Runic Mana Injector",
+            "type": "mana_potion",
+            "totalUses": 4,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Munigan",
+        "class": "warlock",
+        "spec": "warlock-demonology",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 12,
+            "prePotCount": 0
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 12,
+            "prePotCount": 0
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 1,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 1,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Pattz",
+        "class": "paladin",
+        "spec": "paladin-protection",
+        "consumables": {
+          "43186": {
+            "spellName": "Runic Mana Potion",
+            "type": "mana_potion",
+            "totalUses": 2,
+            "prePotCount": 0
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 7,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Rahkdos",
+        "class": "warlock",
+        "spec": "warlock-affliction",
+        "consumables": {
+          "28714": {
+            "spellName": "Flame Cap",
+            "type": "flame_cap",
+            "totalUses": 2,
+            "prePotCount": 1
+          },
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 5,
+            "prePotCount": 0
+          },
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 8,
+            "prePotCount": 7
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 8,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 7,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Rorkino",
+        "class": "hunter",
+        "spec": "hunter-beast-mastery",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 2,
+            "prePotCount": 1
+          }
+        }
+      },
+      {
+        "name": "Smalldpskekw",
+        "class": "death-knight",
+        "spec": "death-knight-unholy",
+        "consumables": {
+          "53908": {
+            "spellName": "Potion of Speed",
+            "type": "potion",
+            "totalUses": 14,
+            "prePotCount": 0
+          },
+          "56350": {
+            "spellName": "Saronite Bomb",
+            "type": "engineering",
+            "totalUses": 8,
+            "prePotCount": 0
+          },
+          "56488": {
+            "spellName": "Global Thermal Sapper Charge",
+            "type": "engineering",
+            "totalUses": 7,
+            "prePotCount": 0
+          }
+        }
+      },
+      {
+        "name": "Yuenmi",
+        "class": "shaman",
+        "spec": "shaman-enhancement",
+        "consumables": {
+          "53909": {
+            "spellName": "Potion of Wild Magic",
+            "type": "potion",
+            "totalUses": 2,
+            "prePotCount": 2
+          }
+        }
+      }
+    ]
+  }
+]
