@@ -16,7 +16,7 @@ WoW combat log parser for WotLK 3.3.5. TypeScript library, zero runtime deps, st
 
 ```bash
 pnpm run build       # tsup → dist/
-pnpm run test        # vitest (114 tests)
+pnpm run test        # vitest (138 tests)
 pnpm run typecheck   # tsc --noEmit
 ```
 
@@ -27,37 +27,91 @@ pnpm run typecheck   # tsc --noEmit
 ```
 src/
   index.ts              # Barrel exports
-  types.ts              # Public interfaces
+  types.ts              # Public interfaces (WowClass, WowSpec, ConsumableType, etc.)
   scanner.ts            # scanLog() implementation
-  parser.ts             # parseLog() implementation
+  parser.ts             # parseLog() implementation (with consumable tracking)
   pipeline/
     line-splitter.ts    # TransformStream: bytes → lines
-    line-parser.ts      # parseLine(): line → LogEvent
+    line-parser.ts      # parseLine(): line → LogEvent, isBuffAura(), getSpellId()
   state/
-    state-machine.ts    # Composes tracker + separator + player detection
+    state-machine.ts    # Composes tracker + separator + consumable + player detection
     encounter-tracker.ts # Boss encounter detection (kill/wipe/idle/coward)
     raid-separator.ts   # Segment tracking, Jaccard merging
+    consumable-tracker.ts # Potion/bomb/flame cap tracking with pre-pot detection
   detection/
-    class-detection.ts  # detectClass(spellId)
-    spec-detection.ts   # detectSpec(spellId, class)
+    class-detection.ts  # detectClass(spellId) → WowClass
+    spec-detection.ts   # detectSpec(spellId, class) → WowSpec
     difficulty.ts       # Spell-based + player count fallback
   data/
-    boss-data.ts        # 63 boss NPC IDs, raid instance mappings, idle thresholds
+    boss-data.ts        # 63 boss NPC IDs, 9 raid instances, idle thresholds
     spell-book.ts       # ~380 class spells, ~90 spec spells
-    difficulty-spells.ts # Boss difficulty spell tuples
+    difficulty-spells.ts # Boss difficulty spell tuples (ICC/ToC)
+    consumable-data.ts  # 14 WotLK consumable spell IDs (potions/bombs/flame cap)
   utils/
     timestamp.ts        # WotLK timestamp parsing (M/D HH:MM:SS.mmm, no year)
     guid.ts             # GUID type detection (player/NPC/pet/vehicle)
     fields.ts           # Quote-aware CSV field parsing
 tests/
-  unit/                 # 13 unit test files
-  integration/          # Real log file tests
-  example-logs/         # WoW combat log files (gitignored, example-log-{1..6}.txt)
+  unit/                 # 14 unit test files
+  integration/          # Real log file tests (scan-examples.test.ts)
+  example-logs/         # WoW combat log files (gitignored, example-log-{1..7}.txt)
 scripts/
   scan-all.ts           # Scans all example logs → JSON
   summarize.ts          # Pretty-prints scan results
-docs/plans/             # Design doc and implementation plan
+  parse-log.ts          # Parse a single log file
+  parse-log-7.ts        # Scan + parse example-log-7.txt → result.json
+  deep-investigate.ts   # Deep encounter timing investigation
+docs/plans/             # Design docs and implementation plans
 ```
+
+## Public API
+
+### `scanLog(stream, options?): Promise<ScanResult>`
+Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables.
+
+### `parseLog(stream, selections, options?): Promise<ParseResult>`
+Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection.
+
+**Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
+
+## Encounter Detection Logic
+
+Encounters are detected by observing combat events involving boss NPC GUIDs (extracted from `boss-data.ts`).
+
+### Start detection
+- Combat events (SWING_*, RANGE_*, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, SPELL_HEAL, etc.) involving a known boss NPC ID trigger encounter start.
+- **BUFF auras are skipped** — only DEBUFF auras can start encounters (matches uwu-logs behavior).
+- **Blocked events**: `SPELL_CAST_SUCCESS`, `SPELL_CAST_START`, `SPELL_MISSED`, `SWING_MISSED`, `RANGE_MISSED`, `DAMAGE_SHIELD_MISSED` do NOT start encounters.
+- **Ignored spell IDs**: Hunter's Mark (all ranks), Mind Vision, Soothe Animal, Flare, Baby Spice, Blood Power, Lens — see `IGNORED_ENCOUNTER_SPELL_IDS` in encounter-tracker.ts.
+
+### End detection
+- **Kill**: `UNIT_DIED` event for the boss NPC (NOT `PARTY_KILL` — uwu-logs compatibility).
+- **Wipe**: Idle timeout (no combat events for N seconds, configurable per boss in `boss-data.ts`).
+- **Coward bosses**: Kologarn, Hodir, Thorim, Freya, Algalon — killed via consecutive `SPELL_AURA_REMOVED` events (15+ threshold).
+- **Multi-boss**: Four Horsemen, Assembly of Iron, Blood Prince Council, Twin Val'kyr, Northrend Beasts — all bosses must die for a kill.
+
+### Post-kill cooldown
+30-second window after a kill where events referencing the same boss are ignored (prevents phantom encounters from lingering DoTs/aura removals).
+
+### Duration
+Millisecond precision: `Math.round(durationMs) / 1000` (e.g., `88.573` seconds).
+
+### Minimum duration filter
+Encounters shorter than 10 seconds are discarded (filters Grobbulus hallway poison phantom encounters).
+
+## Consumable Tracking (parseLog only)
+
+Tracks 14 WotLK consumable spell IDs across 4 categories:
+- **Potions** (6): Speed, Wild Magic, Indestructible, Insane Strength, Haste, Nightmares
+- **Flame Cap** (1): Special handling — `SPELL_CAST_SUCCESS` has nil source GUID, tracked via `SPELL_AURA_APPLIED` dest
+- **Mana/Healing** (4): Runic Mana Potion, Runic Mana Injector, Runic Healing Potion, Runic Healing Injector
+- **Engineering** (3): Global Thermal Sapper, Saronite Bomb, Cobalt Frag Bomb
+
+**Pre-pot detection**: Uses buff aura lifecycle tracking. If a player has an active potion buff when an encounter starts, it's a pre-pot. Only buff potions and Flame Cap can be pre-potted. Mana potions are excluded from pre-pot detection.
+
+## Player Participation
+
+Both `scanLog` and `parseLog` filter player lists to only include players who actually participated in each encounter. Participation is determined by combat events — aura-only events (`SPELL_AURA_APPLIED`, `SPELL_AURA_REMOVED`, `SPELL_AURA_REFRESH`) do not count as participation.
 
 ## Known WotLK Quirks
 
@@ -65,7 +119,22 @@ docs/plans/             # Design doc and implementation plan
 - **Grobbulus hallway poison** — Triggers 6s phantom encounters. Filtered by 10s minimum duration.
 - **Post-kill lingering events** — DoT ticks, aura removals reference dead boss GUIDs. Handled by 30s post-kill cooldown + aura event filtering.
 - **`SPELL_AURA_REMOVED` source GUIDs** — Unreliable for class detection. Excluded.
-- **Multi-raid log files** — Multiple raids concatenated with no separators. Split by time gaps, date changes, instance changes, and roster similarity.
+- **Multi-raid log files** — Multiple raids concatenated with no separators. Split by time gaps (30min), date changes, instance changes, and Jaccard roster similarity (>= 0.5).
+- **Flame Cap nil source GUID** — `SPELL_CAST_SUCCESS` for Flame Cap (28714) has nil source. Player identified via `SPELL_AURA_APPLIED` dest instead.
+- **Abbreviated potion names** — Logs show "Speed" not "Potion of Speed". We use explicit `displayName` in consumable-data.ts.
+
+## uwu-logs Reference
+
+Encounter timing was aligned with [uwu-logs](https://github.com/Ridepad/uwu-logs) (`logs_fight_separator.py`). Key decisions:
+
+- **Kill event**: `UNIT_DIED` only (not `PARTY_KILL` which fires 14-60ms earlier)
+- **Start trim**: Leading lines ending with `,BUFF` are skipped (DEBUFF auras CAN start encounters)
+- **FLAGS set**: UNIT_DIED, SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD, SPELL_HEAL, SPELL_PERIODIC_HEAL, SPELL_AURA_APPLIED, SPELL_AURA_REMOVED
+- **Known remaining delta**: SPELL_MISSED can start encounters in our parser but not in uwu-logs (deferred fix, affects Faerlina +0.344s, Grobbulus +0.205s)
+
+## Supported Raids (9 instances, 63 bosses)
+
+Naxxramas (15), Obsidian Sanctum (1), Eye of Eternity (1), Vault of Archavon (4), Ulduar (14), Trial of the Crusader (5), Onyxia's Lair (1), Icecrown Citadel (12), Ruby Sanctum (1).
 
 ## Consumer
 
