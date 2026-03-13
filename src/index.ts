@@ -6,6 +6,7 @@ export type {
   ConsumableType,
   ConsumableUse,
   ConsumableSummaryEntry,
+  PlayerCombatStats,
   TimeRange,
   PlayerInfo,
   EncounterSummary,

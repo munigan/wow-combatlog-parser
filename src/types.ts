@@ -65,6 +65,11 @@ export interface ConsumableSummaryEntry {
   prePotCount: number;
 }
 
+export interface PlayerCombatStats {
+  damage: number;   // useful damage (raw - overkill), excludes friendly fire
+  healing: number;  // effective healing (raw - overheal)
+}
+
 // === Common ===
 
 export interface TimeRange {
@@ -79,6 +84,8 @@ export interface PlayerInfo {
   spec: WowSpec | null;
   /** Raid-wide consumable summary (parseLog only). */
   consumables?: Record<number, ConsumableSummaryEntry>;
+  /** Raid-wide damage/healing totals (parseLog only). */
+  combatStats?: PlayerCombatStats;
 }
 
 export interface EncounterSummary {
@@ -90,6 +97,8 @@ export interface EncounterSummary {
   difficulty: RaidDifficulty | null;
   /** Per-player consumable usage during this encounter (parseLog only). */
   consumables?: Record<string, ConsumableUse[]>;
+  /** Per-player combat stats during this encounter (parseLog only). */
+  combatStats?: Record<string, PlayerCombatStats>;
 }
 
 // === Scan API ===
