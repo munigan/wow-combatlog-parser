@@ -195,11 +195,15 @@ export async function parseLog(
       }
     }
 
+    // Get per-player combat stat summaries
+    const combatSummaries = ctx.stateMachine.getCombatPlayerSummaries();
+
     // Build player list: only include players who participated in encounters
     const players: PlayerInfo[] = [];
     for (const record of playerMap.values()) {
       if (!encounterParticipants.has(record.guid)) continue;
       const consumables = playerConsumableSummaries.get(record.guid);
+      const combat = combatSummaries?.get(record.guid);
       players.push({
         guid: record.guid,
         name: record.name,
@@ -208,6 +212,7 @@ export async function parseLog(
         ...(consumables !== undefined && Object.keys(consumables).length > 0
           ? { consumables }
           : {}),
+        ...(combat !== undefined ? { combatStats: combat } : {}),
       });
     }
     players.sort((a, b) => a.name.localeCompare(b.name));

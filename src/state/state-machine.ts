@@ -2,7 +2,7 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import { getSpellId } from "../pipeline/line-parser.js";
-import type { EncounterSummary, WowClass, WowSpec } from "../types.js";
+import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats } from "../types.js";
 import { isPlayer } from "../utils/guid.js";
 import { detectClass } from "../detection/class-detection.js";
 import { detectSpec } from "../detection/spec-detection.js";
@@ -12,6 +12,7 @@ import { EncounterTracker } from "./encounter-tracker.js";
 import { RaidSeparator } from "./raid-separator.js";
 import type { RaidSegment } from "./raid-separator.js";
 import { ConsumableTracker } from "./consumable-tracker.js";
+import { CombatTracker } from "./combat-tracker.js";
 
 export interface PlayerRecord {
   guid: string;
@@ -26,6 +27,7 @@ export class CombatLogStateMachine {
   private _encounterTracker = new EncounterTracker();
   private _raidSeparator = new RaidSeparator();
   private _consumableTracker: ConsumableTracker | null = null;
+  private _combatTracker: CombatTracker | null = null;
   private _lastRaidInstance: string | null = null;
   /** All player GUIDs that actively participated in at least one encounter. */
   private _encounterParticipants = new Set<string>();
@@ -36,6 +38,7 @@ export class CombatLogStateMachine {
   constructor(trackConsumables = false) {
     if (trackConsumables) {
       this._consumableTracker = new ConsumableTracker();
+      this._combatTracker = new CombatTracker();
     }
   }
 
@@ -60,6 +63,9 @@ export class CombatLogStateMachine {
     if (this._consumableTracker !== null) {
       this._consumableTracker.processEvent(event);
     }
+    if (this._combatTracker !== null) {
+      this._combatTracker.processEvent(event);
+    }
 
     // 4. Feed event to encounter tracker
     const encounterResult = this._encounterTracker.processEvent(event);
@@ -67,6 +73,9 @@ export class CombatLogStateMachine {
     // 5. Notify consumable tracker of encounter start
     if (encounterResult.encounterStarted && this._consumableTracker !== null) {
       this._consumableTracker.onEncounterStart();
+    }
+    if (encounterResult.encounterStarted && this._combatTracker !== null) {
+      this._combatTracker.onEncounterStart();
     }
 
     // 6. Determine raid instance from current boss
@@ -107,6 +116,10 @@ export class CombatLogStateMachine {
         encounterResult.encounter.consumables =
           this._consumableTracker.onEncounterEnd();
       }
+      if (this._combatTracker !== null) {
+        encounterResult.encounter.combatStats =
+          this._combatTracker.onEncounterEnd();
+      }
 
       this._encounters.push(encounterResult.encounter);
 
@@ -133,6 +146,10 @@ export class CombatLogStateMachine {
         forceResult.encounter.consumables =
           this._consumableTracker.forceEnd() ?? {};
       }
+      if (this._combatTracker !== null) {
+        forceResult.encounter.combatStats =
+          this._combatTracker.forceEnd() ?? {};
+      }
 
       this._encounters.push(forceResult.encounter);
 
@@ -157,6 +174,10 @@ export class CombatLogStateMachine {
   /** Returns the set of player GUIDs that participated in at least one encounter. */
   getEncounterParticipants(): Set<string> {
     return this._encounterParticipants;
+  }
+
+  getCombatPlayerSummaries(): Map<string, PlayerCombatStats> | null {
+    return this._combatTracker?.getPlayerSummaries() ?? null;
   }
 
   // --- Private helpers ---
