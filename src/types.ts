@@ -66,8 +66,19 @@ export interface PlayerBuffUptime {
   flaskUptimePercent: number;
   /** Percentage 0-100: any food buff was active. */
   foodUptimePercent: number;
+  /** Percentage 0-100: any flask OR elixir active during boss encounters only. */
+  encounterFlaskUptimePercent?: number;
+  /** Percentage 0-100: any food buff active during boss encounters only. */
+  encounterFoodUptimePercent?: number;
   /** Per-buff breakdown, sorted by uptimeMs descending. */
   buffs: BuffBreakdown[];
+}
+
+export interface EncounterBuffUptime {
+  /** Percentage 0-100: any flask OR elixir was active during this encounter. */
+  flaskUptimePercent: number;
+  /** Percentage 0-100: any food buff was active during this encounter. */
+  foodUptimePercent: number;
 }
 
 export interface ConsumableUse {
@@ -120,6 +131,8 @@ export interface EncounterSummary {
   consumables?: Record<string, ConsumableUse[]>;
   /** Per-player combat stats during this encounter (parseLog only). */
   combatStats?: Record<string, PlayerCombatStats>;
+  /** Per-player buff uptime during this encounter (parseLog only). */
+  buffUptime?: Record<string, EncounterBuffUptime>;
 }
 
 // === Scan API ===

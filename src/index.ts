@@ -7,6 +7,7 @@ export type {
   BuffCategory,
   BuffBreakdown,
   PlayerBuffUptime,
+  EncounterBuffUptime,
   ConsumableUse,
   ConsumableSummaryEntry,
   PlayerCombatStats,
