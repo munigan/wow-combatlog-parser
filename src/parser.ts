@@ -76,6 +76,7 @@ export async function parseLog(
   let lineCount = 0;
   let lastProgressBytes = 0;
   const lastTimestamps = new Array<number>(contexts.length).fill(0);
+  const firstTimestamps = new Array<number>(contexts.length).fill(0);
 
   const onProgress = options?.onProgress;
   const PROGRESS_BYTE_INTERVAL = 1024 * 1024; // ~1MB
@@ -132,6 +133,9 @@ export async function parseLog(
 
       ctx.stateMachine.processEvent(event);
       lastTimestamps[i] = event.timestamp;
+      if (firstTimestamps[i] === 0) {
+        firstTimestamps[i] = event.timestamp;
+      }
     }
 
     lineCount++;
@@ -198,12 +202,19 @@ export async function parseLog(
     // Get per-player combat stat summaries
     const combatSummaries = ctx.stateMachine.getCombatPlayerSummaries();
 
+    // Get buff uptime results
+    const raidStartMs = firstTimestamps[i];
+    const raidEndMs = lastTimestamps[i];
+    const raidDurationMs = raidEndMs - raidStartMs;
+    const buffUptimeResults = ctx.stateMachine.getBuffUptimeResults(raidStartMs, raidEndMs);
+
     // Build player list: only include players who participated in encounters
     const players: PlayerInfo[] = [];
     for (const record of playerMap.values()) {
       if (!encounterParticipants.has(record.guid)) continue;
       const consumables = playerConsumableSummaries.get(record.guid);
       const combat = combatSummaries?.get(record.guid);
+      const buffUptime = buffUptimeResults?.get(record.guid);
       players.push({
         guid: record.guid,
         name: record.name,
@@ -213,6 +224,7 @@ export async function parseLog(
           ? { consumables }
           : {}),
         ...(combat !== undefined ? { combatStats: combat } : {}),
+        ...(buffUptime !== undefined ? { buffUptime } : {}),
       });
     }
     players.sort((a, b) => a.name.localeCompare(b.name));
@@ -231,6 +243,7 @@ export async function parseLog(
     return {
       raidInstance,
       raidDate,
+      raidDurationMs,
       players,
       encounters: sortedEncounters,
     };

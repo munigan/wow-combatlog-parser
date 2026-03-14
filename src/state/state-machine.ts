@@ -2,7 +2,7 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import { getSpellId } from "../pipeline/line-parser.js";
-import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats } from "../types.js";
+import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats, PlayerBuffUptime } from "../types.js";
 import { isPlayer } from "../utils/guid.js";
 import { detectClass } from "../detection/class-detection.js";
 import { detectSpec } from "../detection/spec-detection.js";
@@ -13,6 +13,7 @@ import { RaidSeparator } from "./raid-separator.js";
 import type { RaidSegment } from "./raid-separator.js";
 import { ConsumableTracker } from "./consumable-tracker.js";
 import { CombatTracker } from "./combat-tracker.js";
+import { BuffUptimeTracker } from "./buff-uptime-tracker.js";
 
 export interface PlayerRecord {
   guid: string;
@@ -28,6 +29,7 @@ export class CombatLogStateMachine {
   private _raidSeparator = new RaidSeparator();
   private _consumableTracker: ConsumableTracker | null = null;
   private _combatTracker: CombatTracker | null = null;
+  private _buffUptimeTracker: BuffUptimeTracker | null = null;
   private _lastRaidInstance: string | null = null;
   /** All player GUIDs that actively participated in at least one encounter. */
   private _encounterParticipants = new Set<string>();
@@ -39,6 +41,7 @@ export class CombatLogStateMachine {
     if (trackConsumables) {
       this._consumableTracker = new ConsumableTracker();
       this._combatTracker = new CombatTracker();
+      this._buffUptimeTracker = new BuffUptimeTracker();
     }
   }
 
@@ -65,6 +68,9 @@ export class CombatLogStateMachine {
     }
     if (this._combatTracker !== null) {
       this._combatTracker.processEvent(event);
+    }
+    if (this._buffUptimeTracker !== null) {
+      this._buffUptimeTracker.processEvent(event);
     }
 
     // 4. Feed event to encounter tracker
@@ -178,6 +184,10 @@ export class CombatLogStateMachine {
 
   getCombatPlayerSummaries(): Map<string, PlayerCombatStats> | null {
     return this._combatTracker?.getPlayerSummaries() ?? null;
+  }
+
+  getBuffUptimeResults(raidStartMs: number, raidEndMs: number): Map<string, PlayerBuffUptime> | null {
+    return this._buffUptimeTracker?.finalize(raidStartMs, raidEndMs) ?? null;
   }
 
   // --- Private helpers ---

@@ -166,5 +166,5 @@ export interface ParsedRaid {
   players: PlayerInfo[];
   encounters: EncounterSummary[];
   /** Total raid time in ms (first event to last event), used as uptime denominator. */
-  raidDurationMs?: number;
+  raidDurationMs: number;
 }
