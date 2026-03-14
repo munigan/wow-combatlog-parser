@@ -130,6 +130,11 @@ Tracks flask, elixir, and food buff uptime per player across the entire raid. Co
 - Edge cases: buff active at log start (retroactive from raidStartMs), buff active at log end (closed at raidEndMs), duplicate applies, refreshes.
 - Data stored on `PlayerInfo.buffUptime` and `ParsedRaid.raidDurationMs`.
 
+### Per-Encounter Uptime
+- `EncounterSummary.buffUptime` — per-player `EncounterBuffUptime` (flaskUptimePercent, foodUptimePercent) for each boss encounter.
+- `PlayerBuffUptime.encounterFlaskUptimePercent` / `encounterFoodUptimePercent` — raid-wide aggregate computed across all encounter time only (denominator = sum of encounter durations).
+- Uses `computeUptimeForWindow()` — a pure query over accumulated intervals that doesn't mutate state. Called at encounter end by the state machine.
+
 ## Combat Stats Tracking (parseLog only)
 
 Tracks per-player per-encounter damage (useful) via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.

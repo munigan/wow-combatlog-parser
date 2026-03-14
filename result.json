@@ -2,6 +2,7 @@
   {
     "raidInstance": "Naxxramas",
     "raidDate": "2026-03-12",
+    "raidDurationMs": 8173258,
     "playerCount": 25,
     "encounterCount": 15,
     "encounters": [
@@ -282,6 +283,108 @@
           "Crismado": {
             "damage": 11490
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -423,6 +526,108 @@
           },
           "Mulltilator": {
             "damage": 126182
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -736,6 +941,108 @@
           },
           "Mareshall": {
             "damage": 296378
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -1148,6 +1455,108 @@
           "Degustaroxo": {
             "damage": 18147
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -1441,6 +1850,108 @@
           "Badhead": {
             "damage": 392885
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -1726,6 +2237,108 @@
           },
           "Kurjin": {
             "damage": 3244
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -2047,6 +2660,108 @@
           },
           "Degustaroxo": {
             "damage": 22492
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 35.59
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -2380,6 +3095,108 @@
           "Degustaroxo": {
             "damage": 952
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -2665,6 +3482,108 @@
           },
           "Mayt": {
             "damage": 283429
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 79.37,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -2973,6 +3892,108 @@
           "Budega": {
             "damage": 90362
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -3261,6 +4282,108 @@
           "Rahkdos": {
             "damage": 476643
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -3542,6 +4665,108 @@
           },
           "Degustaroxo": {
             "damage": 21604
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -3899,6 +5124,108 @@
           "Pattz": {
             "damage": 36842
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       },
       {
@@ -4190,6 +5517,108 @@
           },
           "Degustaroxo": {
             "damage": 15903
+          }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
           }
         }
       },
@@ -4514,6 +5943,108 @@
           "Degustaroxo": {
             "damage": 19584
           }
+        },
+        "buffUptime": {
+          "Kenpach": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Dotahkiin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Crismado": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Delidk": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Choijong": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Gatoajato": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kascerata": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mulltilator": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Munigan": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Budega": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Degustaroxo": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Smalldpskekw": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mallevolence": {
+            "flaskUptimePercent": 0,
+            "foodUptimePercent": 100
+          },
+          "Egaroto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rahkdos": {
+            "flaskUptimePercent": 0.53,
+            "foodUptimePercent": 100
+          },
+          "Blitera": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Badhead": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Rorkino": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mareshall": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Kurjin": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 0
+          },
+          "Jbeto": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mopex": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Mayt": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Pattz": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          },
+          "Yuenmi": {
+            "flaskUptimePercent": 100,
+            "foodUptimePercent": 100
+          }
         }
       }
     ],
@@ -4550,6 +6081,28 @@
         },
         "combatStats": {
           "damage": 7469592
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 95.2,
+          "foodUptimePercent": 59.83,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 51.2,
+          "buffs": [
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7781219,
+              "uptimePercent": 95.2
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 4889961,
+              "uptimePercent": 59.83
+            }
+          ]
         }
       },
       {
@@ -4572,6 +6125,28 @@
         },
         "combatStats": {
           "damage": 7758201
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 100,
+          "foodUptimePercent": 97.05,
+          "encounterFlaskUptimePercent": 94.58,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7931763,
+              "uptimePercent": 97.05
+            }
+          ]
         }
       },
       {
@@ -4594,6 +6169,28 @@
         },
         "combatStats": {
           "damage": 7883201
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 90.83,
+          "foodUptimePercent": 100,
+          "encounterFlaskUptimePercent": 81.68,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7423460,
+              "uptimePercent": 90.83
+            }
+          ]
         }
       },
       {
@@ -4610,6 +6207,28 @@
         },
         "combatStats": {
           "damage": 7918711
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 93.43,
+          "foodUptimePercent": 92.96,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7636286,
+              "uptimePercent": 93.43
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7597910,
+              "uptimePercent": 92.96
+            }
+          ]
         }
       },
       {
@@ -4632,6 +6251,28 @@
         },
         "combatStats": {
           "damage": 7910733
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 67.9,
+          "foodUptimePercent": 96.15,
+          "encounterFlaskUptimePercent": 75.2,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7858765,
+              "uptimePercent": 96.15
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 5549771,
+              "uptimePercent": 67.9
+            }
+          ]
         }
       },
       {
@@ -4654,6 +6295,28 @@
         },
         "combatStats": {
           "damage": 202005
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 100,
+          "foodUptimePercent": 100,
+          "encounterFlaskUptimePercent": 94.58,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            }
+          ]
         }
       },
       {
@@ -4694,6 +6357,28 @@
         },
         "combatStats": {
           "damage": 9693914
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 68.13,
+          "foodUptimePercent": 96.14,
+          "encounterFlaskUptimePercent": 75.2,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7857905,
+              "uptimePercent": 96.14
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 5568129,
+              "uptimePercent": 68.13
+            }
+          ]
         }
       },
       {
@@ -4702,6 +6387,28 @@
         "spec": "shaman-restoration",
         "combatStats": {
           "damage": 9681
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 73.51,
+          "foodUptimePercent": 89.82,
+          "encounterFlaskUptimePercent": 91.75,
+          "encounterFoodUptimePercent": 80.5,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7341004,
+              "uptimePercent": 89.82
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 6008273,
+              "uptimePercent": 73.51
+            }
+          ]
         }
       },
       {
@@ -4730,6 +6437,28 @@
         },
         "combatStats": {
           "damage": 9506110
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.65,
+          "foodUptimePercent": 92.94,
+          "encounterFlaskUptimePercent": 51.4,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7736071,
+              "uptimePercent": 94.65
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7595934,
+              "uptimePercent": 92.94
+            }
+          ]
         }
       },
       {
@@ -4752,6 +6481,28 @@
         },
         "combatStats": {
           "damage": 7439536
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 95.95,
+          "foodUptimePercent": 96.1,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7854212,
+              "uptimePercent": 96.1
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7841903,
+              "uptimePercent": 95.95
+            }
+          ]
         }
       },
       {
@@ -4786,6 +6537,35 @@
         },
         "combatStats": {
           "damage": 4773575
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 93.74,
+          "foodUptimePercent": 94.34,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 53748,
+              "spellName": "Elixir of Mighty Strength",
+              "category": "battle_elixir",
+              "uptimeMs": 7661345,
+              "uptimePercent": 93.74
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 6536438,
+              "uptimePercent": 79.97
+            },
+            {
+              "spellId": 57294,
+              "spellName": "Well Fed (generic)",
+              "category": "food",
+              "uptimeMs": 1174538,
+              "uptimePercent": 14.37
+            }
+          ]
         }
       },
       {
@@ -4794,6 +6574,28 @@
         "spec": "shaman-enhancement",
         "combatStats": {
           "damage": 7633011
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 95.93,
+          "foodUptimePercent": 92.33,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7840582,
+              "uptimePercent": 95.93
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7546483,
+              "uptimePercent": 92.33
+            }
+          ]
         }
       },
       {
@@ -4822,6 +6624,28 @@
         },
         "combatStats": {
           "damage": 5398871
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 98.32,
+          "foodUptimePercent": 100,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 8036093,
+              "uptimePercent": 98.32
+            }
+          ]
         }
       },
       {
@@ -4830,6 +6654,28 @@
         "spec": "paladin-holy",
         "combatStats": {
           "damage": 128486
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.43,
+          "foodUptimePercent": 0,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 0,
+          "buffs": [
+            {
+              "spellId": 60347,
+              "spellName": "Elixir of Mighty Defense",
+              "category": "guardian_elixir",
+              "uptimeMs": 7717964,
+              "uptimePercent": 94.43
+            },
+            {
+              "spellId": 60346,
+              "spellName": "Elixir of Lightning Speed",
+              "category": "battle_elixir",
+              "uptimeMs": 7714785,
+              "uptimePercent": 94.39
+            }
+          ]
         }
       },
       {
@@ -4858,6 +6704,28 @@
         },
         "combatStats": {
           "damage": 8465737
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 92.37,
+          "foodUptimePercent": 95.44,
+          "encounterFlaskUptimePercent": 89.47,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7800223,
+              "uptimePercent": 95.44
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7549770,
+              "uptimePercent": 92.37
+            }
+          ]
         }
       },
       {
@@ -4886,6 +6754,28 @@
         },
         "combatStats": {
           "damage": 9839134
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.57,
+          "foodUptimePercent": 94.65,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7736225,
+              "uptimePercent": 94.65
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7729578,
+              "uptimePercent": 94.57
+            }
+          ]
         }
       },
       {
@@ -4902,6 +6792,28 @@
         },
         "combatStats": {
           "damage": 8213468
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.89,
+          "foodUptimePercent": 98.26,
+          "encounterFlaskUptimePercent": 91.75,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 8030840,
+              "uptimePercent": 98.26
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7755292,
+              "uptimePercent": 94.89
+            }
+          ]
         }
       },
       {
@@ -4936,6 +6848,28 @@
         },
         "combatStats": {
           "damage": 10240701
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.18,
+          "foodUptimePercent": 97.18,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57371,
+              "spellName": "Well Fed (Dragonfin Filet)",
+              "category": "food",
+              "uptimeMs": 7942461,
+              "uptimePercent": 97.18
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7697739,
+              "uptimePercent": 94.18
+            }
+          ]
         }
       },
       {
@@ -4958,6 +6892,28 @@
         },
         "combatStats": {
           "damage": 8153451
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 93.69,
+          "foodUptimePercent": 96.07,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7852171,
+              "uptimePercent": 96.07
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7657699,
+              "uptimePercent": 93.69
+            }
+          ]
         }
       },
       {
@@ -4992,6 +6948,28 @@
         },
         "combatStats": {
           "damage": 10137676
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 94.25,
+          "foodUptimePercent": 96.07,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7852171,
+              "uptimePercent": 96.07
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7703580,
+              "uptimePercent": 94.25
+            }
+          ]
         }
       },
       {
@@ -5014,6 +6992,35 @@
         },
         "combatStats": {
           "damage": 1682486
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 66.26,
+          "foodUptimePercent": 93.12,
+          "encounterFlaskUptimePercent": 69.81,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7610760,
+              "uptimePercent": 93.12
+            },
+            {
+              "spellId": 53748,
+              "spellName": "Elixir of Mighty Strength",
+              "category": "battle_elixir",
+              "uptimeMs": 3069410,
+              "uptimePercent": 37.55
+            },
+            {
+              "spellId": 53758,
+              "spellName": "Flask of Stoneblood",
+              "category": "flask",
+              "uptimeMs": 2346202,
+              "uptimePercent": 28.71
+            }
+          ]
         }
       },
       {
@@ -5054,6 +7061,28 @@
         },
         "combatStats": {
           "damage": 9533289
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 86.57,
+          "foodUptimePercent": 61.81,
+          "encounterFlaskUptimePercent": 89.52,
+          "encounterFoodUptimePercent": 59.13,
+          "buffs": [
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 7075950,
+              "uptimePercent": 86.57
+            },
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 5052195,
+              "uptimePercent": 61.81
+            }
+          ]
         }
       },
       {
@@ -5070,6 +7099,28 @@
         },
         "combatStats": {
           "damage": 8336176
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 91.18,
+          "foodUptimePercent": 95.17,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 7778143,
+              "uptimePercent": 95.17
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7452402,
+              "uptimePercent": 91.18
+            }
+          ]
         }
       },
       {
@@ -5098,6 +7149,28 @@
         },
         "combatStats": {
           "damage": 9851157
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 92.5,
+          "foodUptimePercent": 95.78,
+          "encounterFlaskUptimePercent": 100,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57371,
+              "spellName": "Well Fed (Dragonfin Filet)",
+              "category": "food",
+              "uptimeMs": 7828173,
+              "uptimePercent": 95.78
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 7560644,
+              "uptimePercent": 92.5
+            }
+          ]
         }
       },
       {
@@ -5114,6 +7187,35 @@
         },
         "combatStats": {
           "damage": 8404931
+        },
+        "buffUptime": {
+          "flaskUptimePercent": 69.64,
+          "foodUptimePercent": 100,
+          "encounterFlaskUptimePercent": 74.28,
+          "encounterFoodUptimePercent": 100,
+          "buffs": [
+            {
+              "spellId": 57399,
+              "spellName": "Well Fed (Fish Feast)",
+              "category": "food",
+              "uptimeMs": 8173258,
+              "uptimePercent": 100
+            },
+            {
+              "spellId": 53760,
+              "spellName": "Flask of Endless Rage",
+              "category": "flask",
+              "uptimeMs": 4856563,
+              "uptimePercent": 59.42
+            },
+            {
+              "spellId": 53755,
+              "spellName": "Flask of the Frost Wyrm",
+              "category": "flask",
+              "uptimeMs": 835040,
+              "uptimePercent": 10.22
+            }
+          ]
         }
       }
     ]
