@@ -50,6 +50,26 @@ export type EncounterResult = "kill" | "wipe";
 
 export type ConsumableType = "potion" | "mana_potion" | "flame_cap" | "engineering";
 
+export type BuffCategory = "flask" | "battle_elixir" | "guardian_elixir" | "food";
+
+export interface BuffBreakdown {
+  spellId: number;
+  spellName: string;
+  category: BuffCategory;
+  uptimeMs: number;
+  /** Percentage 0-100, relative to total raid time. */
+  uptimePercent: number;
+}
+
+export interface PlayerBuffUptime {
+  /** Percentage 0-100: any flask OR elixir was active. */
+  flaskUptimePercent: number;
+  /** Percentage 0-100: any food buff was active. */
+  foodUptimePercent: number;
+  /** Per-buff breakdown, sorted by uptimeMs descending. */
+  buffs: BuffBreakdown[];
+}
+
 export interface ConsumableUse {
   spellId: number;
   spellName: string;
@@ -85,6 +105,8 @@ export interface PlayerInfo {
   consumables?: Record<number, ConsumableSummaryEntry>;
   /** Raid-wide damage totals (parseLog only). */
   combatStats?: PlayerCombatStats;
+  /** Raid-wide buff uptime data (parseLog only). */
+  buffUptime?: PlayerBuffUptime;
 }
 
 export interface EncounterSummary {
@@ -143,4 +165,6 @@ export interface ParsedRaid {
   raidDate: Date;
   players: PlayerInfo[];
   encounters: EncounterSummary[];
+  /** Total raid time in ms (first event to last event), used as uptime denominator. */
+  raidDurationMs?: number;
 }
