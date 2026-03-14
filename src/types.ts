@@ -100,6 +100,50 @@ export interface PlayerCombatStats {
   damage: number;   // useful damage (raw - overkill), excludes friendly fire
 }
 
+// === Deaths ===
+
+export interface DeathRecapEvent {
+  timestamp: number;
+  sourceGuid: string;
+  sourceName: string;
+  spellId: number | null;
+  spellName: string;
+  amount: number;
+  eventType: string;
+}
+
+export interface PlayerDeath {
+  playerGuid: string;
+  playerName: string;
+  timestamp: number;
+  timeIntoEncounter: number;
+  killingBlow: DeathRecapEvent | null;
+  recap: DeathRecapEvent[];
+}
+
+// === Externals ===
+
+export interface ExternalBuffUse {
+  spellId: number;
+  spellName: string;
+  sourceGuid: string;
+  sourceName: string;
+  count: number;
+  uptimePercent: number;
+  intervals: Array<[number, number]>;
+}
+
+export interface PlayerExternalsSummary {
+  received: ExternalBuffSummary[];
+}
+
+export interface ExternalBuffSummary {
+  spellId: number;
+  spellName: string;
+  totalCount: number;
+  uptimePercent: number;
+}
+
 // === Common ===
 
 export interface TimeRange {
@@ -118,6 +162,10 @@ export interface PlayerInfo {
   combatStats?: PlayerCombatStats;
   /** Raid-wide buff uptime data (parseLog only). */
   buffUptime?: PlayerBuffUptime;
+  /** Total deaths across all encounters (parseLog only). */
+  deathCount?: number;
+  /** External buffs received summary (parseLog only). */
+  externals?: PlayerExternalsSummary;
 }
 
 export interface EncounterSummary {
@@ -133,6 +181,10 @@ export interface EncounterSummary {
   combatStats?: Record<string, PlayerCombatStats>;
   /** Per-player buff uptime during this encounter (parseLog only). */
   buffUptime?: Record<string, EncounterBuffUptime>;
+  /** Player deaths during this encounter (parseLog only). */
+  deaths?: PlayerDeath[];
+  /** External buffs cast on players during this encounter (parseLog only). */
+  externals?: Record<string, ExternalBuffUse[]>;
 }
 
 // === Scan API ===
