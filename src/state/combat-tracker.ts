@@ -139,7 +139,11 @@ function extractFieldInt(rawFields: string, index: number): number {
 export class CombatTracker {
   /** Pet GUID → owner (player) GUID. Persists across encounters. */
   private _petOwners = new Map<string, string>();
-  /** Target GUID → shield caster GUID. Persists across encounters. */
+  /**
+   * Active absorb shields keyed by "destGuid|spellId" → caster GUID.
+   * Multiple shields can be active on the same target simultaneously
+   * (e.g., PW:S + Divine Aegis + Sacred Shield from different casters).
+   */
   private _activeShields = new Map<string, string>();
   private _inEncounter = false;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
@@ -169,12 +173,20 @@ export class CombatTracker {
           }
         }
 
-        // Track absorb shield auras (must persist across encounters)
+        // Track absorb shield auras (must persist across encounters).
+        // Key by "destGuid|spellId" so multiple shields on the same target
+        // are tracked independently.
+        //
+        // We only record APPLIED events — we intentionally do NOT delete on
+        // REMOVED. In WoW 3.3.5 logs, when a shield fully absorbs damage
+        // the SPELL_AURA_REMOVED fires BEFORE (or same timestamp as) the
+        // damage event containing the absorbed amount. If we deleted on
+        // removal, the absorb would be unattributable. Keeping stale entries
+        // is safe because the next APPLIED for the same key overwrites it.
         if (!isNaN(spellId) && ABSORB_SHIELD_SPELLS.has(spellId)) {
           if (event.eventType === "SPELL_AURA_APPLIED") {
-            this._activeShields.set(event.destGuid, event.sourceGuid);
-          } else if (event.eventType === "SPELL_AURA_REMOVED") {
-            this._activeShields.delete(event.destGuid);
+            const shieldKey = event.destGuid + "|" + spellId;
+            this._activeShields.set(shieldKey, event.sourceGuid);
           }
         }
       }
@@ -194,13 +206,7 @@ export class CombatTracker {
       const absorbedFieldIndex = isSwing ? 5 : 8;
       const absorbedAmount = extractFieldInt(event.rawFields, absorbedFieldIndex);
       if (absorbedAmount > 0) {
-        const shieldCaster = this._activeShields.get(event.destGuid);
-        if (shieldCaster !== undefined) {
-          const resolvedCaster = this._petOwners.get(shieldCaster) ?? shieldCaster;
-          if (isPlayer(resolvedCaster)) {
-            this._accumulate(resolvedCaster, 0, absorbedAmount);
-          }
-        }
+        this._creditAbsorb(event.destGuid, absorbedAmount);
       }
 
       // Exclude friendly fire: skip if dest is a player or dest is friendly
@@ -252,14 +258,8 @@ export class CombatTracker {
       const absorbedAmount = parseInt(amountStr, 10);
       if (isNaN(absorbedAmount) || absorbedAmount <= 0) return;
 
-      // Look up shield caster
-      const shieldCaster = this._activeShields.get(event.destGuid);
-      if (shieldCaster === undefined) return;
-
-      const resolvedCaster = this._petOwners.get(shieldCaster) ?? shieldCaster;
-      if (!isPlayer(resolvedCaster)) return;
-
-      this._accumulate(resolvedCaster, 0, absorbedAmount);
+      // Credit absorb to shield caster(s)
+      this._creditAbsorb(event.destGuid, absorbedAmount);
     }
   }
 
@@ -298,6 +298,43 @@ export class CombatTracker {
       }
     }
     return summaries;
+  }
+
+  /**
+   * Find all unique shield casters for a given target.
+   * Returns unique caster GUIDs with active shields on the target.
+   * Shields are keyed by "destGuid|spellId".
+   */
+  private _findShieldCasters(destGuid: string): string[] {
+    const prefix = destGuid + "|";
+    const casters: string[] = [];
+    const seen = new Set<string>();
+    for (const [key, caster] of this._activeShields) {
+      if (key.startsWith(prefix) && !seen.has(caster)) {
+        seen.add(caster);
+        casters.push(caster);
+      }
+    }
+    return casters;
+  }
+
+  /**
+   * Credit absorbed damage as healing to the active shield caster(s) on
+   * a given target. When multiple casters have shields on the same target,
+   * the absorbed amount is split equally among them — the combat log doesn't
+   * tell us which specific shield absorbed the damage.
+   */
+  private _creditAbsorb(destGuid: string, absorbedAmount: number): void {
+    const casters = this._findShieldCasters(destGuid);
+    if (casters.length === 0) return;
+
+    const share = Math.round(absorbedAmount / casters.length);
+    for (const caster of casters) {
+      const resolvedCaster = this._petOwners.get(caster) ?? caster;
+      if (isPlayer(resolvedCaster) && share > 0) {
+        this._accumulate(resolvedCaster, 0, share);
+      }
+    }
   }
 
   private _accumulate(playerGuid: string, damage: number, healing: number): void {

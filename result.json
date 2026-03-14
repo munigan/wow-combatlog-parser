@@ -211,6 +211,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Blitera": {
+            "damage": 445624,
+            "healing": 11689
+          },
+          "Jbeto": {
+            "damage": 330693,
+            "healing": 359038
+          },
+          "Egaroto": {
+            "damage": 588255,
+            "healing": 2169
+          },
+          "Mopex": {
+            "damage": 658916,
+            "healing": 1527
+          },
+          "Mayt": {
+            "damage": 476991,
+            "healing": 1706
+          },
+          "Badhead": {
+            "damage": 553659,
+            "healing": 12837
+          },
+          "Munigan": {
+            "damage": 622751,
+            "healing": 8420
+          },
+          "Pattz": {
+            "damage": 161472,
+            "healing": 785
+          },
+          "Kascerata": {
+            "damage": 438067,
+            "healing": 16246
+          },
+          "Yuenmi": {
+            "damage": 558399,
+            "healing": 7883
+          },
+          "Kenpach": {
+            "damage": 368108,
+            "healing": 1823
+          },
+          "Mareshall": {
+            "damage": 535352,
+            "healing": 956
+          },
+          "Rahkdos": {
+            "damage": 514547,
+            "healing": 16582
+          },
+          "Budega": {
+            "damage": 485349,
+            "healing": 0
+          },
+          "Mallevolence": {
+            "damage": 438169,
+            "healing": 15414
+          },
+          "Smalldpskekw": {
+            "damage": 672545,
+            "healing": 1826
+          },
+          "Gatoajato": {
+            "damage": 464585,
+            "healing": 2316
+          },
+          "Rorkino": {
+            "damage": 495004,
+            "healing": 1100
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 171667
+          },
+          "Delidk": {
+            "damage": 549722,
+            "healing": 5687
+          },
+          "Mulltilator": {
+            "damage": 451008,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 578611,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 0,
+            "healing": 327695
+          },
+          "Degustaroxo": {
+            "damage": 46526,
+            "healing": 9736
+          },
+          "Crismado": {
+            "damage": 11490,
+            "healing": 729
+          }
         }
       },
       {
@@ -282,6 +384,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 11634
+          },
+          "Egaroto": {
+            "damage": 242934,
+            "healing": 0
+          },
+          "Jbeto": {
+            "damage": 97132,
+            "healing": 8530
+          },
+          "Delidk": {
+            "damage": 222984,
+            "healing": 363
+          },
+          "Crismado": {
+            "damage": 177361,
+            "healing": 868
+          },
+          "Kenpach": {
+            "damage": 36021,
+            "healing": 0
+          },
+          "Badhead": {
+            "damage": 150310,
+            "healing": 1824
+          },
+          "Mallevolence": {
+            "damage": 168240,
+            "healing": 2762
+          },
+          "Munigan": {
+            "damage": 128415,
+            "healing": 651
+          },
+          "Budega": {
+            "damage": 210752,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 143415,
+            "healing": 0
+          },
+          "Kascerata": {
+            "damage": 121124,
+            "healing": 0
+          },
+          "Degustaroxo": {
+            "damage": 29674,
+            "healing": 14541
+          },
+          "Mayt": {
+            "damage": 137717,
+            "healing": 0
+          },
+          "Yuenmi": {
+            "damage": 0,
+            "healing": 10063
+          },
+          "Rahkdos": {
+            "damage": 86253,
+            "healing": 373
+          },
+          "Rorkino": {
+            "damage": 90946,
+            "healing": 398
+          },
+          "Smalldpskekw": {
+            "damage": 81850,
+            "healing": 0
+          },
+          "Blitera": {
+            "damage": 77790,
+            "healing": 418
+          },
+          "Mopex": {
+            "damage": 24512,
+            "healing": 0
+          },
+          "Pattz": {
+            "damage": 39223,
+            "healing": 983
+          },
+          "Kurjin": {
+            "damage": 3101,
+            "healing": 12369
+          },
+          "Gatoajato": {
+            "damage": 67304,
+            "healing": 0
+          },
+          "Mareshall": {
+            "damage": 89655,
+            "healing": 0
+          },
+          "Mulltilator": {
+            "damage": 126182,
+            "healing": 0
+          }
         }
       },
       {
@@ -524,6 +728,108 @@
               "count": 2
             }
           ]
+        },
+        "combatStats": {
+          "Jbeto": {
+            "damage": 388141,
+            "healing": 264698
+          },
+          "Mallevolence": {
+            "damage": 508593,
+            "healing": 17590
+          },
+          "Crismado": {
+            "damage": 572650,
+            "healing": 35888
+          },
+          "Munigan": {
+            "damage": 753358,
+            "healing": 22981
+          },
+          "Mopex": {
+            "damage": 545247,
+            "healing": 6007
+          },
+          "Rorkino": {
+            "damage": 582692,
+            "healing": 7781
+          },
+          "Smalldpskekw": {
+            "damage": 502716,
+            "healing": 6460
+          },
+          "Blitera": {
+            "damage": 545035,
+            "healing": 11824
+          },
+          "Yuenmi": {
+            "damage": 394108,
+            "healing": 12545
+          },
+          "Mayt": {
+            "damage": 308254,
+            "healing": 309
+          },
+          "Delidk": {
+            "damage": 422209,
+            "healing": 2646
+          },
+          "Gatoajato": {
+            "damage": 280322,
+            "healing": 1199
+          },
+          "Kenpach": {
+            "damage": 200578,
+            "healing": 3039
+          },
+          "Kascerata": {
+            "damage": 354824,
+            "healing": 18221
+          },
+          "Pattz": {
+            "damage": 134738,
+            "healing": 43815
+          },
+          "Rahkdos": {
+            "damage": 580315,
+            "healing": 13575
+          },
+          "Badhead": {
+            "damage": 520375,
+            "healing": 9739
+          },
+          "Mulltilator": {
+            "damage": 441793,
+            "healing": 0
+          },
+          "Egaroto": {
+            "damage": 49230,
+            "healing": 0
+          },
+          "Budega": {
+            "damage": 502368,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 1763,
+            "healing": 190531
+          },
+          "Choijong": {
+            "damage": 364045,
+            "healing": 0
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 419594
+          },
+          "Mareshall": {
+            "damage": 296378,
+            "healing": 0
+          },
+          "Degustaroxo": {
+            "damage": 0,
+            "healing": 35405
+          }
         }
       },
       {
@@ -861,6 +1167,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Smalldpskekw": {
+            "damage": 705229,
+            "healing": 670
+          },
+          "Munigan": {
+            "damage": 752888,
+            "healing": 3607
+          },
+          "Gatoajato": {
+            "damage": 252766,
+            "healing": 3748
+          },
+          "Egaroto": {
+            "damage": 814785,
+            "healing": 398
+          },
+          "Jbeto": {
+            "damage": 366059,
+            "healing": 62218
+          },
+          "Kenpach": {
+            "damage": 206044,
+            "healing": 10888
+          },
+          "Mallevolence": {
+            "damage": 706410,
+            "healing": 5390
+          },
+          "Rorkino": {
+            "damage": 616031,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 1002,
+            "healing": 266227
+          },
+          "Kascerata": {
+            "damage": 591530,
+            "healing": 0
+          },
+          "Blitera": {
+            "damage": 602509,
+            "healing": 4784
+          },
+          "Degustaroxo": {
+            "damage": 18147,
+            "healing": 247068
+          },
+          "Pattz": {
+            "damage": 4955,
+            "healing": 231936
+          },
+          "Badhead": {
+            "damage": 641781,
+            "healing": 5341
+          },
+          "Yuenmi": {
+            "damage": 623782,
+            "healing": 559
+          },
+          "Crismado": {
+            "damage": 544602,
+            "healing": 2632
+          },
+          "Mayt": {
+            "damage": 671128,
+            "healing": 0
+          },
+          "Budega": {
+            "damage": 552946,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 638453,
+            "healing": 0
+          },
+          "Rahkdos": {
+            "damage": 679146,
+            "healing": 5028
+          },
+          "Mulltilator": {
+            "damage": 664367,
+            "healing": 0
+          },
+          "Mareshall": {
+            "damage": 701690,
+            "healing": 0
+          },
+          "Mopex": {
+            "damage": 766634,
+            "healing": 2
+          },
+          "Delidk": {
+            "damage": 708943,
+            "healing": 39
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 173267
+          }
         }
       },
       {
@@ -1083,6 +1491,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Jbeto": {
+            "damage": 278221,
+            "healing": 134261
+          },
+          "Munigan": {
+            "damage": 543308,
+            "healing": 7851
+          },
+          "Egaroto": {
+            "damage": 518053,
+            "healing": 2966
+          },
+          "Crismado": {
+            "damage": 412468,
+            "healing": 304
+          },
+          "Yuenmi": {
+            "damage": 523857,
+            "healing": 12353
+          },
+          "Budega": {
+            "damage": 521677,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 4288,
+            "healing": 123615
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 130564
+          },
+          "Degustaroxo": {
+            "damage": 0,
+            "healing": 239388
+          },
+          "Blitera": {
+            "damage": 394700,
+            "healing": 3117
+          },
+          "Mopex": {
+            "damage": 645045,
+            "healing": 2675
+          },
+          "Pattz": {
+            "damage": 4281,
+            "healing": 144855
+          },
+          "Kascerata": {
+            "damage": 376884,
+            "healing": 30355
+          },
+          "Smalldpskekw": {
+            "damage": 627966,
+            "healing": 2268
+          },
+          "Badhead": {
+            "damage": 392885,
+            "healing": 2893
+          },
+          "Mulltilator": {
+            "damage": 434948,
+            "healing": 0
+          },
+          "Rorkino": {
+            "damage": 423269,
+            "healing": 1556
+          },
+          "Kenpach": {
+            "damage": 331075,
+            "healing": 1588
+          },
+          "Delidk": {
+            "damage": 443949,
+            "healing": 5709
+          },
+          "Mareshall": {
+            "damage": 515176,
+            "healing": 0
+          },
+          "Mallevolence": {
+            "damage": 406490,
+            "healing": 4964
+          },
+          "Mayt": {
+            "damage": 469304,
+            "healing": 602
+          },
+          "Gatoajato": {
+            "damage": 418841,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 351404,
+            "healing": 314
+          },
+          "Rahkdos": {
+            "damage": 551977,
+            "healing": 9628
+          }
         }
       },
       {
@@ -1298,6 +1808,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Mallevolence": {
+            "damage": 427359,
+            "healing": 4158
+          },
+          "Jbeto": {
+            "damage": 284810,
+            "healing": 74792
+          },
+          "Degustaroxo": {
+            "damage": 0,
+            "healing": 53688
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 110109
+          },
+          "Blitera": {
+            "damage": 377189,
+            "healing": 4879
+          },
+          "Rahkdos": {
+            "damage": 372953,
+            "healing": 4867
+          },
+          "Munigan": {
+            "damage": 463949,
+            "healing": 3531
+          },
+          "Kurjin": {
+            "damage": 3244,
+            "healing": 27695
+          },
+          "Budega": {
+            "damage": 415588,
+            "healing": 0
+          },
+          "Yuenmi": {
+            "damage": 372379,
+            "healing": 970
+          },
+          "Egaroto": {
+            "damage": 477374,
+            "healing": 1314
+          },
+          "Mayt": {
+            "damage": 446826,
+            "healing": 526
+          },
+          "Mopex": {
+            "damage": 489497,
+            "healing": 519
+          },
+          "Badhead": {
+            "damage": 382612,
+            "healing": 2699
+          },
+          "Mareshall": {
+            "damage": 499005,
+            "healing": 528
+          },
+          "Mulltilator": {
+            "damage": 442914,
+            "healing": 0
+          },
+          "Kascerata": {
+            "damage": 360183,
+            "healing": 5175
+          },
+          "Kenpach": {
+            "damage": 193227,
+            "healing": 603
+          },
+          "Delidk": {
+            "damage": 435255,
+            "healing": 3356
+          },
+          "Choijong": {
+            "damage": 387573,
+            "healing": 0
+          },
+          "Gatoajato": {
+            "damage": 458153,
+            "healing": 549
+          },
+          "Crismado": {
+            "damage": 370361,
+            "healing": 4538
+          },
+          "Smalldpskekw": {
+            "damage": 432269,
+            "healing": 0
+          },
+          "Pattz": {
+            "damage": 131847,
+            "healing": 30900
+          },
+          "Rorkino": {
+            "damage": 218509,
+            "healing": 0
+          }
         }
       },
       {
@@ -1548,6 +2160,104 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Rorkino": {
+            "damage": 1532587,
+            "healing": 1609
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 206361
+          },
+          "Egaroto": {
+            "damage": 1619759,
+            "healing": 1536
+          },
+          "Gatoajato": {
+            "damage": 764476,
+            "healing": 9082
+          },
+          "Degustaroxo": {
+            "damage": 22492,
+            "healing": 332144
+          },
+          "Mallevolence": {
+            "damage": 1438646,
+            "healing": 5330
+          },
+          "Kenpach": {
+            "damage": 1178438,
+            "healing": 2415
+          },
+          "Yuenmi": {
+            "damage": 1798348,
+            "healing": 6410
+          },
+          "Delidk": {
+            "damage": 1891429,
+            "healing": 2229
+          },
+          "Pattz": {
+            "damage": 63233,
+            "healing": 237193
+          },
+          "Blitera": {
+            "damage": 1308967,
+            "healing": 11027
+          },
+          "Rahkdos": {
+            "damage": 1824230,
+            "healing": 13261
+          },
+          "Kascerata": {
+            "damage": 1356397,
+            "healing": 9968
+          },
+          "Crismado": {
+            "damage": 1540093,
+            "healing": 23134
+          },
+          "Munigan": {
+            "damage": 1659135,
+            "healing": 5053
+          },
+          "Mopex": {
+            "damage": 1538900,
+            "healing": 1617
+          },
+          "Mareshall": {
+            "damage": 2149392,
+            "healing": 0
+          },
+          "Mulltilator": {
+            "damage": 1595488,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 1524408,
+            "healing": 0
+          },
+          "Badhead": {
+            "damage": 527178,
+            "healing": 4828
+          },
+          "Budega": {
+            "damage": 1425993,
+            "healing": 0
+          },
+          "Mayt": {
+            "damage": 1828467,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 25744,
+            "healing": 198330
+          },
+          "Smalldpskekw": {
+            "damage": 1467422,
+            "healing": 1176
+          }
         }
       },
       {
@@ -1806,6 +2516,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Jbeto": {
+            "damage": 267706,
+            "healing": 33994
+          },
+          "Munigan": {
+            "damage": 375024,
+            "healing": 1251
+          },
+          "Budega": {
+            "damage": 453817,
+            "healing": 0
+          },
+          "Pattz": {
+            "damage": 165050,
+            "healing": 4287
+          },
+          "Crismado": {
+            "damage": 344084,
+            "healing": 4704
+          },
+          "Mopex": {
+            "damage": 517416,
+            "healing": 1438
+          },
+          "Kascerata": {
+            "damage": 350218,
+            "healing": 1020
+          },
+          "Yuenmi": {
+            "damage": 356925,
+            "healing": 1020
+          },
+          "Kenpach": {
+            "damage": 250355,
+            "healing": 0
+          },
+          "Egaroto": {
+            "damage": 474406,
+            "healing": 0
+          },
+          "Smalldpskekw": {
+            "damage": 446614,
+            "healing": 1769
+          },
+          "Delidk": {
+            "damage": 383607,
+            "healing": 0
+          },
+          "Mareshall": {
+            "damage": 337085,
+            "healing": 0
+          },
+          "Badhead": {
+            "damage": 316020,
+            "healing": 4086
+          },
+          "Degustaroxo": {
+            "damage": 952,
+            "healing": 52480
+          },
+          "Gatoajato": {
+            "damage": 313220,
+            "healing": 579
+          },
+          "Mayt": {
+            "damage": 333784,
+            "healing": 0
+          },
+          "Blitera": {
+            "damage": 313160,
+            "healing": 5288
+          },
+          "Choijong": {
+            "damage": 307198,
+            "healing": 0
+          },
+          "Mulltilator": {
+            "damage": 404816,
+            "healing": 0
+          },
+          "Rorkino": {
+            "damage": 279237,
+            "healing": 297
+          },
+          "Kurjin": {
+            "damage": 0,
+            "healing": 69353
+          },
+          "Mallevolence": {
+            "damage": 369781,
+            "healing": 6038
+          },
+          "Rahkdos": {
+            "damage": 293552,
+            "healing": 2701
+          },
+          "Dotahkiin": {
+            "damage": 9681,
+            "healing": 23761
+          }
         }
       },
       {
@@ -2021,6 +2833,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Smalldpskekw": {
+            "damage": 490962,
+            "healing": 4533
+          },
+          "Munigan": {
+            "damage": 593772,
+            "healing": 9564
+          },
+          "Crismado": {
+            "damage": 297556,
+            "healing": 9226
+          },
+          "Jbeto": {
+            "damage": 338003,
+            "healing": 80959
+          },
+          "Kascerata": {
+            "damage": 394938,
+            "healing": 16661
+          },
+          "Yuenmi": {
+            "damage": 499688,
+            "healing": 18401
+          },
+          "Kurjin": {
+            "damage": 1152,
+            "healing": 220544
+          },
+          "Mopex": {
+            "damage": 530630,
+            "healing": 2058
+          },
+          "Budega": {
+            "damage": 380602,
+            "healing": 0
+          },
+          "Blitera": {
+            "damage": 236063,
+            "healing": 2000
+          },
+          "Choijong": {
+            "damage": 441678,
+            "healing": 0
+          },
+          "Pattz": {
+            "damage": 222088,
+            "healing": 9039
+          },
+          "Kenpach": {
+            "damage": 282416,
+            "healing": 1206
+          },
+          "Degustaroxo": {
+            "damage": 0,
+            "healing": 143142
+          },
+          "Rorkino": {
+            "damage": 405318,
+            "healing": 1100
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 124517
+          },
+          "Delidk": {
+            "damage": 476052,
+            "healing": 5744
+          },
+          "Gatoajato": {
+            "damage": 342204,
+            "healing": 248
+          },
+          "Mallevolence": {
+            "damage": 396916,
+            "healing": 9214
+          },
+          "Egaroto": {
+            "damage": 377655,
+            "healing": 998
+          },
+          "Mareshall": {
+            "damage": 409378,
+            "healing": 1488
+          },
+          "Badhead": {
+            "damage": 347934,
+            "healing": 4387
+          },
+          "Rahkdos": {
+            "damage": 463685,
+            "healing": 7309
+          },
+          "Mulltilator": {
+            "damage": 307470,
+            "healing": 0
+          },
+          "Mayt": {
+            "damage": 283429,
+            "healing": 1054
+          }
         }
       },
       {
@@ -2254,6 +3168,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Munigan": {
+            "damage": 379047,
+            "healing": 2736
+          },
+          "Mopex": {
+            "damage": 549684,
+            "healing": 1059
+          },
+          "Kurjin": {
+            "damage": 6595,
+            "healing": 44398
+          },
+          "Badhead": {
+            "damage": 380403,
+            "healing": 3585
+          },
+          "Yuenmi": {
+            "damage": 377873,
+            "healing": 11229
+          },
+          "Gatoajato": {
+            "damage": 407710,
+            "healing": 0
+          },
+          "Delidk": {
+            "damage": 358268,
+            "healing": 1437
+          },
+          "Kascerata": {
+            "damage": 318630,
+            "healing": 0
+          },
+          "Egaroto": {
+            "damage": 422185,
+            "healing": 2043
+          },
+          "Jbeto": {
+            "damage": 182479,
+            "healing": 63726
+          },
+          "Crismado": {
+            "damage": 346585,
+            "healing": 1943
+          },
+          "Rahkdos": {
+            "damage": 353025,
+            "healing": 3739
+          },
+          "Smalldpskekw": {
+            "damage": 467459,
+            "healing": 1806
+          },
+          "Kenpach": {
+            "damage": 233897,
+            "healing": 1206
+          },
+          "Mulltilator": {
+            "damage": 414786,
+            "healing": 0
+          },
+          "Mayt": {
+            "damage": 427434,
+            "healing": 527
+          },
+          "Mareshall": {
+            "damage": 403283,
+            "healing": 0
+          },
+          "Rorkino": {
+            "damage": 320328,
+            "healing": 918
+          },
+          "Mallevolence": {
+            "damage": 333854,
+            "healing": 3297
+          },
+          "Pattz": {
+            "damage": 133463,
+            "healing": 6225
+          },
+          "Choijong": {
+            "damage": 282571,
+            "healing": 0
+          },
+          "Blitera": {
+            "damage": 292961,
+            "healing": 3839
+          },
+          "Degustaroxo": {
+            "damage": 16285,
+            "healing": 120865
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 36054
+          },
+          "Budega": {
+            "damage": 90362,
+            "healing": 0
+          }
         }
       },
       {
@@ -2471,6 +3487,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Crismado": {
+            "damage": 342200,
+            "healing": 17738
+          },
+          "Munigan": {
+            "damage": 438234,
+            "healing": 10341
+          },
+          "Rorkino": {
+            "damage": 483127,
+            "healing": 4610
+          },
+          "Mopex": {
+            "damage": 552897,
+            "healing": 11168
+          },
+          "Egaroto": {
+            "damage": 592701,
+            "healing": 3452
+          },
+          "Jbeto": {
+            "damage": 286784,
+            "healing": 139145
+          },
+          "Delidk": {
+            "damage": 414850,
+            "healing": 3183
+          },
+          "Kurjin": {
+            "damage": 3689,
+            "healing": 123977
+          },
+          "Kascerata": {
+            "damage": 422427,
+            "healing": 28608
+          },
+          "Mareshall": {
+            "damage": 445237,
+            "healing": 807
+          },
+          "Budega": {
+            "damage": 389186,
+            "healing": 0
+          },
+          "Pattz": {
+            "damage": 180894,
+            "healing": 11327
+          },
+          "Yuenmi": {
+            "damage": 518708,
+            "healing": 30933
+          },
+          "Kenpach": {
+            "damage": 310181,
+            "healing": 1206
+          },
+          "Mayt": {
+            "damage": 407547,
+            "healing": 527
+          },
+          "Smalldpskekw": {
+            "damage": 564489,
+            "healing": 1691
+          },
+          "Blitera": {
+            "damage": 335025,
+            "healing": 11402
+          },
+          "Gatoajato": {
+            "damage": 452664,
+            "healing": 678
+          },
+          "Mulltilator": {
+            "damage": 377012,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 331820,
+            "healing": 0
+          },
+          "Mallevolence": {
+            "damage": 419032,
+            "healing": 8058
+          },
+          "Badhead": {
+            "damage": 349457,
+            "healing": 6396
+          },
+          "Rahkdos": {
+            "damage": 476643,
+            "healing": 7455
+          },
+          "Degustaroxo": {
+            "damage": 0,
+            "healing": 164507
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 184926
+          }
         }
       },
       {
@@ -2679,6 +3797,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Blitera": {
+            "damage": 408469,
+            "healing": 501
+          },
+          "Mopex": {
+            "damage": 571532,
+            "healing": 883
+          },
+          "Egaroto": {
+            "damage": 562314,
+            "healing": 0
+          },
+          "Mareshall": {
+            "damage": 526844,
+            "healing": 0
+          },
+          "Jbeto": {
+            "damage": 251251,
+            "healing": 73871
+          },
+          "Mallevolence": {
+            "damage": 372904,
+            "healing": 1348
+          },
+          "Mayt": {
+            "damage": 341688,
+            "healing": 527
+          },
+          "Delidk": {
+            "damage": 525496,
+            "healing": 711
+          },
+          "Munigan": {
+            "damage": 448588,
+            "healing": 10439
+          },
+          "Crismado": {
+            "damage": 422967,
+            "healing": 7553
+          },
+          "Smalldpskekw": {
+            "damage": 488011,
+            "healing": 1093
+          },
+          "Rorkino": {
+            "damage": 479188,
+            "healing": 2989
+          },
+          "Pattz": {
+            "damage": 4195,
+            "healing": 114313
+          },
+          "Yuenmi": {
+            "damage": 440918,
+            "healing": 2773
+          },
+          "Gatoajato": {
+            "damage": 455345,
+            "healing": 579
+          },
+          "Kenpach": {
+            "damage": 297605,
+            "healing": 137
+          },
+          "Badhead": {
+            "damage": 341569,
+            "healing": 2226
+          },
+          "Kascerata": {
+            "damage": 397863,
+            "healing": 3134
+          },
+          "Rahkdos": {
+            "damage": 485003,
+            "healing": 1966
+          },
+          "Mulltilator": {
+            "damage": 424801,
+            "healing": 0
+          },
+          "Degustaroxo": {
+            "damage": 21604,
+            "healing": 222421
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 74315
+          },
+          "Budega": {
+            "damage": 412967,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 2746,
+            "healing": 78653
+          },
+          "Choijong": {
+            "damage": 325656,
+            "healing": 0
+          }
         }
       },
       {
@@ -2961,6 +4181,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Jbeto": {
+            "damage": 591924,
+            "healing": 107453
+          },
+          "Munigan": {
+            "damage": 1041585,
+            "healing": 3567
+          },
+          "Smalldpskekw": {
+            "damage": 1005018,
+            "healing": 5048
+          },
+          "Egaroto": {
+            "damage": 1202871,
+            "healing": 1763
+          },
+          "Delidk": {
+            "damage": 1101219,
+            "healing": 5117
+          },
+          "Yuenmi": {
+            "damage": 1106488,
+            "healing": 3244
+          },
+          "Crismado": {
+            "damage": 1025746,
+            "healing": 26420
+          },
+          "Mopex": {
+            "damage": 984368,
+            "healing": 2716
+          },
+          "Kascerata": {
+            "damage": 912481,
+            "healing": 12542
+          },
+          "Mareshall": {
+            "damage": 1124876,
+            "healing": 1570
+          },
+          "Rorkino": {
+            "damage": 960400,
+            "healing": 1940
+          },
+          "Budega": {
+            "damage": 774353,
+            "healing": 0
+          },
+          "Gatoajato": {
+            "damage": 1085202,
+            "healing": 1158
+          },
+          "Blitera": {
+            "damage": 1011563,
+            "healing": 8134
+          },
+          "Kurjin": {
+            "damage": 59447,
+            "healing": 59255
+          },
+          "Kenpach": {
+            "damage": 600671,
+            "healing": 2412
+          },
+          "Mulltilator": {
+            "damage": 757704,
+            "healing": 0
+          },
+          "Mallevolence": {
+            "damage": 1045778,
+            "healing": 6449
+          },
+          "Choijong": {
+            "damage": 1026271,
+            "healing": 0
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 103130
+          },
+          "Mayt": {
+            "damage": 734164,
+            "healing": 944
+          },
+          "Rahkdos": {
+            "damage": 1013488,
+            "healing": 13311
+          },
+          "Degustaroxo": {
+            "damage": 10838,
+            "healing": 95626
+          },
+          "Badhead": {
+            "damage": 899336,
+            "healing": 7908
+          },
+          "Pattz": {
+            "damage": 36842,
+            "healing": 51971
+          }
         }
       },
       {
@@ -3179,6 +4501,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Egaroto": {
+            "damage": 774930,
+            "healing": 7241
+          },
+          "Pattz": {
+            "damage": 15894,
+            "healing": 155550
+          },
+          "Mopex": {
+            "damage": 818092,
+            "healing": 8191
+          },
+          "Munigan": {
+            "damage": 794935,
+            "healing": 23041
+          },
+          "Jbeto": {
+            "damage": 393684,
+            "healing": 338514
+          },
+          "Yuenmi": {
+            "damage": 691204,
+            "healing": 12042
+          },
+          "Crismado": {
+            "damage": 568919,
+            "healing": 119530
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 345410
+          },
+          "Smalldpskekw": {
+            "damage": 674733,
+            "healing": 8587
+          },
+          "Kascerata": {
+            "damage": 547367,
+            "healing": 37256
+          },
+          "Rorkino": {
+            "damage": 648891,
+            "healing": 6993
+          },
+          "Rahkdos": {
+            "damage": 729553,
+            "healing": 33885
+          },
+          "Mareshall": {
+            "damage": 700054,
+            "healing": 4484
+          },
+          "Delidk": {
+            "damage": 630029,
+            "healing": 13189
+          },
+          "Kenpach": {
+            "damage": 369627,
+            "healing": 9566
+          },
+          "Gatoajato": {
+            "damage": 651824,
+            "healing": 2265
+          },
+          "Degustaroxo": {
+            "damage": 15903,
+            "healing": 281050
+          },
+          "Budega": {
+            "damage": 572448,
+            "healing": 0
+          },
+          "Mallevolence": {
+            "damage": 580042,
+            "healing": 20179
+          },
+          "Blitera": {
+            "damage": 546054,
+            "healing": 41737
+          },
+          "Mayt": {
+            "damage": 479756,
+            "healing": 3869
+          },
+          "Badhead": {
+            "damage": 599770,
+            "healing": 43126
+          },
+          "Mulltilator": {
+            "damage": 538370,
+            "healing": 0
+          },
+          "Choijong": {
+            "damage": 471039,
+            "healing": 0
+          },
+          "Kurjin": {
+            "damage": 6133,
+            "healing": 265407
+          }
         }
       },
       {
@@ -3431,6 +4855,108 @@
               "count": 1
             }
           ]
+        },
+        "combatStats": {
+          "Jbeto": {
+            "damage": 407129,
+            "healing": 222484
+          },
+          "Rahkdos": {
+            "damage": 693351,
+            "healing": 18963
+          },
+          "Egaroto": {
+            "damage": 785626,
+            "healing": 4622
+          },
+          "Delidk": {
+            "damage": 822177,
+            "healing": 3638
+          },
+          "Munigan": {
+            "damage": 764819,
+            "healing": 19295
+          },
+          "Blitera": {
+            "damage": 699151,
+            "healing": 21489
+          },
+          "Gatoajato": {
+            "damage": 770177,
+            "healing": 1156
+          },
+          "Degustaroxo": {
+            "damage": 19584,
+            "healing": 307846
+          },
+          "Yuenmi": {
+            "damage": 0,
+            "healing": 215744
+          },
+          "Pattz": {
+            "damage": 265514,
+            "healing": 26883
+          },
+          "Mareshall": {
+            "damage": 823223,
+            "healing": 1056
+          },
+          "Mallevolence": {
+            "damage": 593087,
+            "healing": 18394
+          },
+          "Dotahkiin": {
+            "damage": 0,
+            "healing": 219151
+          },
+          "Smalldpskekw": {
+            "damage": 993224,
+            "healing": 5056
+          },
+          "Kascerata": {
+            "damage": 495988,
+            "healing": 33413
+          },
+          "Rorkino": {
+            "damage": 583297,
+            "healing": 5370
+          },
+          "Badhead": {
+            "damage": 718910,
+            "healing": 23075
+          },
+          "Kurjin": {
+            "damage": 1242,
+            "healing": 203459
+          },
+          "Mulltilator": {
+            "damage": 651455,
+            "healing": 0
+          },
+          "Crismado": {
+            "damage": 598728,
+            "healing": 48491
+          },
+          "Mayt": {
+            "damage": 722400,
+            "healing": 0
+          },
+          "Budega": {
+            "damage": 454865,
+            "healing": 0
+          },
+          "Kenpach": {
+            "damage": 416480,
+            "healing": 2413
+          },
+          "Mopex": {
+            "damage": 752808,
+            "healing": 5215
+          },
+          "Choijong": {
+            "damage": 553914,
+            "healing": 0
+          }
         }
       }
     ],
@@ -3464,6 +4990,10 @@
             "totalUses": 3,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 7469592,
+          "healing": 143157
         }
       },
       {
@@ -3483,6 +5013,10 @@
             "totalUses": 1,
             "prePotCount": 1
           }
+        },
+        "combatStats": {
+          "damage": 7758201,
+          "healing": 145852
         }
       },
       {
@@ -3502,6 +5036,10 @@
             "totalUses": 8,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 7883201,
+          "healing": 0
         }
       },
       {
@@ -3515,6 +5053,10 @@
             "totalUses": 16,
             "prePotCount": 8
           }
+        },
+        "combatStats": {
+          "damage": 7918711,
+          "healing": 314
         }
       },
       {
@@ -3534,6 +5076,10 @@
             "totalUses": 10,
             "prePotCount": 7
           }
+        },
+        "combatStats": {
+          "damage": 7910733,
+          "healing": 307216
         }
       },
       {
@@ -3553,6 +5099,10 @@
             "totalUses": 2,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 202005,
+          "healing": 2341729
         }
       },
       {
@@ -3590,12 +5140,20 @@
             "totalUses": 12,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 9693914,
+          "healing": 54880
         }
       },
       {
         "name": "Dotahkiin",
         "class": "shaman",
-        "spec": "shaman-restoration"
+        "spec": "shaman-restoration",
+        "combatStats": {
+          "damage": 9681,
+          "healing": 2586352
+        }
       },
       {
         "name": "Egaroto",
@@ -3620,6 +5178,10 @@
             "totalUses": 8,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 9506110,
+          "healing": 28827
         }
       },
       {
@@ -3639,6 +5201,10 @@
             "totalUses": 2,
             "prePotCount": 1
           }
+        },
+        "combatStats": {
+          "damage": 7439536,
+          "healing": 25116
         }
       },
       {
@@ -3670,12 +5236,20 @@
             "totalUses": 10,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 4773575,
+          "healing": 1991596
         }
       },
       {
         "name": "Kascerata",
         "class": "shaman",
-        "spec": "shaman-enhancement"
+        "spec": "shaman-enhancement",
+        "combatStats": {
+          "damage": 7633011,
+          "healing": 213983
+        }
       },
       {
         "name": "Kenpach",
@@ -3700,12 +5274,20 @@
             "totalUses": 14,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 5398871,
+          "healing": 39595
         }
       },
       {
         "name": "Kurjin",
         "class": "paladin",
-        "spec": "paladin-holy"
+        "spec": "paladin-holy",
+        "combatStats": {
+          "damage": 128486,
+          "healing": 2293757
+        }
       },
       {
         "name": "Mallevolence",
@@ -3730,6 +5312,10 @@
             "totalUses": 3,
             "prePotCount": 2
           }
+        },
+        "combatStats": {
+          "damage": 8465737,
+          "healing": 134186
         }
       },
       {
@@ -3755,6 +5341,10 @@
             "totalUses": 13,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 9839134,
+          "healing": 11835
         }
       },
       {
@@ -3768,6 +5358,10 @@
             "totalUses": 1,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 8213468,
+          "healing": 11518
         }
       },
       {
@@ -3799,6 +5393,10 @@
             "totalUses": 12,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 10240701,
+          "healing": 51242
         }
       },
       {
@@ -3818,6 +5416,10 @@
             "totalUses": 4,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 8153451,
+          "healing": 0
         }
       },
       {
@@ -3849,6 +5451,10 @@
             "totalUses": 1,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 10137676,
+          "healing": 152954
         }
       },
       {
@@ -3868,6 +5474,10 @@
             "totalUses": 7,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 1682486,
+          "healing": 1080663
         }
       },
       {
@@ -3905,6 +5515,10 @@
             "totalUses": 7,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 9533289,
+          "healing": 164717
         }
       },
       {
@@ -3918,6 +5532,10 @@
             "totalUses": 2,
             "prePotCount": 1
           }
+        },
+        "combatStats": {
+          "damage": 8336176,
+          "healing": 38224
         }
       },
       {
@@ -3943,6 +5561,10 @@
             "totalUses": 7,
             "prePotCount": 0
           }
+        },
+        "combatStats": {
+          "damage": 9851157,
+          "healing": 50444
         }
       },
       {
@@ -3956,6 +5578,10 @@
             "totalUses": 2,
             "prePotCount": 2
           }
+        },
+        "combatStats": {
+          "damage": 8404931,
+          "healing": 351420
         }
       }
     ]

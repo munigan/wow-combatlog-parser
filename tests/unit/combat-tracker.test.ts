@@ -403,7 +403,7 @@ describe("CombatTracker", () => {
       expect(stats[PLAYER1].healing).toBe(1500);
     });
 
-    it("removes shield tracking on SPELL_AURA_REMOVED", () => {
+    it("retains shield caster after SPELL_AURA_REMOVED (WoW fires removal before damage)", () => {
       // Apply PW:S
       tracker.processEvent(
         makeEvent({
@@ -414,7 +414,9 @@ describe("CombatTracker", () => {
           rawFields: "48066,Power Word: Shield,0x2,BUFF",
         }),
       );
-      // Remove PW:S
+      // Remove PW:S — in WoW 3.3.5, SPELL_AURA_REMOVED fires before (or
+      // same timestamp as) the damage event that consumed the shield.
+      // We intentionally keep the caster mapping so the absorb is attributed.
       tracker.processEvent(
         makeEvent({
           timestamp: 950,
@@ -436,8 +438,9 @@ describe("CombatTracker", () => {
         }),
       );
       const stats = tracker.onEncounterEnd();
-      // No shield tracked, absorb discarded
-      expect(stats[PLAYER1]).toBeUndefined();
+      // Shield caster retained — absorb credited to PLAYER1
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(2000);
     });
 
     it("discards absorb when no shield is tracked on target", () => {
