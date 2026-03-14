@@ -219,6 +219,15 @@ export async function parseLog(
           new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
       );
 
+    // Get death summaries
+    const deathSummaries = ctx.stateMachine.getDeathSummaries();
+
+    // Get externals summaries
+    const totalEncounterDurationMs = sortedEncounters.reduce(
+      (sum, enc) => sum + enc.duration * 1000, 0,
+    );
+    const externalsSummaries = ctx.stateMachine.getExternalsSummaries(totalEncounterDurationMs);
+
     // Build per-player encounter-aggregate buff uptime
     const playerEncounterBuffUptime = new Map<string, { flaskMs: number; foodMs: number; totalMs: number }>();
     for (const enc of sortedEncounters) {
@@ -263,6 +272,8 @@ export async function parseLog(
           : {}),
         ...(combat !== undefined ? { combatStats: combat } : {}),
         ...(mergedBuffUptime !== undefined ? { buffUptime: mergedBuffUptime } : {}),
+        ...(deathSummaries?.has(record.guid) ? { deathCount: deathSummaries.get(record.guid) } : {}),
+        ...(externalsSummaries?.has(record.guid) ? { externals: externalsSummaries.get(record.guid) } : {}),
       });
     }
     players.sort((a, b) => a.name.localeCompare(b.name));
