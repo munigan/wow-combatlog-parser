@@ -88,7 +88,7 @@ describe("DeathTracker", () => {
       expect(death.playerGuid).toBe(PLAYER1);
       expect(death.playerName).toBe("Warrior");
       expect(death.timestamp).toBe(1350);
-      expect(death.timeIntoEncounter).toBe(350); // 1350 - 1000
+      expect(death.timeIntoEncounter).toBe(0.35); // (1350 - 1000) / 1000 seconds
 
       // Recap should have 3 events
       expect(death.recap).toHaveLength(3);

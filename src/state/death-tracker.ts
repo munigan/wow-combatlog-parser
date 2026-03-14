@@ -131,7 +131,7 @@ export class DeathTracker {
         playerGuid,
         playerName: event.destName,
         timestamp: event.timestamp,
-        timeIntoEncounter: event.timestamp - this._encounterStartMs,
+        timeIntoEncounter: Math.round(event.timestamp - this._encounterStartMs) / 1000,
         killingBlow,
         recap,
       });
