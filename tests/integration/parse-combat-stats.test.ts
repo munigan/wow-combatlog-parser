@@ -35,11 +35,11 @@ describe.skipIf(!existsSync(LOG7_PATH))(
   () => {
     // Shared state: scan once, parse once, reuse across tests.
     let patchwerk: {
-      combatStats: Record<string, { damage: number; healing: number }>;
+      combatStats: Record<string, { damage: number }>;
       players: Map<string, string>; // name → guid
     };
     let razuvious: {
-      combatStats: Record<string, { damage: number; healing: number }>;
+      combatStats: Record<string, { damage: number }>;
       players: Map<string, string>;
     };
 
@@ -122,25 +122,5 @@ describe.skipIf(!existsSync(LOG7_PATH))(
       expectWithinPct(stats.damage, 535_352, 2);
     });
 
-    // --- Patchwerk healing (absorb validation) ---
-
-    it("Patchwerk: Degustaroxo healing within 5% of wow-logs (253,554)", () => {
-      const guid = patchwerk.players.get("Degustaroxo");
-      expect(guid).toBeDefined();
-      const stats = patchwerk.combatStats[guid!];
-      expect(stats).toBeDefined();
-      // wow-logs.co.in shows 253,554 (includes PW:S absorbs as healing)
-      // Use 5% tolerance — absorb attribution heuristic may not be perfect
-      expectWithinPct(stats.healing, 253_554, 5);
-    });
-
-    it("Patchwerk: Kurjin healing within 5% of wow-logs (263,387)", () => {
-      const guid = patchwerk.players.get("Kurjin");
-      expect(guid).toBeDefined();
-      const stats = patchwerk.combatStats[guid!];
-      expect(stats).toBeDefined();
-      // Holy Paladin — mostly direct heals, some Sacred Shield absorbs
-      expectWithinPct(stats.healing, 263_387, 5);
-    });
   },
 );

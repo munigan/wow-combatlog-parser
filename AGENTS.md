@@ -38,7 +38,7 @@ src/
     encounter-tracker.ts # Boss encounter detection (kill/wipe/idle/coward)
     raid-separator.ts   # Segment tracking, Jaccard merging
     consumable-tracker.ts # Potion/bomb/flame cap tracking with pre-pot detection
-    combat-tracker.ts   # Per-player damage/healing/absorbs with pet→owner merging
+    combat-tracker.ts   # Per-player damage with pet→owner merging
   detection/
     class-detection.ts  # detectClass(spellId) → WowClass
     spec-detection.ts   # detectSpec(spellId, class) → WowSpec
@@ -71,7 +71,7 @@ docs/plans/             # Design docs and implementation plans
 Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables.
 
 ### `parseLog(stream, selections, options?): Promise<ParseResult>`
-Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, plus per-player per-encounter damage and healing stats with pet→owner merging.
+Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, plus per-player per-encounter damage stats with pet→owner merging.
 
 **Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
 
@@ -112,7 +112,7 @@ Tracks 14 WotLK consumable spell IDs across 4 categories:
 
 ## Combat Stats Tracking (parseLog only)
 
-Tracks per-player per-encounter damage (useful) and healing (effective) via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.
+Tracks per-player per-encounter damage (useful) via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.
 
 ### Damage
 - **Useful damage** = amount - overkill (overkill of -1 treated as 0)
@@ -120,38 +120,14 @@ Tracks per-player per-encounter damage (useful) and healing (effective) via `Com
 - **Friendly fire excluded**: Damage to players (`isPlayer(destGuid)`) or friendly-flagged targets (`destFlags & 0x0010`) is skipped
 - **Field positions**: SWING_DAMAGE: amount at rawFields[0], overkill at [1]. All others: amount at rawFields[3], overkill at [4]
 
-### Healing
-- **Effective healing** = amount - overheal + absorbed damage attributed to the healer
-- **Event types**: SPELL_HEAL, SPELL_PERIODIC_HEAL
-- **Field positions**: amount at rawFields[3], overheal at rawFields[4]
-- **Absorb healing**: Absorbed damage from tracked shield spells is credited as healing to the shield caster (see Absorb Tracking below)
-
-### Absorb Tracking
-WotLK 3.3.5 has no `SPELL_ABSORBED` event. Absorbs are detected from two sources:
-
-- **Full absorbs**: SWING_MISSED, SPELL_MISSED, RANGE_MISSED events with `ABSORB` missType — the entire hit was absorbed.
-- **Partial absorbs**: The `absorbed` field in damage events (index 5 for SWING_DAMAGE, index 8 for SPELL_DAMAGE/SPELL_PERIODIC_DAMAGE/RANGE_DAMAGE/DAMAGE_SHIELD).
-
-**Tracked absorb spells** (`ABSORB_SHIELD_SPELLS` — 16 spell IDs):
-- Power Word: Shield (all ranks), Divine Aegis, Sacred Shield, Val'anyr shield (Protection of Ancient Kings)
-
-**Shield tracking**: Uses composite keys (`destGuid|spellId`) in `_activeShields` map to track which caster applied which shield to which target. Multiple casters can have shields on the same target simultaneously. Shields are NOT deleted on `SPELL_AURA_REMOVED` because WotLK fires the removal event BEFORE the damage event that consumed the shield. Shield tracking persists across encounters.
-
-**Multi-caster split**: When multiple casters have the same shield spell on a target, the absorbed amount is split equally among them via `_findShieldCasters()` and `_creditAbsorb()`.
-
-**Attribution**: Absorbed damage is credited as healing to the shield caster (the player who applied the shield), not to the target.
-
 ### Pet→Owner Merging
-Pet damage/healing is attributed to the owner player. Three detection methods:
+Pet damage is attributed to the owner player. Three detection methods:
 1. **SPELL_SUMMON** — Player summons pet (DK Army, Gargoyle, Warlock demons, etc.)
 2. **PET_FILTER_SPELLS** (~90 spells) — Known pet↔owner interaction spells detect ownership bidirectionally. Covers Hunter (Mend Pet, Kill Command, Bestial Wrath), Warlock (Health Funnel, Soul Link, Dark Pact), DK (Ghoul Frenzy, Death Pact), and pet→owner auras (Kindred Spirits, Furious Howl, Call of the Wild). Sourced from uwu-logs.
 
 ### Validated Numbers (vs wow-logs reference)
 - Patchwerk: Egaroto +0.22%, Mopex exact match
 - Razuvious: Mareshall exact match
-- Patchwerk absorb healing: Degustaroxo (Disc Priest) 247,068 vs wow-logs 253,554 (-2.56%)
-- Healing ~12% below uwu-logs (encounter timing differences, not a parser bug)
-- Add damage (e.g., Razuvious Understudies) is included in our totals; uwu-logs uses an NPC ID whitelist to exclude it
 
 ## Player Participation
 

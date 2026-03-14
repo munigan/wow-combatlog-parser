@@ -14,12 +14,6 @@ const DAMAGE_EVENTS = new Set([
   "DAMAGE_SHIELD",
 ]);
 
-/** Healing event types we track. */
-const HEAL_EVENTS = new Set([
-  "SPELL_HEAL",
-  "SPELL_PERIODIC_HEAL",
-]);
-
 /**
  * Check if unit flags indicate a friendly reaction (bit 0x0010).
  * Used to exclude damage to MC'd NPCs (e.g., Death Knight Understudies on Razuvious).
@@ -91,37 +85,6 @@ const PET_FILTER_SPELLS = new Set([
   24604, 64491, 64492, 64493, 64494, 64495,
 ]);
 
-/**
- * Known absorb shield spell IDs (all ranks).
- * When these auras are applied/removed, we track the caster so absorbed
- * damage can be attributed as healing.
- */
-const ABSORB_SHIELD_SPELLS = new Set([
-  // Power Word: Shield (all ranks)
-  17, 592, 600, 3747, 6065, 6066, 10898, 10901, 25217, 25218, 48065, 48066,
-  // Divine Aegis
-  47753,
-  // Sacred Shield proc
-  58597,
-  // Val'anyr proc
-  64413,
-]);
-
-/** Miss event types that can carry ABSORB as missType. */
-const MISS_EVENTS = new Set([
-  "SWING_MISSED",
-  "SPELL_MISSED",
-  "RANGE_MISSED",
-  "DAMAGE_SHIELD_MISSED",
-]);
-
-/** Tracks a single shield aura on a target. */
-interface ShieldEntry {
-  casterGuid: string;
-  removedAt: number | null;  // ms timestamp when AURA_REMOVED fired, null if active
-  appliedAt: number;         // ms timestamp of most recent APPLIED/REFRESH/DOSE
-}
-
 /** Per-encounter combat stats keyed by player GUID. */
 export type EncounterCombatStats = Record<string, PlayerCombatStats>;
 
@@ -147,12 +110,6 @@ function extractFieldInt(rawFields: string, index: number): number {
 export class CombatTracker {
   /** Pet GUID → owner (player) GUID. Persists across encounters. */
   private _petOwners = new Map<string, string>();
-  /**
-   * Active absorb shields keyed by "destGuid|spellId" → ShieldEntry.
-   * Multiple shields can be active on the same target simultaneously
-   * (e.g., PW:S + Divine Aegis + Sacred Shield from different casters).
-   */
-  private _activeShields = new Map<string, ShieldEntry>();
   private _inEncounter = false;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
   private _completedEncounters: EncounterCombatStats[] = [];
@@ -180,35 +137,6 @@ export class CombatTracker {
             this._petOwners.set(event.sourceGuid, event.destGuid);
           }
         }
-
-        // Track absorb shield auras (must persist across encounters).
-        // Key by "destGuid|spellId" so multiple shields on the same target
-        // are tracked independently.
-        //
-        // We track APPLIED, REFRESH, APPLIED_DOSE, and REMOVED events.
-        // REMOVED marks the shield with a timestamp so the grace window in
-        // _findShieldCasters can handle WoW 3.3.5's ordering where
-        // SPELL_AURA_REMOVED fires at the same ms as the consuming damage.
-        if (!isNaN(spellId) && ABSORB_SHIELD_SPELLS.has(spellId)) {
-          const shieldKey = event.destGuid + "|" + spellId;
-          const et = event.eventType;
-          if (
-            et === "SPELL_AURA_APPLIED" ||
-            et === "SPELL_AURA_REFRESH" ||
-            et === "SPELL_AURA_APPLIED_DOSE"
-          ) {
-            this._activeShields.set(shieldKey, {
-              casterGuid: event.sourceGuid,
-              removedAt: null,
-              appliedAt: event.timestamp,
-            });
-          } else if (et === "SPELL_AURA_REMOVED") {
-            const existing = this._activeShields.get(shieldKey);
-            if (existing) {
-              existing.removedAt = event.timestamp;
-            }
-          }
-        }
       }
     }
 
@@ -219,15 +147,6 @@ export class CombatTracker {
     // Handle damage events
     if (DAMAGE_EVENTS.has(eventType)) {
       const isSwing = eventType === "SWING_DAMAGE";
-
-      // Extract partial absorbed amount before friendly fire exclusion.
-      // Absorbed damage is healing credited to the shield caster, regardless
-      // of whether the direct damage is excluded (e.g., dest is a player).
-      const absorbedFieldIndex = isSwing ? 5 : 8;
-      const absorbedAmount = extractFieldInt(event.rawFields, absorbedFieldIndex);
-      if (absorbedAmount > 0) {
-        this._creditAbsorb(event.destGuid, absorbedAmount, event.timestamp);
-      }
 
       // Exclude friendly fire: skip if dest is a player or dest is friendly
       if (isPlayer(event.destGuid)) return;
@@ -246,40 +165,7 @@ export class CombatTracker {
       const useful = amount - Math.max(0, overkill);
       if (useful <= 0) return;
 
-      this._accumulate(sourceGuid, useful, 0);
-      return;
-    }
-
-    // Handle healing events
-    if (HEAL_EVENTS.has(eventType)) {
-      // Resolve source through pet map
-      const sourceGuid = this._petOwners.get(event.sourceGuid) ?? event.sourceGuid;
-      if (!isPlayer(sourceGuid)) return;
-
-      const amount = extractFieldInt(event.rawFields, 3);
-      const overheal = extractFieldInt(event.rawFields, 4);
-
-      const effective = amount - overheal;
-      if (effective <= 0) return;
-
-      this._accumulate(sourceGuid, 0, effective);
-      return;
-    }
-
-    // Handle full absorbs from miss events (SWING_MISSED, SPELL_MISSED, RANGE_MISSED)
-    if (MISS_EVENTS.has(eventType)) {
-      const rawFields = event.rawFields;
-      // Check for "ABSORB," in rawFields — full absorb miss type
-      const absorbIdx = rawFields.indexOf("ABSORB,");
-      if (absorbIdx === -1) return;
-
-      // Extract absorbed amount from after "ABSORB,"
-      const amountStr = rawFields.substring(absorbIdx + 7);
-      const absorbedAmount = parseInt(amountStr, 10);
-      if (isNaN(absorbedAmount) || absorbedAmount <= 0) return;
-
-      // Credit absorb to shield caster(s)
-      this._creditAbsorb(event.destGuid, absorbedAmount, event.timestamp);
+      this._accumulate(sourceGuid, useful);
     }
   }
 
@@ -292,7 +178,7 @@ export class CombatTracker {
     this._inEncounter = false;
     const result: EncounterCombatStats = {};
     for (const [guid, stats] of this._currentEncounter) {
-      result[guid] = { ...stats };
+      result[guid] = { damage: stats.damage };
     }
     this._completedEncounters.push(result);
     this._currentEncounter.clear();
@@ -311,87 +197,20 @@ export class CombatTracker {
         const existing = summaries.get(guid);
         if (existing !== undefined) {
           existing.damage += stats.damage;
-          existing.healing += stats.healing;
         } else {
-          summaries.set(guid, { damage: stats.damage, healing: stats.healing });
+          summaries.set(guid, { damage: stats.damage });
         }
       }
     }
     return summaries;
   }
 
-  /**
-   * Find active shield casters for a given target at the specified timestamp.
-   * Active = removedAt is null, or removedAt equals currentTimestamp (grace window
-   * for WoW 3.3.5 where SPELL_AURA_REMOVED fires at same ms as consuming damage).
-   */
-  private _findShieldCasters(destGuid: string, currentTimestamp: number): string[] {
-    const prefix = destGuid + "|";
-    const casters: string[] = [];
-    const seen = new Set<string>();
-    for (const [key, entry] of this._activeShields) {
-      if (!key.startsWith(prefix)) continue;
-      // Skip shields removed before this timestamp
-      if (entry.removedAt !== null && currentTimestamp > entry.removedAt) continue;
-      if (!seen.has(entry.casterGuid)) {
-        seen.add(entry.casterGuid);
-        casters.push(entry.casterGuid);
-      }
-    }
-    return casters;
-  }
-
-  /**
-   * Credit absorbed damage as healing to the active shield caster(s) on
-   * a given target. When multiple casters have shields on the same target,
-   * the absorbed amount is split equally among them.
-   *
-   * If no active shields are found, falls back to the most recently applied
-   * shield on the target (overflow fallback — matches uwu-logs behavior
-   * where remaining absorb goes to the last known shield).
-   */
-  private _creditAbsorb(destGuid: string, absorbedAmount: number, currentTimestamp: number): void {
-    const casters = this._findShieldCasters(destGuid, currentTimestamp);
-
-    // Overflow fallback: if no active shields, find the most recently applied
-    // shield on this target (regardless of removedAt or spell ID) and credit it.
-    // This is cross-spell-ID and approximate — e.g., a late PW:S absorb might
-    // be attributed to a more recently applied Sacred Shield caster. Acceptable
-    // because WotLK 3.3.5 logs don't tell us which shield absorbed the hit.
-    if (casters.length === 0) {
-      const prefix = destGuid + "|";
-      let bestEntry: ShieldEntry | null = null;
-      for (const [key, entry] of this._activeShields) {
-        if (!key.startsWith(prefix)) continue;
-        if (bestEntry === null || entry.appliedAt > bestEntry.appliedAt) {
-          bestEntry = entry;
-        }
-      }
-      if (bestEntry !== null) {
-        const resolvedCaster = this._petOwners.get(bestEntry.casterGuid) ?? bestEntry.casterGuid;
-        if (isPlayer(resolvedCaster)) {
-          this._accumulate(resolvedCaster, 0, absorbedAmount);
-        }
-      }
-      return;
-    }
-
-    const share = Math.round(absorbedAmount / casters.length);
-    for (const caster of casters) {
-      const resolvedCaster = this._petOwners.get(caster) ?? caster;
-      if (isPlayer(resolvedCaster) && share > 0) {
-        this._accumulate(resolvedCaster, 0, share);
-      }
-    }
-  }
-
-  private _accumulate(playerGuid: string, damage: number, healing: number): void {
+  private _accumulate(playerGuid: string, damage: number): void {
     const existing = this._currentEncounter.get(playerGuid);
     if (existing !== undefined) {
       existing.damage += damage;
-      existing.healing += healing;
     } else {
-      this._currentEncounter.set(playerGuid, { damage, healing });
+      this._currentEncounter.set(playerGuid, { damage });
     }
   }
 }

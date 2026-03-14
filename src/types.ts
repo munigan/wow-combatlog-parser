@@ -67,7 +67,6 @@ export interface ConsumableSummaryEntry {
 
 export interface PlayerCombatStats {
   damage: number;   // useful damage (raw - overkill), excludes friendly fire
-  healing: number;  // effective healing (raw - overheal)
 }
 
 // === Common ===
@@ -84,7 +83,7 @@ export interface PlayerInfo {
   spec: WowSpec | null;
   /** Raid-wide consumable summary (parseLog only). */
   consumables?: Record<number, ConsumableSummaryEntry>;
-  /** Raid-wide damage/healing totals (parseLog only). */
+  /** Raid-wide damage totals (parseLog only). */
   combatStats?: PlayerCombatStats;
 }
 
