@@ -6,6 +6,9 @@ import { isPlayer } from "../utils/guid.js";
 import { BUFF_SPELLS, FLASK_ELIXIR_SPELL_IDS, FOOD_SPELL_IDS } from "../data/buff-data.js";
 import type { PlayerBuffUptime, BuffBreakdown, BuffCategory } from "../types.js";
 
+/** Sentinel value indicating an interval started before the log began. Resolved to raidStartMs during finalize(). */
+const RETROACTIVE_START = -1;
+
 /** Aura event types we handle. */
 const AURA_EVENTS = new Set([
   "SPELL_AURA_APPLIED",
@@ -90,8 +93,7 @@ export class BuffUptimeTracker {
           seenWithoutApply: true,
         };
         // Store a sentinel interval — start will be resolved in finalize()
-        // Use -1 as sentinel for "resolve to raidStart"
-        entry.intervals.push([-1, event.timestamp]);
+        entry.intervals.push([RETROACTIVE_START, event.timestamp]);
         playerSpells.set(spellId, entry);
       } else if (entry.currentStart !== null) {
         // Normal close of open interval
@@ -100,7 +102,7 @@ export class BuffUptimeTracker {
       } else {
         // Remove without open interval — retroactive (should not normally happen
         // after the first one, but handle gracefully)
-        entry.intervals.push([-1, event.timestamp]);
+        entry.intervals.push([RETROACTIVE_START, event.timestamp]);
         entry.seenWithoutApply = true;
       }
     } else if (event.eventType === "SPELL_AURA_REFRESH") {
@@ -112,7 +114,7 @@ export class BuffUptimeTracker {
           spellName: info.displayName,
           category: info.category,
           currentStart: event.timestamp,
-          intervals: [[-1, event.timestamp]],
+          intervals: [[RETROACTIVE_START, event.timestamp]],
           seenWithoutApply: true,
         };
         playerSpells.set(spellId, entry);
@@ -151,7 +153,7 @@ export class BuffUptimeTracker {
         // Resolve retroactive starts (sentinel -1 → raidStartMs)
         if (entry.seenWithoutApply) {
           for (let i = 0; i < entry.intervals.length; i++) {
-            if (entry.intervals[i][0] === -1) {
+            if (entry.intervals[i][0] === RETROACTIVE_START) {
               entry.intervals[i][0] = raidStartMs;
             }
           }
@@ -163,7 +165,7 @@ export class BuffUptimeTracker {
           uptimeMs += end - start;
         }
 
-        const uptimePercent = Math.round((uptimeMs / raidDuration) * 100 * 100) / 100;
+        const uptimePercent = Math.min(100, Math.round((uptimeMs / raidDuration) * 100 * 100) / 100);
 
         buffs.push({
           spellId: Number(spellId),
@@ -192,8 +194,8 @@ export class BuffUptimeTracker {
       const flaskUptimeMs = computeUnionMs(flaskElixirIntervals);
       const foodUptimeMs = computeUnionMs(foodIntervals);
 
-      const flaskUptimePercent = Math.round((flaskUptimeMs / raidDuration) * 100 * 100) / 100;
-      const foodUptimePercent = Math.round((foodUptimeMs / raidDuration) * 100 * 100) / 100;
+      const flaskUptimePercent = Math.min(100, Math.round((flaskUptimeMs / raidDuration) * 100 * 100) / 100);
+      const foodUptimePercent = Math.min(100, Math.round((foodUptimeMs / raidDuration) * 100 * 100) / 100);
 
       result.set(playerGuid, {
         flaskUptimePercent,

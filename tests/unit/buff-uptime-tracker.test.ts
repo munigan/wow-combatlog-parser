@@ -665,6 +665,20 @@ describe("BuffUptimeTracker", () => {
     });
   });
 
+  describe("zero-duration raid", () => {
+    it("returns empty map when raidEnd equals raidStart", () => {
+      tracker.processEvent(makeEvent({
+        timestamp: 1000,
+        eventType: "SPELL_AURA_APPLIED",
+        destGuid: PLAYER1_GUID,
+        rawFields: FLASK_ENDLESS_RAGE_RAW,
+      }));
+
+      const result = tracker.finalize(1000, 1000);
+      expect(result.size).toBe(0);
+    });
+  });
+
   describe("reset", () => {
     it("clears all state", () => {
       const raidStart = 1000000;
