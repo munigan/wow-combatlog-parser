@@ -168,6 +168,42 @@ describe("CombatTracker", () => {
       expect(stats[PLAYER1]).toBeUndefined(); // no damage recorded
     });
 
+    it("excludes damage to friendly-flagged NPCs (e.g., MC'd Understudies)", () => {
+      tracker.onEncounterStart();
+      // destFlags 0x1114 = PET | PLAYER_CONTROLLED | REACTION_FRIENDLY | PARTY
+      // This matches MC'd Death Knight Understudies on Razuvious
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: BOSS_GUID, // NPC GUID, but friendly-flagged
+          destFlags: "0x1114",
+          rawFields: "42897,Arcane Blast,0x40,9000,0,0x40,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeUndefined(); // friendly target → excluded
+    });
+
+    it("includes damage to hostile-flagged NPCs", () => {
+      tracker.onEncounterStart();
+      // destFlags 0xa48 = hostile NPC (normal boss)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: BOSS_GUID,
+          destFlags: "0xa48",
+          rawFields: "42897,Arcane Blast,0x40,9000,0,0x40,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].damage).toBe(9000);
+    });
+
     it("ignores damage events outside an encounter", () => {
       // Process event WITHOUT calling onEncounterStart()
       tracker.processEvent(
@@ -297,13 +333,15 @@ describe("CombatTracker", () => {
       );
 
       tracker.onEncounterStart();
+      // Pet heals a raid member — healing attributed to pet's owner (PLAYER1)
+      // Use a generic heal spell (not in PET_FILTER_SPELLS) to test pure SPELL_SUMMON mapping
       tracker.processEvent(
         makeEvent({
           timestamp: 1000,
           eventType: "SPELL_HEAL",
           sourceGuid: PET_GUID,
           destGuid: PLAYER2,
-          rawFields: "54181,Fel Synergy,0x20,3000,0,0,nil",
+          rawFields: "19567,Pet Heal,0x20,3000,0,0,nil",
         }),
       );
 
@@ -311,6 +349,126 @@ describe("CombatTracker", () => {
       expect(stats[PET_GUID]).toBeUndefined();
       expect(stats[PLAYER1]).toBeDefined();
       expect(stats[PLAYER1].healing).toBe(3000);
+    });
+
+    it("maps pet via player→pet filter spell (Kill Command)", () => {
+      // No SPELL_SUMMON — pet detected via Kill Command cast (in PET_FILTER_SPELLS)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 400,
+          eventType: "SPELL_CAST_SUCCESS",
+          sourceGuid: PLAYER1,
+          sourceName: "Hunter",
+          destGuid: PET_GUID,
+          destName: "Cat",
+          rawFields: "19574,Bestial Wrath,0x1",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PET_GUID,
+          destGuid: BOSS_GUID,
+          rawFields: "16827,Claw,0x1,2000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PET_GUID]).toBeUndefined();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].damage).toBe(2000);
+    });
+
+    it("maps pet via player→pet filter spell (Mend Pet)", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 400,
+          eventType: "SPELL_HEAL",
+          sourceGuid: PLAYER1,
+          sourceName: "Hunter",
+          destGuid: PET_GUID,
+          destName: "Cat",
+          rawFields: "48990,Mend Pet,0x8,1000,0,0,nil",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_DAMAGE",
+          sourceGuid: PET_GUID,
+          destGuid: BOSS_GUID,
+          rawFields: "1500,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PET_GUID]).toBeUndefined();
+      expect(stats[PLAYER1].damage).toBe(1500);
+    });
+
+    it("maps pet via pet→owner filter spell (Kindred Spirits)", () => {
+      // Pet applies Kindred Spirits to its owner — in PET_FILTER_SPELLS
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 400,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PET_GUID,
+          sourceName: "Cat",
+          destGuid: PLAYER1,
+          destName: "Hunter",
+          rawFields: "57475,Kindred Spirits,0x1,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PET_GUID,
+          destGuid: BOSS_GUID,
+          rawFields: "16827,Claw,0x1,2500,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PET_GUID]).toBeUndefined();
+      expect(stats[PLAYER1].damage).toBe(2500);
+    });
+
+    it("maps DK ghoul via Ghoul Frenzy filter spell", () => {
+      // DK casts Ghoul Frenzy on their permanent ghoul
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 400,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          sourceName: "Mopex",
+          destGuid: PET_GUID,
+          destName: "Gravemasher",
+          rawFields: "63560,Ghoul Frenzy,0x1,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_DAMAGE",
+          sourceGuid: PET_GUID,
+          destGuid: BOSS_GUID,
+          rawFields: "4000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PET_GUID]).toBeUndefined();
+      expect(stats[PLAYER1].damage).toBe(4000);
     });
 
     it("merges pet and owner damage into a single entry", () => {

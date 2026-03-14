@@ -56,6 +56,16 @@ async function main() {
           }
         }
 
+        // Resolve combatStats: replace playerGuid keys with player names
+        let combatStats: Record<string, typeof enc.combatStats[string]> | undefined;
+        if (enc.combatStats && Object.keys(enc.combatStats).length > 0) {
+          combatStats = {};
+          for (const [guid, stats] of Object.entries(enc.combatStats)) {
+            const name = guidToName.get(guid) ?? guid;
+            combatStats[name] = stats;
+          }
+        }
+
         return {
           bossName: enc.bossName,
           startTime: enc.startTime,
@@ -64,6 +74,7 @@ async function main() {
           result: enc.result,
           difficulty: enc.difficulty,
           ...(consumables ? { consumables } : {}),
+          ...(combatStats ? { combatStats } : {}),
         };
       }),
       players: raid.players.map((p) => ({
@@ -73,6 +84,7 @@ async function main() {
         ...(p.consumables && Object.keys(p.consumables).length > 0
           ? { consumables: p.consumables }
           : {}),
+        ...(p.combatStats ? { combatStats: p.combatStats } : {}),
       })),
     };
   });
