@@ -700,4 +700,218 @@ describe("BuffUptimeTracker", () => {
       expect(result.size).toBe(0);
     });
   });
+
+  describe("computeUptimeForWindow", () => {
+    it("full overlap — flask active for entire encounter window → 100%", () => {
+      // Apply flask at 1000, remove at 20000
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 20000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Query window [5000, 15000]
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      const player = result.get(PLAYER1_GUID)!;
+      expect(player).toBeDefined();
+      expect(player.flaskUptimePercent).toBe(100);
+    });
+
+    it("partial overlap — flask covers half the encounter", () => {
+      // Apply flask at 1000, remove at 10000
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 10000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Query window [5000, 15000] — flask covers 5000-10000 of 10000ms window = 50%
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      const player = result.get(PLAYER1_GUID)!;
+      expect(player).toBeDefined();
+      expect(player.flaskUptimePercent).toBe(50);
+    });
+
+    it("no overlap — flask not active during encounter", () => {
+      // Apply flask at 1000, remove at 4000
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 4000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Query window [5000, 15000] — no overlap
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      expect(result.has(PLAYER1_GUID)).toBe(false);
+    });
+
+    it("open interval during encounter — flask applied before, still active", () => {
+      // Apply flask at 1000, no remove
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Query window [5000, 15000] — open interval treated as extending to window end
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      const player = result.get(PLAYER1_GUID)!;
+      expect(player).toBeDefined();
+      expect(player.flaskUptimePercent).toBe(100);
+    });
+
+    it("food tracked independently from flask", () => {
+      // Apply food at 5000, remove at 15000
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 5000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: WELL_FED_FISH_FEAST_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 15000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: WELL_FED_FISH_FEAST_RAW,
+        }),
+      );
+
+      // Query window [5000, 15000]
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      const player = result.get(PLAYER1_GUID)!;
+      expect(player).toBeDefined();
+      expect(player.foodUptimePercent).toBe(100);
+      expect(player.flaskUptimePercent).toBe(0);
+    });
+
+    it("multiple players — each computed independently", () => {
+      // Player 1: flask for full window [5000, 15000]
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 20000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Player 2: flask covers only half — [5000, 10000] of the [5000, 15000] window
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 5000,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER2_GUID,
+          destName: "Mage",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 10000,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER2_GUID,
+          destName: "Mage",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      const result = tracker.computeUptimeForWindow(5000, 15000);
+      expect(result.get(PLAYER1_GUID)!.flaskUptimePercent).toBe(100);
+      expect(result.get(PLAYER2_GUID)!.flaskUptimePercent).toBe(50);
+    });
+
+    it("does not mutate state — finalize still works correctly after", () => {
+      const raidStart = 1000;
+      const raidEnd = 20000;
+
+      // Apply flask at 1000, remove at 20000
+      tracker.processEvent(
+        makeEvent({
+          timestamp: raidStart,
+          eventType: "SPELL_AURA_APPLIED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: raidEnd,
+          eventType: "SPELL_AURA_REMOVED",
+          destGuid: PLAYER1_GUID,
+          destName: "Warrior",
+          rawFields: FLASK_ENDLESS_RAGE_RAW,
+        }),
+      );
+
+      // Call computeUptimeForWindow first
+      const windowResult = tracker.computeUptimeForWindow(5000, 15000);
+      expect(windowResult.get(PLAYER1_GUID)!.flaskUptimePercent).toBe(100);
+
+      // Now finalize — should still produce correct results
+      const finalResult = tracker.finalize(raidStart, raidEnd);
+      const player = finalResult.get(PLAYER1_GUID)!;
+      expect(player).toBeDefined();
+      expect(player.flaskUptimePercent).toBe(100);
+      expect(player.buffs[0].uptimeMs).toBe(19000);
+    });
+  });
 });

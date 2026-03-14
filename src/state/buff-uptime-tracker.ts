@@ -4,7 +4,7 @@ import type { LogEvent } from "../pipeline/line-parser.js";
 import { getSpellId } from "../pipeline/line-parser.js";
 import { isPlayer } from "../utils/guid.js";
 import { BUFF_SPELLS, FLASK_ELIXIR_SPELL_IDS, FOOD_SPELL_IDS } from "../data/buff-data.js";
-import type { PlayerBuffUptime, BuffBreakdown, BuffCategory } from "../types.js";
+import type { PlayerBuffUptime, BuffBreakdown, BuffCategory, EncounterBuffUptime } from "../types.js";
 
 /** Sentinel value indicating an interval started before the log began. Resolved to raidStartMs during finalize(). */
 const RETROACTIVE_START = -1;
@@ -202,6 +202,65 @@ export class BuffUptimeTracker {
         foodUptimePercent,
         buffs,
       });
+    }
+
+    return result;
+  }
+
+  /**
+   * Compute buff uptime for a specific time window (e.g., an encounter).
+   * Queries accumulated intervals without mutating state.
+   */
+  computeUptimeForWindow(
+    windowStartMs: number,
+    windowEndMs: number,
+  ): Map<string, EncounterBuffUptime> {
+    const windowDuration = windowEndMs - windowStartMs;
+    if (windowDuration <= 0) return new Map();
+
+    const result = new Map<string, EncounterBuffUptime>();
+
+    for (const [playerGuid, playerSpells] of this._players) {
+      const flaskElixirOverlaps: Array<[number, number]> = [];
+      const foodOverlaps: Array<[number, number]> = [];
+
+      for (const [spellId, entry] of playerSpells) {
+        // Collect all intervals (completed + currently open)
+        const intervals: Array<[number, number]> = [];
+        for (const interval of entry.intervals) {
+          intervals.push(interval);
+        }
+        // If there's an open interval, treat it as extending to windowEnd
+        if (entry.currentStart !== null) {
+          intervals.push([entry.currentStart, windowEndMs]);
+        }
+
+        // Compute intersection of each interval with the window
+        for (const [rawStart, end] of intervals) {
+          // Handle RETROACTIVE_START sentinel: treat -1 as windowStartMs
+          const start = rawStart === RETROACTIVE_START ? windowStartMs : rawStart;
+          const overlapStart = Math.max(start, windowStartMs);
+          const overlapEnd = Math.min(end, windowEndMs);
+          if (overlapEnd <= overlapStart) continue;
+
+          const overlap: [number, number] = [overlapStart, overlapEnd];
+          if (FLASK_ELIXIR_SPELL_IDS.has(spellId)) {
+            flaskElixirOverlaps.push(overlap);
+          } else if (FOOD_SPELL_IDS.has(spellId)) {
+            foodOverlaps.push(overlap);
+          }
+        }
+      }
+
+      const flaskUnionMs = computeUnionMs(flaskElixirOverlaps);
+      const foodUnionMs = computeUnionMs(foodOverlaps);
+
+      if (flaskUnionMs === 0 && foodUnionMs === 0) continue;
+
+      const flaskUptimePercent = Math.min(100, Math.round((flaskUnionMs / windowDuration) * 100 * 100) / 100);
+      const foodUptimePercent = Math.min(100, Math.round((foodUnionMs / windowDuration) * 100 * 100) / 100);
+
+      result.set(playerGuid, { flaskUptimePercent, foodUptimePercent });
     }
 
     return result;
