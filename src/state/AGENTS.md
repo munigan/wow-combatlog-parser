@@ -53,7 +53,7 @@ Segments break on: date changes, 30-minute time gaps, raid instance changes. Adj
 **Pre-pot detection**: Maintains `activeBuffs` map (playerGuid+spellId → true). When an encounter starts, any active buff potions are recorded as pre-pots. Only `hasBuff: true` consumables qualify. Mana potions are excluded.
 
 ### combat-tracker.ts
-`CombatTracker` — tracks per-player per-encounter damage (useful) and healing (effective) with pet→owner merging.
+`CombatTracker` — tracks per-player per-encounter damage (useful) and healing (effective, including absorbs) with pet→owner merging.
 
 **Lifecycle** (same pattern as ConsumableTracker):
 1. `processEvent()` — called for every event. Tracks pet ownership (SPELL_SUMMON + PET_FILTER_SPELLS). During encounters, accumulates damage/healing per player.
@@ -64,7 +64,15 @@ Segments break on: date changes, 30-minute time gaps, raid instance changes. Adj
 
 **Damage calculation**: Useful damage = amount - overkill. Overkill of -1 (nil in WoW logs) treated as 0 via `Math.max(0, overkill)`. Friendly fire excluded via `isPlayer(destGuid)` and `isFriendly(destFlags)` checks.
 
-**Healing calculation**: Effective healing = amount - overheal. 100% overheal events (effective ≤ 0) are silently skipped.
+**Healing calculation**: Effective healing = amount - overheal + absorbed damage attributed to the healer. 100% overheal events (effective ≤ 0) are silently skipped. Absorbed damage from tracked shield spells (PW:S, Divine Aegis, Sacred Shield, Val'anyr) is credited as healing to the shield caster.
+
+**Absorb tracking** (persists across encounters):
+- `ABSORB_SHIELD_SPELLS` — 16 spell IDs for known WotLK absorb shields (Power Word: Shield all ranks, Divine Aegis, Sacred Shield, Val'anyr Protection of Ancient Kings).
+- `_activeShields` — Map with composite keys (`destGuid|spellId`) tracking which caster applied which shield to which target. Multiple casters can have the same shield type on the same target simultaneously. Shields are NOT deleted on `SPELL_AURA_REMOVED` because WotLK fires the removal event BEFORE the damage event that consumed the shield.
+- **Full absorb detection**: SWING_MISSED, SPELL_MISSED, RANGE_MISSED events with `ABSORB` missType — the entire hit was absorbed.
+- **Partial absorb detection**: The `absorbed` field in damage events (index 5 for SWING_DAMAGE, index 8 for SPELL_DAMAGE/SPELL_PERIODIC_DAMAGE/RANGE_DAMAGE/DAMAGE_SHIELD).
+- `_findShieldCasters(destGuid, spellId?)` — finds all casters with active shields on a target, optionally filtered by spell ID.
+- `_creditAbsorb(destGuid, amount, spellId?)` — distributes absorbed amount equally among all active shield casters on the target via multi-caster equal split.
 
 **Pet ownership detection** (persists across encounters):
 1. `SPELL_SUMMON` — Player summons pet → direct mapping.
