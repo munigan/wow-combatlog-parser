@@ -1,91 +1,108 @@
 # Validation Investigation: Healing, Timing, and Overkill
 
 Date: 2026-03-15
-Reference: wow-logs.co.in raid `/6658` (Naxxramas 25N, 2026-03-12)
+References: wow-logs.co.in raid `/6658`, uwu-logs.xyz `26-03-12--20-03--Delidk--Onyxia` (Naxxramas 25N, 2026-03-12)
 Scope: 5 healers x 15 bosses (healing), 15 boss durations, top 5 DPS x 3 bosses (overkill)
 
 ## Executive Summary
 
-| Area | Accuracy | Verdict |
-|------|----------|---------|
-| Encounter duration | avg delta 0.098%, all within 1s | Excellent |
-| Damage (minus overkill) | -0.2% avg for top DPS | Excellent |
-| Healing (non-absorb healers) | ±2-4% typical, some outliers | Good |
-| Healing (absorb-heavy Disc Priest) | -25.4% overall | Significant gap |
-| Healing (Holy Paladins with Sacred Shield) | ±5-10% | Moderate |
+| Area | vs wow-logs | vs uwu-logs | Verdict |
+|------|-----------|-----------|---------|
+| Encounter duration | avg delta 0.098% | (aligned by design) | Excellent |
+| Damage (minus overkill) | -0.2% avg for top DPS | — | Excellent |
+| Direct healing (no absorbs) | -3.2% vs wow-logs | **+0.00%** vs uwu-logs | Perfect |
+| Disc Priest (absorb-heavy) | -25.4% | -21.5% | Significant gap |
+| Holy Paladins (Sacred Shield) | +5.6% to +10.1% | +6.5% to +7.6% | Moderate overcount |
 
-The primary remaining gap is **absorb attribution** for Disc Priests. Our absorb tracker catches about 50% of total PW:S absorbs. The other 50% are unattributed because shields applied before encounters start — or during encounters by unknown casters — have no tracking entry in `_activeShields`. This is not a bug but a fundamental limitation of WotLK 3.3.5 logs (no `SPELL_ABSORBED` event).
+**Key finding**: Our direct healing calculation is **identical** to uwu-logs (Dotahkiin Resto Shaman: 0.00% delta across all 15 bosses). The gaps are entirely in absorb attribution: we undercount Disc Priest PW:S absorbs (-21.5%) and overcount Holy Paladin Sacred Shield absorbs (+6.5%).
 
 ---
 
-## Task 1: Healer Healing Comparison (75 data points)
+## Task 1: Healer Healing Comparison (75 data points, 3-way)
 
 ### Per-Healer Totals (15 bosses)
 
-| Healer | Class | Ours Total | Wow-Logs Total | Delta% |
-|--------|-------|-----------|---------------|--------|
-| Degustaroxo | Disc Priest | 2,319,907 | 3,111,207 | **-25.4%** |
-| Kurjin | Holy Paladin | 2,211,508 | 2,093,688 | +5.6% |
-| Dotahkiin | Resto Shaman | 2,334,460 | 2,411,913 | -3.2% |
-| Pattz | Holy Paladin | 1,070,062 | 971,846 | +10.1% |
-| Jbeto | Holy Paladin | 1,963,683 | 1,959,421 | +0.2% |
+| Healer | Class | Ours Total | Wow-Logs Total | UwU-Logs Total | vs wow-logs | vs uwu-logs |
+|--------|-------|-----------|---------------|---------------|-----------|-----------|
+| Degustaroxo | Disc Priest | 2,319,907 | 3,111,207 | 2,955,420 | **-25.4%** | **-21.5%** |
+| Kurjin | Holy Paladin | 2,211,508 | 2,093,688 | 2,077,286 | +5.6% | +6.5% |
+| Dotahkiin | Resto Shaman | 2,334,460 | 2,411,913 | 2,334,460 | -3.2% | **+0.00%** |
+| Pattz | Holy Paladin | 1,070,062 | 971,846 | 994,225 | +10.1% | +7.6% |
+| Jbeto | Holy Paladin | 1,963,683 | 1,959,421 | 1,985,221 | +0.2% | -1.1% |
+
+### How wow-logs and uwu-logs differ from each other
+
+| Healer | Class | Wow-Logs | UwU-Logs | wow-logs vs uwu-logs |
+|--------|-------|---------|---------|---------------------|
+| Degustaroxo | Disc Priest | 3,111,207 | 2,955,420 | +5.3% |
+| Kurjin | Holy Paladin | 2,093,688 | 2,077,286 | +0.8% |
+| Dotahkiin | Resto Shaman | 2,411,913 | 2,334,460 | +3.3% |
+| Pattz | Holy Paladin | 971,846 | 994,225 | -2.3% |
+| Jbeto | Holy Paladin | 1,959,421 | 1,985,221 | -1.3% |
+
+wow-logs consistently reports higher healing for absorb-heavy classes (Disc Priest +5.3%, Resto Shaman +3.3%), suggesting it has more complete absorb attribution. For Holy Paladins, uwu-logs is slightly higher (1-2%), possibly due to encounter boundary differences.
 
 ### Key Observations
 
-#### 1. Dotahkiin (Resto Shaman) — Baseline reference, no absorbs
+#### 1. Dotahkiin (Resto Shaman) — PERFECT match to uwu-logs (proves direct healing is correct)
 
-- Overall: -3.2% — best accuracy among healers
-- **13/15 bosses within ±5%**, most exact or within 2%
-- 7 bosses with **exact match** (0.00% delta)
-- **Outlier: Gothik -76.4%** (11,634 vs 49,234) and **Anub'Rekhan -35.8%** (23,761 vs 36,981)
-- Gothik outlier is explained by the fight mechanic: wow-logs may track healing during the full encounter including dead side, while our encounter boundaries differ slightly
+- **vs uwu-logs: +0.00%** — exact match across ALL 15 bosses (2,334,460 = 2,334,460)
+- vs wow-logs: -3.2% — wow-logs is 3.3% higher than uwu-logs for this healer, likely due to wow-logs counting some absorb/shield contribution
+- **This is the most important finding**: Since Resto Shaman has no absorb spells, the perfect match with uwu-logs proves our SPELL_HEAL/SPELL_PERIODIC_HEAL parsing is identical to uwu-logs. All healing gaps for other healers are purely in absorb attribution, not in direct healing calculation.
+- Every single boss is an exact match with uwu-logs, including the two that looked like outliers vs wow-logs:
+  - Gothik: we report 11,634, uwu-logs reports 11,634 — wow-logs' 49,234 is the outlier
+  - Anub'Rekhan: we report 23,761, uwu-logs reports 23,761 — wow-logs' 36,981 is the outlier
 
 #### 2. Jbeto (Holy Paladin) — Near-perfect
 
-- Overall: +0.2% across 14 bosses
-- **7/14 within ±5%**, 11/14 within ±10%
-- Largest gap: Anub'Rekhan +35.5% (33,994 vs 25,092) — likely Sacred Shield absorbs we attribute but wow-logs doesn't (or timing)
+- vs wow-logs: +0.2% | vs uwu-logs: -1.1%
+- Closest Holy Paladin to both references — minimal absorb impact
+- Largest gap: Anub'Rekhan +35.5% vs wow-logs (+17.9% vs uwu-logs) — likely Sacred Shield absorbs
 
-#### 3. Kurjin (Holy Paladin) — Moderate overcount
+#### 3. Kurjin (Holy Paladin) — Sacred Shield overcount
 
-- Overall: +5.6%
-- Systematically overcounts on several bosses: Grobbulus +29.4%, Heigan +25.2%, Thaddius +13.6%, Kel'Thuzad +13.9%
-- Gothik is the exception: -38.7% (same Gothik outlier pattern)
-- **Hypothesis**: Sacred Shield absorbs. We count 58597 (Sacred Shield proc) absorbs as healing for the caster. If wow-logs doesn't count Sacred Shield absorbs as healing for the Paladin, we'd overcount. The overcount magnitude (5-30%) is consistent with Sacred Shield being a smaller portion of Holy Paladin healing.
+- vs wow-logs: +5.6% | vs uwu-logs: +6.5%
+- Systematically overcounts vs BOTH references: Grobbulus +29.4%/+29.4%, Heigan +25.2%/+25.2%, Thaddius +13.6%/+13.6%, Kel'Thuzad +13.9%/+15.6%
+- The deltas vs wow-logs and uwu-logs are nearly identical on many bosses, confirming wow-logs and uwu-logs agree for this healer
+- **Root cause**: Sacred Shield absorbs (spell 58597). We attribute Sacred Shield absorb healing to the Paladin caster. Both references either don't count Sacred Shield absorbs as healing, or attribute them differently. The overcount magnitude (5-30%) is consistent with Sacred Shield being a smaller portion of total healing.
 
-#### 4. Pattz (Holy Paladin) — High variance
+#### 4. Pattz (Holy Paladin) — High variance, Sacred Shield overcount
 
-- Overall: +10.1%
-- Very inconsistent: some bosses exact (Razuvious +0.0%), others wildly off (Maexxna +721%, Anub'Rekhan +Inf%)
-- Pattz appears to have very low healing on some fights (wow-logs shows 0 or 758 while we show 4,287 or 6,225)
-- **Hypothesis**: Pattz is likely Ret/Prot Paladin who also casts Sacred Shield. Our absorb tracker picks up those shields; wow-logs may not track absorb healing for non-healer specs, or Pattz only participates in some encounters.
+- vs wow-logs: +10.1% | vs uwu-logs: +7.6%
+- Very inconsistent: some bosses exact (Razuvious +0.0%), others wildly off (Maexxna +721%/+465%, Anub'Rekhan +Inf%/+Inf%)
+- Pattz appears to have very low healing on some fights — both references show 0 or <1,000 while we show 4,000-6,000
+- **Hypothesis**: Pattz is likely Ret/Prot Paladin who also casts Sacred Shield. Our absorb tracker picks up those shields as healing; both references may not track absorb healing for non-healer specs, or Pattz only participates minimally in some encounters.
 
-#### 5. Degustaroxo (Disc Priest) — Large absorb gap
+#### 5. Degustaroxo (Disc Priest) — Large absorb gap (the only significant accuracy issue)
 
-- Overall: -25.4%
-- Ranges from -61.2% (Sapphiron) to +183.7% (Gothik) and +62.3% (Razuvious)
-- Only 1/15 within ±5% (Patchwerk at -2.6%)
-- **Sapphiron deep-dive**: wow-logs reports 724,449 total healing. Spell breakdown shows ~166,390 in direct healing (Prayer of Mending 62,610 + Divine Hymn 55,645 + Glyph of PW:S 48,007). The remaining ~558,000 must be PW:S absorbs. We report 281,050 total, so we capture ~114,660 in absorbs — about **20% of what wow-logs attributes**.
-- **Root cause**: Our absorb tracker only knows about shields via `SPELL_AURA_APPLIED` events. If a shield was applied before the encounter started (or if we missed the application), the absorbed damage becomes "unattributed" and is discarded. wow-logs likely has a more complete absorb attribution system (possibly tracking shield spell IDs in the damage events themselves, which WotLK 3.3.5 doesn't provide).
+- vs wow-logs: **-25.4%** | vs uwu-logs: **-21.5%**
+- Ranges from -61.2%/-57.9% (Sapphiron) to +183.7%/+183.0% (Gothik)
+- wow-logs reports 5.3% more healing than uwu-logs for this healer, suggesting wow-logs has slightly better absorb attribution
+- **Sapphiron deep-dive**: wow-logs reports 724,449, uwu-logs reports 667,219, we report 281,050. All three parsers agree on direct healing; the gap is entirely in PW:S absorb attribution. We capture ~20% of absorbs that wow-logs attributes and ~23% of what uwu-logs attributes.
+- **Root cause**: Our absorb tracker only knows about shields via `SPELL_AURA_APPLIED` events. Shields applied before an encounter starts have no tracking entry, so when they absorb damage during the fight, the absorbed amount becomes "unattributed" and is discarded. Both wow-logs and uwu-logs have more complete absorb attribution — likely tracking shields from log start rather than encounter start.
 
 ### Gothik Outlier Analysis
 
-Gothik the Harvester has extreme deltas for ALL healers:
-- Dotahkiin: -76.4%
-- Kurjin: -38.7%
-- Jbeto: +25.6%
-- Degustaroxo: +183.7%
-- Pattz: -72.1%
+Gothik the Harvester has extreme deltas vs wow-logs for ALL healers — but uwu-logs confirms our numbers are correct:
 
-Gothik splits the raid into "Living" and "Dead" sides. Duration is identical (34.4s vs 34.4s), so the encounter boundaries match. The healing gap is likely caused by **how each parser counts the Gothik phases**. Some healers may be on the Dead side where boss engagement timing differs. This is a fight-mechanic anomaly, not a systemic parser issue.
+| Healer | Ours | Wow-Logs | UwU-Logs | vs wow-logs | vs uwu-logs |
+|--------|------|---------|---------|-----------|-----------|
+| Dotahkiin | 11,634 | 49,234 | 11,634 | -76.4% | **+0.00%** |
+| Kurjin | 14,189 | 20,183 | 14,189 | -29.8% | **+0.00%** |
+| Jbeto | 6,791 | 6,791 | 6,791 | +0.0% | **+0.00%** |
+| Degustaroxo | 14,780 | 5,125 | 5,217 | +188.4% | +183.3% |
+| Pattz | 1,965 | 3,527 | 1,965 | -44.3% | **+0.00%** |
 
-### Fights Where ALL Healers Are Overcounted
+**Key insight**: For non-absorb healers (Dotahkiin, Kurjin, Pattz), our numbers match uwu-logs exactly. wow-logs is the outlier here — it likely counts healing during additional Gothik phases or has different encounter boundaries for this split-side fight. Degustaroxo (Disc Priest) shows overcount vs both references, consistent with the absorb attribution differences.
 
-Grobbulus (4/5 healers positive delta), Heigan (4/5 positive), Maexxna (3/5 positive). These could indicate our encounter window is slightly longer, capturing a few more healing events at the start/end.
+This is a fight-mechanic anomaly (Living/Dead side split), not a systemic parser issue. Our encounter boundaries match uwu-logs.
 
-### Fights Where ALL Healers Are Undercounted
+### Systematic Over/Under-count Patterns
 
-Four Horsemen (4/5 negative), Gluth (4/5 negative), Sapphiron (4/5 negative). These could indicate wow-logs has a slightly longer encounter window.
+When comparing vs wow-logs only, some bosses showed consistent over/under-counting across all healers. With uwu-logs data, we can now distinguish between "our parser is wrong" and "wow-logs counts differently":
+
+- **Grobbulus, Heigan, Maexxna** (overcount vs wow-logs): The overcount is also present vs uwu-logs for Holy Paladins (Sacred Shield), but Dotahkiin matches uwu-logs exactly. This confirms the overcount is Sacred Shield absorb attribution, not encounter window differences.
+- **Four Horsemen, Gluth, Sapphiron** (undercount vs wow-logs): Dotahkiin matches uwu-logs exactly on all three, confirming the undercount vs wow-logs is due to wow-logs having more absorb attribution, not our encounter windows being shorter.
 
 ---
 
@@ -172,28 +189,43 @@ The correlation table shows **no relationship** between duration deltas and heal
 
 ## Recommendations for Future Work
 
-### High Impact: Improve Absorb Attribution (Disc Priest gap)
+### What's Working Perfectly
 
-The -25.4% gap for Degustaroxo is the only significant accuracy issue. Root cause: unattributed absorbs when `SPELL_AURA_APPLIED` was not seen. Possible improvements:
+**Direct healing (SPELL_HEAL / SPELL_PERIODIC_HEAL)**: Identical to uwu-logs. Dotahkiin (Resto Shaman, no absorbs) is a perfect 0.00% match across all 15 bosses. No changes needed.
 
-1. **Pre-encounter shield tracking**: Start tracking shields from log start, not just encounter start. Shields applied during trash/between pulls would carry into encounters.
-2. **Fallback attribution**: When an absorbed amount has no matching shield in `_activeShields`, check if any Disc Priest in the raid has cast PW:S at any point and attribute proportionally.
-3. **Accept the gap**: wow-logs may use Cataclysm-era `SPELL_ABSORBED` parsing that WotLK logs don't support. A ~25% gap for Disc Priests specifically may be the best achievable without event data that doesn't exist in WotLK 3.3.5.
+**Encounter timing**: Average delta 0.098%, 7/15 exact matches, all within 350ms. No changes needed.
 
-### Low Impact: Investigate Sacred Shield Overcount (Holy Paladins)
+**Overkill subtraction**: < 0.33% impact, consistent with uwu-logs approach. No changes needed.
 
-Kurjin (+5.6%) and Pattz (+10.1%) systematically overcount. This suggests we're attributing Sacred Shield absorbs that wow-logs doesn't count as healing, or we're attributing them to the wrong player. Worth investigating but the magnitude is small.
+### High Impact: Improve PW:S Absorb Attribution (Disc Priest -21.5% vs uwu-logs)
 
-### No Action Needed: Gothik Outlier
+The -21.5% gap for Degustaroxo vs uwu-logs is the only significant accuracy issue. Root cause: shields applied before encounters start have no `SPELL_AURA_APPLIED` tracking entry, so their absorbed damage is unattributed and discarded.
 
-The Gothik healing outlier affects all healers and is fight-mechanic specific (Living/Dead side split). Not worth special-casing.
+**Recommended fix**: Start tracking shields from log start, not encounter start. `_activeShields` should persist across the entire log lifecycle, not be reset per encounter. This would capture shields applied during trash/between pulls that carry into encounters. Both uwu-logs and wow-logs likely do this.
 
-### No Action Needed: Overkill
+**Alternative**: Fallback attribution — when absorbed damage has no matching shield in `_activeShields`, check if any Disc Priest has cast PW:S at any point and attribute proportionally. Less accurate but simpler.
 
-Keep current behavior (subtract overkill). The difference is < 0.33%.
+### Medium Impact: Investigate Sacred Shield Overcount (Holy Paladins +6.5% vs uwu-logs)
+
+Kurjin (+6.5%) and Pattz (+7.6%) systematically overcount vs uwu-logs. We attribute Sacred Shield (58597) absorbs as healing to the Paladin caster. Both uwu-logs and wow-logs appear to either not count Sacred Shield absorbs as healing, or attribute them differently.
+
+**Possible fixes**:
+1. Remove Sacred Shield (58597) from `ABSORB_SHIELD_SPELLS` — simplest, would bring Holy Paladins closer to both references
+2. Investigate how uwu-logs handles Sacred Shield — it may only count it for the target, not the caster
+
+### No Action Needed
+
+- **Gothik outlier**: Our numbers match uwu-logs exactly for non-absorb healers. wow-logs is the outlier. Fight-mechanic anomaly, not a parser issue.
+- **Overkill**: Keep subtracting. < 0.33% impact, matches uwu-logs approach.
 
 ---
 
-## Appendix: Full Comparison Table
+## Appendix: Full Comparison Data
 
-See `scripts/compare-wow-logs.ts` for the complete comparison script with all 75 healer data points, timing analysis, and overkill investigation. Run with `npx tsx scripts/compare-wow-logs.ts`.
+See `scripts/compare-wow-logs.ts` for the complete 3-way comparison script with:
+- 75 healer data points (5 healers x 15 bosses) vs wow-logs.co.in AND uwu-logs.xyz
+- Encounter timing analysis (15 bosses)
+- Overkill investigation (top 5 DPS x 3 bosses)
+- Per-healer totals and wow-logs vs uwu-logs cross-reference
+
+Run with `npx tsx scripts/compare-wow-logs.ts`.

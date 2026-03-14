@@ -1,5 +1,5 @@
 /**
- * Comparison script: our parser vs wow-logs.co.in reference data
+ * Comparison script: our parser vs wow-logs.co.in vs uwu-logs reference data
  * 
  * Analyzes healing accuracy for 5 healers across 15 Naxx bosses,
  * encounter timing differences, and overkill impact on damage.
@@ -364,3 +364,97 @@ const avgDurationDelta = durationAbsPcts.reduce((a, b) => a + b, 0) / durationAb
 console.log(`  Duration accuracy: avg |delta| = ${avgDurationDelta.toFixed(3)}%`);
 console.log(`    Exact matches (delta < 0.01s): ${timingRows.filter(t => Math.abs(t.deltaSec) < 0.01).length}/${timingRows.length}`);
 console.log(`    Within 1s: ${timingRows.filter(t => Math.abs(t.deltaSec) < 1).length}/${timingRows.length}`);
+
+
+// ─── 4. THREE-WAY COMPARISON: Ours vs wow-logs vs uwu-logs ───
+
+const uwuLogsRef: Record<string, Record<string, number>> = {
+  "Instructor Razuvious": {"Smalldpskekw":1826,"Mopex":1527,"Yuenmi":7883,"Munigan":11427,"Egaroto":2169,"Mareshall":956,"Delidk":5687,"Choijong":0,"Rahkdos":16582,"Mallevolence":15414,"Budega":0,"Badhead":12837,"Mayt":1706,"Gatoajato":2316,"Kascerata":16246,"Blitera":11689,"Rorkino":1100,"Mulltilator":0,"Kenpach":1823,"Jbeto":359767,"Pattz":3512,"Degustaroxo":5999,"Crismado":729,"Dotahkiin":171667,"Kurjin":327695},
+  "Gothik the Harvester": {"Egaroto":0,"Delidk":363,"Budega":0,"Mallevolence":2762,"Crismado":868,"Badhead":1824,"Choijong":0,"Mayt":0,"Kascerata":0,"Munigan":651,"Mulltilator":0,"Jbeto":6791,"Rorkino":398,"Mareshall":0,"Rahkdos":373,"Smalldpskekw":0,"Blitera":418,"Gatoajato":0,"Pattz":1965,"Kenpach":0,"Degustaroxo":5217,"Mopex":0,"Kurjin":14189,"Dotahkiin":11634,"Yuenmi":10063},
+  "Four Horsemen": {"Munigan":25705,"Mallevolence":19383,"Rorkino":7781,"Rahkdos":13575,"Crismado":35888,"Mopex":6007,"Blitera":11824,"Badhead":9739,"Smalldpskekw":6460,"Budega":7289,"Yuenmi":12545,"Mulltilator":0,"Delidk":2646,"Jbeto":277289,"Choijong":0,"Kascerata":18221,"Mayt":309,"Mareshall":0,"Gatoajato":1199,"Kenpach":3039,"Pattz":51236,"Egaroto":0,"Kurjin":192175,"Dotahkiin":419594,"Degustaroxo":0},
+  "Patchwerk": {"Egaroto":398,"Mopex":2,"Munigan":3607,"Yuenmi":559,"Mallevolence":5390,"Delidk":39,"Smalldpskekw":670,"Mareshall":0,"Rahkdos":5028,"Mayt":0,"Mulltilator":0,"Badhead":5341,"Choijong":0,"Rorkino":0,"Blitera":4784,"Kascerata":0,"Budega":3009,"Crismado":2632,"Jbeto":56217,"Gatoajato":27819,"Kenpach":10888,"Degustaroxo":266851,"Pattz":202437,"Kurjin":252587,"Dotahkiin":173267},
+  "Grobbulus": {"Mopex":2675,"Smalldpskekw":2268,"Rahkdos":9628,"Munigan":9114,"Yuenmi":12353,"Budega":2639,"Egaroto":2966,"Mareshall":0,"Mayt":602,"Mallevolence":5343,"Delidk":12551,"Mulltilator":0,"Rorkino":1556,"Gatoajato":0,"Crismado":304,"Blitera":3117,"Badhead":2893,"Kascerata":30355,"Choijong":314,"Kenpach":1588,"Jbeto":142605,"Kurjin":95542,"Pattz":137799,"Dotahkiin":130564,"Degustaroxo":241719},
+  "Gluth": {"Mareshall":528,"Mopex":519,"Egaroto":1314,"Munigan":3602,"Gatoajato":549,"Mayt":526,"Mallevolence":4158,"Mulltilator":0,"Yuenmi":970,"Delidk":3356,"Smalldpskekw":0,"Kascerata":5175,"Budega":0,"Choijong":0,"Badhead":2699,"Rahkdos":4867,"Crismado":4538,"Blitera":4879,"Jbeto":66605,"Rorkino":0,"Kenpach":603,"Kurjin":27611,"Pattz":37781,"Dotahkiin":110109,"Degustaroxo":50909},
+  "Thaddius": {"Mareshall":0,"Delidk":2229,"Mayt":0,"Rahkdos":13261,"Yuenmi":6410,"Munigan":5053,"Egaroto":1536,"Mallevolence":5330,"Mulltilator":0,"Crismado":23134,"Mopex":1617,"Rorkino":1609,"Choijong":0,"Smalldpskekw":1176,"Budega":3616,"Kascerata":9968,"Blitera":11027,"Kenpach":2415,"Gatoajato":38462,"Badhead":4828,"Pattz":197208,"Kurjin":176648,"Degustaroxo":352779,"Dotahkiin":206361},
+  "Anub'Rekhan": {"Budega":0,"Mopex":1438,"Egaroto":0,"Mulltilator":0,"Smalldpskekw":1769,"Munigan":1251,"Yuenmi":1020,"Mayt":0,"Mareshall":0,"Delidk":0,"Kascerata":1020,"Mallevolence":6038,"Gatoajato":579,"Badhead":4086,"Rahkdos":2701,"Crismado":4704,"Choijong":0,"Blitera":5288,"Rorkino":297,"Jbeto":28833,"Kenpach":0,"Pattz":0,"Dotahkiin":23761,"Degustaroxo":60185,"Kurjin":64840},
+  "Grand Widow Faerlina": {"Mopex":4830,"Munigan":17086,"Mareshall":1488,"Smalldpskekw":3483,"Delidk":5744,"Yuenmi":18401,"Budega":0,"Choijong":0,"Gatoajato":248,"Rahkdos":7309,"Egaroto":998,"Rorkino":1100,"Mallevolence":9214,"Crismado":9226,"Mulltilator":0,"Kascerata":16661,"Badhead":4387,"Mayt":1054,"Kenpach":1206,"Jbeto":85347,"Pattz":14116,"Blitera":2000,"Kurjin":213804,"Degustaroxo":303189,"Dotahkiin":124517},
+  "Maexxna": {"Mopex":1059,"Smalldpskekw":1806,"Mayt":527,"Egaroto":2043,"Mulltilator":0,"Gatoajato":0,"Mareshall":0,"Yuenmi":11229,"Mallevolence":3574,"Badhead":3585,"Munigan":3594,"Kascerata":0,"Delidk":1437,"Rahkdos":3739,"Crismado":1943,"Rorkino":918,"Blitera":3839,"Choijong":0,"Kenpach":1206,"Jbeto":60533,"Pattz":758,"Budega":0,"Degustaroxo":126517,"Kurjin":41410,"Dotahkiin":36054},
+  "Noth the Plaguebringer": {"Egaroto":3452,"Smalldpskekw":1691,"Mopex":11168,"Yuenmi":30933,"Rorkino":4610,"Rahkdos":7455,"Gatoajato":678,"Mareshall":807,"Munigan":11877,"Mallevolence":8058,"Kascerata":28608,"Delidk":3183,"Mayt":527,"Budega":3231,"Mulltilator":0,"Badhead":6396,"Crismado":17738,"Blitera":11402,"Choijong":0,"Kenpach":1206,"Jbeto":137456,"Pattz":19962,"Kurjin":116142,"Dotahkiin":184926,"Degustaroxo":190349},
+  "Heigan the Unclean": {"Mopex":883,"Egaroto":0,"Mareshall":0,"Delidk":711,"Yuenmi":2773,"Smalldpskekw":1093,"Rahkdos":1966,"Rorkino":2989,"Gatoajato":579,"Kascerata":3134,"Munigan":10439,"Mallevolence":1803,"Mulltilator":0,"Crismado":7553,"Budega":0,"Blitera":501,"Mayt":527,"Badhead":2226,"Choijong":0,"Kenpach":137,"Jbeto":70264,"Degustaroxo":254792,"Pattz":92252,"Kurjin":62826,"Dotahkiin":74315},
+  "Loatheb": {"Egaroto":1763,"Mareshall":1570,"Yuenmi":3244,"Delidk":5117,"Mallevolence":6449,"Gatoajato":1158,"Munigan":6194,"Crismado":26420,"Choijong":0,"Rahkdos":13311,"Blitera":8134,"Smalldpskekw":5606,"Mopex":2716,"Rorkino":1940,"Kascerata":12542,"Badhead":7908,"Budega":4065,"Mulltilator":0,"Mayt":944,"Kenpach":2412,"Jbeto":120343,"Kurjin":56855,"Pattz":54194,"Degustaroxo":75638,"Dotahkiin":103130},
+  "Sapphiron": {"Mopex":8191,"Munigan":33298,"Egaroto":7241,"Rahkdos":33885,"Mareshall":4484,"Yuenmi":12042,"Mallevolence":20724,"Smalldpskekw":8587,"Gatoajato":2265,"Rorkino":6993,"Delidk":13189,"Badhead":43126,"Budega":0,"Crismado":119530,"Kascerata":37256,"Blitera":41737,"Mulltilator":0,"Mayt":3869,"Choijong":0,"Jbeto":362607,"Kenpach":9566,"Degustaroxo":667219,"Pattz":169054,"Kurjin":258884,"Dotahkiin":345410},
+  "Kel'Thuzad": {"Mareshall":1056,"Munigan":23032,"Egaroto":4622,"Gatoajato":1156,"Mopex":5215,"Mayt":0,"Delidk":3638,"Rahkdos":18963,"Smalldpskekw":5056,"Mallevolence":22977,"Blitera":21489,"Badhead":23075,"Crismado":48491,"Mulltilator":0,"Choijong":0,"Rorkino":5370,"Kascerata":33413,"Kenpach":2413,"Budega":1829,"Jbeto":210564,"Degustaroxo":354057,"Pattz":11951,"Kurjin":176078,"Yuenmi":215744,"Dotahkiin":219151}
+};
+
+console.log('\n\n═══════════════════════════════════════════════════════════════════════════════');
+console.log('  3-WAY COMPARISON: Ours vs wow-logs.co.in vs uwu-logs (healers only)');
+console.log('═══════════════════════════════════════════════════════════════════════════════\n');
+
+console.log('  Boss                    | Healer       | Ours       | Wow-Logs   | UwU-Logs   | vs WL     | vs UwU');
+console.log('  ─────────────────────── | ──────────── | ────────── | ────────── | ────────── | ───────── | ─────────');
+
+const threeWayTotals: Record<string, { ours: number; wl: number; uwu: number; count: number }> = {};
+for (const healer of HEALERS) {
+  threeWayTotals[healer] = { ours: 0, wl: 0, uwu: 0, count: 0 };
+}
+
+let prevBoss3 = '';
+for (const bossName of bossOrder) {
+  const ourEnc = ourEncounters[bossName];
+  const refBoss = getRefBoss(bossName);
+  const uwuBoss = uwuLogsRef[bossName];
+  
+  if (!ourEnc || !refBoss || !uwuBoss) continue;
+  
+  for (const healer of HEALERS) {
+    const oursVal = ourEnc.combatStats?.[healer]?.healing ?? 0;
+    const wlVal = refBoss.healing[healer] ?? 0;
+    const uwuVal = uwuBoss[healer] ?? 0;
+    
+    if (oursVal === 0 && wlVal === 0 && uwuVal === 0) continue;
+    
+    const vsWl = pctDelta(oursVal, wlVal);
+    const vsUwu = pctDelta(oursVal, uwuVal);
+    
+    const bossCol = bossName === prevBoss3 ? '                          ' : `  ${bossName.padEnd(24)}`;
+    prevBoss3 = bossName;
+    
+    const vsWlStr = isFinite(vsWl) ? fmtPct(vsWl).padStart(9) : '      N/A';
+    const vsUwuStr = isFinite(vsUwu) ? fmtPct(vsUwu).padStart(9) : '      N/A';
+    
+    console.log(
+      `${bossCol}| ${healer.padEnd(13)}| ${fmt(oursVal).padStart(10)} | ${fmt(wlVal).padStart(10)} | ${fmt(uwuVal).padStart(10)} | ${vsWlStr} | ${vsUwuStr}`
+    );
+    
+    threeWayTotals[healer].ours += oursVal;
+    threeWayTotals[healer].wl += wlVal;
+    threeWayTotals[healer].uwu += uwuVal;
+    threeWayTotals[healer].count++;
+  }
+}
+
+console.log('\n  ─── Per-Healer Totals (3-way) ───\n');
+console.log('  Healer          | Class          | Ours         | Wow-Logs     | UwU-Logs     | vs WL   | vs UwU');
+console.log('  ─────────────── | ────────────── | ──────────── | ──────────── | ──────────── | ─────── | ───────');
+
+for (const healer of HEALERS) {
+  const t = threeWayTotals[healer];
+  const vsWl = pctDelta(t.ours, t.wl);
+  const vsUwu = pctDelta(t.ours, t.uwu);
+  console.log(
+    `  ${healer.padEnd(17)} | ${(HEALER_CLASSES[healer] || '?').padEnd(15)}| ${fmt(t.ours).padStart(12)} | ${fmt(t.wl).padStart(12)} | ${fmt(t.uwu).padStart(12)} | ${fmtPct(vsWl).padStart(7)} | ${fmtPct(vsUwu).padStart(7)}`
+  );
+}
+
+// Also show wow-logs vs uwu-logs to understand how they differ from each other
+console.log('\n  ─── wow-logs vs uwu-logs (how do the references differ?) ───\n');
+console.log('  Healer          | Class          | Wow-Logs     | UwU-Logs     | WL vs UwU');
+console.log('  ─────────────── | ────────────── | ──────────── | ──────────── | ─────────');
+
+for (const healer of HEALERS) {
+  const t = threeWayTotals[healer];
+  const wlVsUwu = pctDelta(t.wl, t.uwu);
+  console.log(
+    `  ${healer.padEnd(17)} | ${(HEALER_CLASSES[healer] || '?').padEnd(15)}| ${fmt(t.wl).padStart(12)} | ${fmt(t.uwu).padStart(12)} | ${fmtPct(wlVsUwu).padStart(9)}`
+  );
+}
