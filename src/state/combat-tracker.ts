@@ -91,6 +91,29 @@ const PET_FILTER_SPELLS = new Set([
   24604, 64491, 64492, 64493, 64494, 64495,
 ]);
 
+/**
+ * Known absorb shield spell IDs (all ranks).
+ * When these auras are applied/removed, we track the caster so absorbed
+ * damage can be attributed as healing.
+ */
+const ABSORB_SHIELD_SPELLS = new Set([
+  // Power Word: Shield (all ranks)
+  17, 592, 600, 3747, 6065, 6066, 10898, 10901, 25217, 25218, 48065, 48066,
+  // Divine Aegis
+  47753,
+  // Sacred Shield proc
+  58597,
+  // Val'anyr proc
+  64413,
+]);
+
+/** Miss event types that can carry ABSORB as missType. */
+const MISS_EVENTS = new Set([
+  "SWING_MISSED",
+  "SPELL_MISSED",
+  "RANGE_MISSED",
+]);
+
 /** Per-encounter combat stats keyed by player GUID. */
 export type EncounterCombatStats = Record<string, PlayerCombatStats>;
 
@@ -116,6 +139,8 @@ function extractFieldInt(rawFields: string, index: number): number {
 export class CombatTracker {
   /** Pet GUID → owner (player) GUID. Persists across encounters. */
   private _petOwners = new Map<string, string>();
+  /** Target GUID → shield caster GUID. Persists across encounters. */
+  private _activeShields = new Map<string, string>();
   private _inEncounter = false;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
   private _completedEncounters: EncounterCombatStats[] = [];
@@ -143,6 +168,15 @@ export class CombatTracker {
             this._petOwners.set(event.sourceGuid, event.destGuid);
           }
         }
+
+        // Track absorb shield auras (must persist across encounters)
+        if (!isNaN(spellId) && ABSORB_SHIELD_SPELLS.has(spellId)) {
+          if (event.eventType === "SPELL_AURA_APPLIED") {
+            this._activeShields.set(event.destGuid, event.sourceGuid);
+          } else if (event.eventType === "SPELL_AURA_REMOVED") {
+            this._activeShields.delete(event.destGuid);
+          }
+        }
       }
     }
 
@@ -152,6 +186,23 @@ export class CombatTracker {
 
     // Handle damage events
     if (DAMAGE_EVENTS.has(eventType)) {
+      const isSwing = eventType === "SWING_DAMAGE";
+
+      // Extract partial absorbed amount before friendly fire exclusion.
+      // Absorbed damage is healing credited to the shield caster, regardless
+      // of whether the direct damage is excluded (e.g., dest is a player).
+      const absorbedFieldIndex = isSwing ? 5 : 8;
+      const absorbedAmount = extractFieldInt(event.rawFields, absorbedFieldIndex);
+      if (absorbedAmount > 0) {
+        const shieldCaster = this._activeShields.get(event.destGuid);
+        if (shieldCaster !== undefined) {
+          const resolvedCaster = this._petOwners.get(shieldCaster) ?? shieldCaster;
+          if (isPlayer(resolvedCaster)) {
+            this._accumulate(resolvedCaster, 0, absorbedAmount);
+          }
+        }
+      }
+
       // Exclude friendly fire: skip if dest is a player or dest is friendly
       if (isPlayer(event.destGuid)) return;
       if (isFriendly(event.destFlags)) return;
@@ -163,7 +214,6 @@ export class CombatTracker {
       if (!isPlayer(sourceGuid)) return;
 
       // Extract amount and overkill
-      const isSwing = eventType === "SWING_DAMAGE";
       const amount = extractFieldInt(event.rawFields, isSwing ? 0 : 3);
       const overkill = extractFieldInt(event.rawFields, isSwing ? 1 : 4);
 
@@ -187,6 +237,29 @@ export class CombatTracker {
       if (effective <= 0) return;
 
       this._accumulate(sourceGuid, 0, effective);
+      return;
+    }
+
+    // Handle full absorbs from miss events (SWING_MISSED, SPELL_MISSED, RANGE_MISSED)
+    if (MISS_EVENTS.has(eventType)) {
+      const rawFields = event.rawFields;
+      // Check for "ABSORB," in rawFields — full absorb miss type
+      const absorbIdx = rawFields.indexOf("ABSORB,");
+      if (absorbIdx === -1) return;
+
+      // Extract absorbed amount from after "ABSORB,"
+      const amountStr = rawFields.substring(absorbIdx + 7);
+      const absorbedAmount = parseInt(amountStr, 10);
+      if (isNaN(absorbedAmount) || absorbedAmount <= 0) return;
+
+      // Look up shield caster
+      const shieldCaster = this._activeShields.get(event.destGuid);
+      if (shieldCaster === undefined) return;
+
+      const resolvedCaster = this._petOwners.get(shieldCaster) ?? shieldCaster;
+      if (!isPlayer(resolvedCaster)) return;
+
+      this._accumulate(resolvedCaster, 0, absorbedAmount);
     }
   }
 
