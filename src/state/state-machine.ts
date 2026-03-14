@@ -2,7 +2,7 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import { getSpellId } from "../pipeline/line-parser.js";
-import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats, PlayerBuffUptime } from "../types.js";
+import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats, PlayerBuffUptime, EncounterBuffUptime } from "../types.js";
 import { isPlayer } from "../utils/guid.js";
 import { detectClass } from "../detection/class-detection.js";
 import { detectSpec } from "../detection/spec-detection.js";
@@ -126,6 +126,18 @@ export class CombatLogStateMachine {
         encounterResult.encounter.combatStats =
           this._combatTracker.onEncounterEnd();
       }
+      if (this._buffUptimeTracker !== null) {
+        const startMs = new Date(encounterResult.encounter.startTime).getTime();
+        const endMs = new Date(encounterResult.encounter.endTime).getTime();
+        const buffUptime = this._buffUptimeTracker.computeUptimeForWindow(startMs, endMs);
+        if (buffUptime.size > 0) {
+          const record: Record<string, EncounterBuffUptime> = {};
+          for (const [guid, uptime] of buffUptime) {
+            record[guid] = uptime;
+          }
+          encounterResult.encounter.buffUptime = record;
+        }
+      }
 
       this._encounters.push(encounterResult.encounter);
 
@@ -155,6 +167,18 @@ export class CombatLogStateMachine {
       if (this._combatTracker !== null) {
         forceResult.encounter.combatStats =
           this._combatTracker.forceEnd() ?? {};
+      }
+      if (this._buffUptimeTracker !== null) {
+        const startMs = new Date(forceResult.encounter.startTime).getTime();
+        const endMs = new Date(forceResult.encounter.endTime).getTime();
+        const buffUptime = this._buffUptimeTracker.computeUptimeForWindow(startMs, endMs);
+        if (buffUptime.size > 0) {
+          const record: Record<string, EncounterBuffUptime> = {};
+          for (const [guid, uptime] of buffUptime) {
+            record[guid] = uptime;
+          }
+          forceResult.encounter.buffUptime = record;
+        }
       }
 
       this._encounters.push(forceResult.encounter);
