@@ -289,6 +289,357 @@ describe("CombatTracker", () => {
     });
   });
 
+  describe("absorb tracking", () => {
+    const PLAYER3 = "0x0E00000000000003";
+
+    it("tracks full absorb from SWING_MISSED with ABSORB", () => {
+      // Apply PW:S from PLAYER1 on PLAYER2
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      // Boss swings at PLAYER2, fully absorbed
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,2020",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(2020);
+    });
+
+    it("tracks full absorb from SPELL_MISSED with ABSORB", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "30091,Flamestrike,0x4,ABSORB,1170",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(1170);
+    });
+
+    it("tracks partial absorb from SWING_DAMAGE absorbed field", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      // SWING_DAMAGE on PLAYER2: amount=1378,overkill=0,...,absorbed=705 at index 5
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          destFlags: "0x512",
+          rawFields: "1378,0,1,0,2562,705,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      // Damage to PLAYER2 is excluded (player dest), only absorbed counted
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(705);
+    });
+
+    it("tracks partial absorb from SPELL_DAMAGE absorbed field", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      // SPELL_DAMAGE on PLAYER2: absorbed=1500 at index 8
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          destFlags: "0x512",
+          rawFields: "55323,Shadow Bolt Volley,0x20,3500,0,0x20,0,0,1500,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(1500);
+    });
+
+    it("removes shield tracking on SPELL_AURA_REMOVED", () => {
+      // Apply PW:S
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+      // Remove PW:S
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 950,
+          eventType: "SPELL_AURA_REMOVED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,2000",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      // No shield tracked, absorb discarded
+      expect(stats[PLAYER1]).toBeUndefined();
+    });
+
+    it("discards absorb when no shield is tracked on target", () => {
+      // No shield applied
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,3000",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeUndefined();
+      expect(stats[PLAYER2]).toBeUndefined();
+    });
+
+    it("most recent shield wins when re-applied", () => {
+      // PLAYER1 applies PW:S on PLAYER2
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+      // PLAYER3 applies PW:S on PLAYER2 (overwrites)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 910,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER3,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,2000",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER3]).toBeDefined();
+      expect(stats[PLAYER3].healing).toBe(2000);
+      expect(stats[PLAYER1]).toBeUndefined();
+    });
+
+    it("tracks Divine Aegis absorbs (spell 47753)", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "47753,Divine Aegis,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,1800",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(1800);
+    });
+
+    it("tracks Sacred Shield absorbs (spell 58597)", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "58597,Sacred Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,2500",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(2500);
+    });
+
+    it("combines direct healing and absorb healing for same player", () => {
+      // PLAYER1 applies PW:S on PLAYER2
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      // PLAYER1 heals PLAYER2 directly
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_HEAL",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48782,Holy Light,0x2,5000,0,0,nil",
+        }),
+      );
+      // Shield absorbs damage
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1001,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,2000",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(7000); // 5000 + 2000
+    });
+
+    it("absorbs only counted during encounter", () => {
+      // Apply shield
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+      // Absorb happens OUTSIDE encounter
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 950,
+          eventType: "SWING_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "ABSORB,3000",
+        }),
+      );
+
+      // Start and end encounter with no events
+      tracker.onEncounterStart();
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeUndefined();
+    });
+
+    it("tracks RANGE_MISSED with ABSORB", () => {
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 900,
+          eventType: "SPELL_AURA_APPLIED",
+          sourceGuid: PLAYER1,
+          destGuid: PLAYER2,
+          rawFields: "48066,Power Word: Shield,0x2,BUFF",
+        }),
+      );
+
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "RANGE_MISSED",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER2,
+          rawFields: "12345,Shoot,0x1,ABSORB,900",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].healing).toBe(900);
+    });
+  });
+
   describe("pet resolution", () => {
     it("attributes pet damage to the owner via SPELL_SUMMON", () => {
       // Register pet ownership
