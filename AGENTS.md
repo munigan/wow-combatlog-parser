@@ -39,6 +39,7 @@ src/
     raid-separator.ts   # Segment tracking, Jaccard merging
     consumable-tracker.ts # Potion/bomb/flame cap tracking with pre-pot detection
     combat-tracker.ts   # Per-player damage with pet→owner merging
+    buff-uptime-tracker.ts # Flask/elixir/food buff uptime tracking
   detection/
     class-detection.ts  # detectClass(spellId) → WowClass
     spec-detection.ts   # detectSpec(spellId, class) → WowSpec
@@ -48,6 +49,7 @@ src/
     spell-book.ts       # ~380 class spells, ~90 spec spells
     difficulty-spells.ts # Boss difficulty spell tuples (ICC/ToC)
     consumable-data.ts  # 14 WotLK consumable spell IDs (potions/bombs/flame cap)
+    buff-data.ts        # Flask, elixir, and food buff spell IDs (36 total)
   utils/
     timestamp.ts        # WotLK timestamp parsing (M/D HH:MM:SS.mmm, no year)
     guid.ts             # GUID type detection (player/NPC/pet/vehicle)
@@ -71,7 +73,7 @@ docs/plans/             # Design docs and implementation plans
 Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables.
 
 ### `parseLog(stream, selections, options?): Promise<ParseResult>`
-Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, plus per-player per-encounter damage stats with pet→owner merging.
+Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, per-player per-encounter damage stats with pet→owner merging, and flask/elixir/food buff uptime per player.
 
 **Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
 
@@ -109,6 +111,24 @@ Tracks 14 WotLK consumable spell IDs across 4 categories:
 - **Engineering** (3): Global Thermal Sapper, Saronite Bomb, Cobalt Frag Bomb
 
 **Pre-pot detection**: Uses buff aura lifecycle tracking. If a player has an active potion buff when an encounter starts, it's a pre-pot. Only buff potions and Flame Cap can be pre-potted. Mana potions are excluded from pre-pot detection.
+
+## Buff Uptime Tracking (parseLog only)
+
+Tracks flask, elixir, and food buff uptime per player across the entire raid. Computes percentage of total raid time (first event to last event) each player had any flask/elixir and any food buff active.
+
+### Categories
+- **Flasks** (5): Stoneblood, Frost Wyrm, Endless Rage, Pure Mojo, Lesser Resistance
+- **Battle Elixirs** (11): Mighty Strength, Accuracy, Expertise, Deadly Strikes, Lightning Speed, Guru's, Wrath, Mighty Agility, Mighty Mageblood, Armor Piercing, Spirit
+- **Guardian Elixirs** (5): Defense, Mighty Fortitude, Protection, Mighty Thoughts, Mighty Defense
+- **Food Buffs** (15): Fish Feast + 14 individual food buffs
+
+### Implementation
+- New `BuffUptimeTracker` (`src/state/buff-uptime-tracker.ts`) uses interval-based tracking via `SPELL_AURA_APPLIED` / `SPELL_AURA_REMOVED` / `SPELL_AURA_REFRESH` events.
+- `flaskUptimePercent`: union of all flask + elixir intervals (merged, no double-counting).
+- `foodUptimePercent`: union of all food buff intervals.
+- Per-buff breakdown in `BuffBreakdown[]` shows individual buff uptimes.
+- Edge cases: buff active at log start (retroactive from raidStartMs), buff active at log end (closed at raidEndMs), duplicate applies, refreshes.
+- Data stored on `PlayerInfo.buffUptime` and `ParsedRaid.raidDurationMs`.
 
 ## Combat Stats Tracking (parseLog only)
 
