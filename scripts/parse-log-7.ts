@@ -43,6 +43,7 @@ async function main() {
     return {
       raidInstance: raid.raidInstance,
       raidDate: raid.raidDate.toISOString().split("T")[0],
+      raidDurationMs: raid.raidDurationMs,
       playerCount: raid.players.length,
       encounterCount: raid.encounters.length,
       encounters: raid.encounters.map((enc) => {
@@ -66,6 +67,16 @@ async function main() {
           }
         }
 
+        // Resolve buffUptime: replace playerGuid keys with player names
+        let buffUptime: Record<string, typeof enc.buffUptime[string]> | undefined;
+        if (enc.buffUptime && Object.keys(enc.buffUptime).length > 0) {
+          buffUptime = {};
+          for (const [guid, uptime] of Object.entries(enc.buffUptime)) {
+            const name = guidToName.get(guid) ?? guid;
+            buffUptime[name] = uptime;
+          }
+        }
+
         return {
           bossName: enc.bossName,
           startTime: enc.startTime,
@@ -75,6 +86,7 @@ async function main() {
           difficulty: enc.difficulty,
           ...(consumables ? { consumables } : {}),
           ...(combatStats ? { combatStats } : {}),
+          ...(buffUptime ? { buffUptime } : {}),
         };
       }),
       players: raid.players.map((p) => ({
@@ -85,6 +97,7 @@ async function main() {
           ? { consumables: p.consumables }
           : {}),
         ...(p.combatStats ? { combatStats: p.combatStats } : {}),
+        ...(p.buffUptime ? { buffUptime: p.buffUptime } : {}),
       })),
     };
   });

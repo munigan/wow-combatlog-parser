@@ -200,6 +200,8 @@ export class BuffUptimeTracker {
       result.set(playerGuid, {
         flaskUptimePercent,
         foodUptimePercent,
+        encounterFlaskUptimePercent: 0,
+        encounterFoodUptimePercent: 0,
         buffs,
       });
     }

@@ -67,9 +67,9 @@ export interface PlayerBuffUptime {
   /** Percentage 0-100: any food buff was active. */
   foodUptimePercent: number;
   /** Percentage 0-100: any flask OR elixir active during boss encounters only. */
-  encounterFlaskUptimePercent?: number;
+  encounterFlaskUptimePercent: number;
   /** Percentage 0-100: any food buff active during boss encounters only. */
-  encounterFoodUptimePercent?: number;
+  encounterFoodUptimePercent: number;
   /** Per-buff breakdown, sorted by uptimeMs descending. */
   buffs: BuffBreakdown[];
 }

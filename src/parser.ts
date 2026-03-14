@@ -208,27 +208,6 @@ export async function parseLog(
     const raidDurationMs = raidEndMs - raidStartMs;
     const buffUptimeResults = ctx.stateMachine.getBuffUptimeResults(raidStartMs, raidEndMs);
 
-    // Build player list: only include players who participated in encounters
-    const players: PlayerInfo[] = [];
-    for (const record of playerMap.values()) {
-      if (!encounterParticipants.has(record.guid)) continue;
-      const consumables = playerConsumableSummaries.get(record.guid);
-      const combat = combatSummaries?.get(record.guid);
-      const buffUptime = buffUptimeResults?.get(record.guid);
-      players.push({
-        guid: record.guid,
-        name: record.name,
-        class: record.class,
-        spec: record.spec,
-        ...(consumables !== undefined && Object.keys(consumables).length > 0
-          ? { consumables }
-          : {}),
-        ...(combat !== undefined ? { combatStats: combat } : {}),
-        ...(buffUptime !== undefined ? { buffUptime } : {}),
-      });
-    }
-    players.sort((a, b) => a.name.localeCompare(b.name));
-
     // Filter out phantom encounters (< 10s wipes from proximity triggers,
     // Grobbulus hallway poison, brief pull-and-resets, etc.) — same threshold
     // used by scanLog in scanner.ts.
@@ -239,6 +218,54 @@ export async function parseLog(
         (a, b) =>
           new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
       );
+
+    // Build per-player encounter-aggregate buff uptime
+    const playerEncounterBuffUptime = new Map<string, { flaskMs: number; foodMs: number; totalMs: number }>();
+    for (const enc of sortedEncounters) {
+      if (enc.buffUptime === undefined) continue;
+      const encDurationMs = enc.duration * 1000; // duration is in seconds
+      for (const [guid, bu] of Object.entries(enc.buffUptime)) {
+        let agg = playerEncounterBuffUptime.get(guid);
+        if (agg === undefined) {
+          agg = { flaskMs: 0, foodMs: 0, totalMs: 0 };
+          playerEncounterBuffUptime.set(guid, agg);
+        }
+        agg.flaskMs += (bu.flaskUptimePercent / 100) * encDurationMs;
+        agg.foodMs += (bu.foodUptimePercent / 100) * encDurationMs;
+        agg.totalMs += encDurationMs;
+      }
+    }
+
+    // Build player list: only include players who participated in encounters
+    const players: PlayerInfo[] = [];
+    for (const record of playerMap.values()) {
+      if (!encounterParticipants.has(record.guid)) continue;
+      const consumables = playerConsumableSummaries.get(record.guid);
+      const combat = combatSummaries?.get(record.guid);
+      const buffUptime = buffUptimeResults?.get(record.guid);
+      const encAgg = playerEncounterBuffUptime.get(record.guid);
+      const mergedBuffUptime = buffUptime !== undefined ? {
+        ...buffUptime,
+        encounterFlaskUptimePercent: encAgg !== undefined && encAgg.totalMs > 0
+          ? Math.min(100, Math.round((encAgg.flaskMs / encAgg.totalMs) * 100 * 100) / 100)
+          : 0,
+        encounterFoodUptimePercent: encAgg !== undefined && encAgg.totalMs > 0
+          ? Math.min(100, Math.round((encAgg.foodMs / encAgg.totalMs) * 100 * 100) / 100)
+          : 0,
+      } : undefined;
+      players.push({
+        guid: record.guid,
+        name: record.name,
+        class: record.class,
+        spec: record.spec,
+        ...(consumables !== undefined && Object.keys(consumables).length > 0
+          ? { consumables }
+          : {}),
+        ...(combat !== undefined ? { combatStats: combat } : {}),
+        ...(mergedBuffUptime !== undefined ? { buffUptime: mergedBuffUptime } : {}),
+      });
+    }
+    players.sort((a, b) => a.name.localeCompare(b.name));
 
     return {
       raidInstance,
