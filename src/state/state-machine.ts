@@ -2,7 +2,7 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import { getSpellId } from "../pipeline/line-parser.js";
-import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats, PlayerBuffUptime, EncounterBuffUptime } from "../types.js";
+import type { EncounterSummary, WowClass, WowSpec, PlayerCombatStats, PlayerBuffUptime, EncounterBuffUptime, PlayerExternalsSummary } from "../types.js";
 import { isPlayer } from "../utils/guid.js";
 import { detectClass } from "../detection/class-detection.js";
 import { detectSpec } from "../detection/spec-detection.js";
@@ -14,6 +14,8 @@ import type { RaidSegment } from "./raid-separator.js";
 import { ConsumableTracker } from "./consumable-tracker.js";
 import { CombatTracker } from "./combat-tracker.js";
 import { BuffUptimeTracker } from "./buff-uptime-tracker.js";
+import { DeathTracker } from "./death-tracker.js";
+import { ExternalsTracker } from "./externals-tracker.js";
 
 export interface PlayerRecord {
   guid: string;
@@ -30,6 +32,8 @@ export class CombatLogStateMachine {
   private _consumableTracker: ConsumableTracker | null = null;
   private _combatTracker: CombatTracker | null = null;
   private _buffUptimeTracker: BuffUptimeTracker | null = null;
+  private _deathTracker: DeathTracker | null = null;
+  private _externalsTracker: ExternalsTracker | null = null;
   private _lastRaidInstance: string | null = null;
   /** All player GUIDs that actively participated in at least one encounter. */
   private _encounterParticipants = new Set<string>();
@@ -42,6 +46,8 @@ export class CombatLogStateMachine {
       this._consumableTracker = new ConsumableTracker();
       this._combatTracker = new CombatTracker();
       this._buffUptimeTracker = new BuffUptimeTracker();
+      this._deathTracker = new DeathTracker();
+      this._externalsTracker = new ExternalsTracker();
     }
   }
 
@@ -72,6 +78,12 @@ export class CombatLogStateMachine {
     if (this._buffUptimeTracker !== null) {
       this._buffUptimeTracker.processEvent(event);
     }
+    if (this._deathTracker !== null) {
+      this._deathTracker.processEvent(event);
+    }
+    if (this._externalsTracker !== null) {
+      this._externalsTracker.processEvent(event);
+    }
 
     // 4. Feed event to encounter tracker
     const encounterResult = this._encounterTracker.processEvent(event);
@@ -82,6 +94,12 @@ export class CombatLogStateMachine {
     }
     if (encounterResult.encounterStarted && this._combatTracker !== null) {
       this._combatTracker.onEncounterStart();
+    }
+    if (encounterResult.encounterStarted && this._deathTracker !== null) {
+      this._deathTracker.onEncounterStart(event.timestamp);
+    }
+    if (encounterResult.encounterStarted && this._externalsTracker !== null) {
+      this._externalsTracker.onEncounterStart(event.timestamp);
     }
 
     // 6. Determine raid instance from current boss
@@ -138,6 +156,14 @@ export class CombatLogStateMachine {
           encounterResult.encounter.buffUptime = record;
         }
       }
+      if (this._deathTracker !== null) {
+        encounterResult.encounter.deaths = this._deathTracker.onEncounterEnd();
+      }
+      if (this._externalsTracker !== null) {
+        const durationMs = encounterResult.encounter.duration * 1000;
+        const endMs = new Date(encounterResult.encounter.endTime).getTime();
+        encounterResult.encounter.externals = this._externalsTracker.onEncounterEnd(endMs, durationMs);
+      }
 
       this._encounters.push(encounterResult.encounter);
 
@@ -180,6 +206,14 @@ export class CombatLogStateMachine {
           forceResult.encounter.buffUptime = record;
         }
       }
+      if (this._deathTracker !== null) {
+        forceResult.encounter.deaths = this._deathTracker.forceEnd() ?? [];
+      }
+      if (this._externalsTracker !== null) {
+        const durationMs = forceResult.encounter.duration * 1000;
+        const endMs = new Date(forceResult.encounter.endTime).getTime();
+        forceResult.encounter.externals = this._externalsTracker.forceEnd(endMs, durationMs) ?? {};
+      }
 
       this._encounters.push(forceResult.encounter);
 
@@ -212,6 +246,14 @@ export class CombatLogStateMachine {
 
   getBuffUptimeResults(raidStartMs: number, raidEndMs: number): Map<string, PlayerBuffUptime> | null {
     return this._buffUptimeTracker?.finalize(raidStartMs, raidEndMs) ?? null;
+  }
+
+  getDeathSummaries(): Map<string, number> | null {
+    return this._deathTracker?.getPlayerSummaries() ?? null;
+  }
+
+  getExternalsSummaries(totalEncounterDurationMs: number): Map<string, PlayerExternalsSummary> | null {
+    return this._externalsTracker?.getPlayerSummaries(totalEncounterDurationMs) ?? null;
   }
 
   // --- Private helpers ---
