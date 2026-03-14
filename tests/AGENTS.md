@@ -1,11 +1,11 @@
 # Tests
 
-138 tests across 15 files. Run with `pnpm run test` (vitest).
+168 tests across 17 files. Run with `pnpm run test` (vitest).
 
 ## Structure
 
 ### Unit tests (`tests/unit/`)
-14 files testing individual modules in isolation:
+15 files testing individual modules in isolation:
 
 | File | Tests | Module |
 |------|-------|--------|
@@ -23,9 +23,12 @@
 | `scanner.test.ts` | `scanLog()` API with mock streams |
 | `parser.test.ts` | `parseLog()` API with time-range filtering |
 | `consumable-tracker.test.ts` | Consumable tracking (potions, flame cap, engineering, pre-pot, mana potions, multi-encounter) |
+| `combat-tracker.test.ts` | Combat stats tracking (damage, healing, overkill, pet resolution, friendly-fire exclusion, encounter lifecycle) |
 
 ### Integration tests (`tests/integration/`)
-1 file: `scan-examples.test.ts` — scans real example log files from `tests/example-logs/` and validates encounter counts, boss names, and durations against known-good values.
+2 files:
+- `scan-examples.test.ts` — scans real example log files from `tests/example-logs/` and validates encounter counts, boss names, and durations against known-good values.
+- `parse-combat-stats.test.ts` — validates per-player damage/healing on Patchwerk and Razuvious against uwu-logs reference numbers (within 2% tolerance).
 
 ### Example logs (`tests/example-logs/`)
 Gitignored. WoW combat log files named `example-log-{1..7}.txt`. Used by integration tests and scripts.

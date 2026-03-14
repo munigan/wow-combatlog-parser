@@ -16,7 +16,7 @@ WoW combat log parser for WotLK 3.3.5. TypeScript library, zero runtime deps, st
 
 ```bash
 pnpm run build       # tsup → dist/
-pnpm run test        # vitest (138 tests)
+pnpm run test        # vitest (168 tests)
 pnpm run typecheck   # tsc --noEmit
 ```
 
@@ -29,15 +29,16 @@ src/
   index.ts              # Barrel exports
   types.ts              # Public interfaces (WowClass, WowSpec, ConsumableType, etc.)
   scanner.ts            # scanLog() implementation
-  parser.ts             # parseLog() implementation (with consumable tracking)
+  parser.ts             # parseLog() implementation (with consumable + combat tracking)
   pipeline/
     line-splitter.ts    # TransformStream: bytes → lines
     line-parser.ts      # parseLine(): line → LogEvent, isBuffAura(), getSpellId()
   state/
-    state-machine.ts    # Composes tracker + separator + consumable + player detection
+    state-machine.ts    # Composes tracker + separator + consumable + combat + player detection
     encounter-tracker.ts # Boss encounter detection (kill/wipe/idle/coward)
     raid-separator.ts   # Segment tracking, Jaccard merging
     consumable-tracker.ts # Potion/bomb/flame cap tracking with pre-pot detection
+    combat-tracker.ts   # Per-player damage/healing with pet→owner merging
   detection/
     class-detection.ts  # detectClass(spellId) → WowClass
     spec-detection.ts   # detectSpec(spellId, class) → WowSpec
@@ -52,8 +53,8 @@ src/
     guid.ts             # GUID type detection (player/NPC/pet/vehicle)
     fields.ts           # Quote-aware CSV field parsing
 tests/
-  unit/                 # 14 unit test files
-  integration/          # Real log file tests (scan-examples.test.ts)
+  unit/                 # 15 unit test files
+  integration/          # Real log file tests (scan-examples.test.ts, parse-combat-stats.test.ts)
   example-logs/         # WoW combat log files (gitignored, example-log-{1..7}.txt)
 scripts/
   scan-all.ts           # Scans all example logs → JSON
@@ -70,7 +71,7 @@ docs/plans/             # Design docs and implementation plans
 Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables.
 
 ### `parseLog(stream, selections, options?): Promise<ParseResult>`
-Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection.
+Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, plus per-player per-encounter damage and healing stats with pet→owner merging.
 
 **Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
 
@@ -108,6 +109,32 @@ Tracks 14 WotLK consumable spell IDs across 4 categories:
 - **Engineering** (3): Global Thermal Sapper, Saronite Bomb, Cobalt Frag Bomb
 
 **Pre-pot detection**: Uses buff aura lifecycle tracking. If a player has an active potion buff when an encounter starts, it's a pre-pot. Only buff potions and Flame Cap can be pre-potted. Mana potions are excluded from pre-pot detection.
+
+## Combat Stats Tracking (parseLog only)
+
+Tracks per-player per-encounter damage (useful) and healing (effective) via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.
+
+### Damage
+- **Useful damage** = amount - overkill (overkill of -1 treated as 0)
+- **Event types**: SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD
+- **Friendly fire excluded**: Damage to players (`isPlayer(destGuid)`) or friendly-flagged targets (`destFlags & 0x0010`) is skipped
+- **Field positions**: SWING_DAMAGE: amount at rawFields[0], overkill at [1]. All others: amount at rawFields[3], overkill at [4]
+
+### Healing
+- **Effective healing** = amount - overheal
+- **Event types**: SPELL_HEAL, SPELL_PERIODIC_HEAL
+- **Field positions**: amount at rawFields[3], overheal at rawFields[4]
+
+### Pet→Owner Merging
+Pet damage/healing is attributed to the owner player. Three detection methods:
+1. **SPELL_SUMMON** — Player summons pet (DK Army, Gargoyle, Warlock demons, etc.)
+2. **PET_FILTER_SPELLS** (~90 spells) — Known pet↔owner interaction spells detect ownership bidirectionally. Covers Hunter (Mend Pet, Kill Command, Bestial Wrath), Warlock (Health Funnel, Soul Link, Dark Pact), DK (Ghoul Frenzy, Death Pact), and pet→owner auras (Kindred Spirits, Furious Howl, Call of the Wild). Sourced from uwu-logs.
+
+### Validated Numbers (vs uwu-logs reference)
+- Patchwerk: Egaroto +0.22%, Mopex exact match
+- Razuvious: Mareshall exact match
+- Healing ~12% below uwu-logs (encounter timing differences, not a parser bug)
+- Add damage (e.g., Razuvious Understudies) is included in our totals; uwu-logs uses an NPC ID whitelist to exclude it
 
 ## Player Participation
 

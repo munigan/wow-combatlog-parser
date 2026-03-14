@@ -9,15 +9,16 @@ Streaming state management. All modules process one `LogEvent` at a time — no 
 - `EncounterTracker` — boss encounter detection
 - `RaidSeparator` — raid segment boundaries
 - `ConsumableTracker` — consumable usage (opt-in via `trackConsumables` constructor flag, used by `parseLog` only)
+- `CombatTracker` — per-player damage/healing (opt-in, same flag as ConsumableTracker)
 
 **Event flow**: For each `LogEvent`, the state machine:
 1. Detects player class/spec from spell IDs
-2. Feeds the event to `EncounterTracker`
-3. If an encounter started/ended, notifies `RaidSeparator` and `ConsumableTracker`
-4. Tracks encounter participants (combat events only — aura events excluded)
-5. Feeds consumable events to `ConsumableTracker`
+2. Feeds the event to `ConsumableTracker` and `CombatTracker`
+3. Feeds the event to `EncounterTracker`
+4. If an encounter started/ended, notifies `RaidSeparator`, `ConsumableTracker`, and `CombatTracker`
+5. Tracks encounter participants (combat events only — aura events excluded)
 
-Constructor accepts `trackConsumables: boolean` to enable the heavier consumable tracking path.
+Constructor accepts `trackConsumables: boolean` to enable the heavier tracking path (consumables + combat stats).
 
 ### encounter-tracker.ts
 `EncounterTracker` — detects boss encounters from combat events.
@@ -50,3 +51,23 @@ Segments break on: date changes, 30-minute time gaps, raid instance changes. Adj
 **Flame Cap special handling**: `SPELL_CAST_SUCCESS` for Flame Cap (28714) has a nil source GUID. The tracker identifies the player via `SPELL_AURA_APPLIED` dest GUID instead.
 
 **Pre-pot detection**: Maintains `activeBuffs` map (playerGuid+spellId → true). When an encounter starts, any active buff potions are recorded as pre-pots. Only `hasBuff: true` consumables qualify. Mana potions are excluded.
+
+### combat-tracker.ts
+`CombatTracker` — tracks per-player per-encounter damage (useful) and healing (effective) with pet→owner merging.
+
+**Lifecycle** (same pattern as ConsumableTracker):
+1. `processEvent()` — called for every event. Tracks pet ownership (SPELL_SUMMON + PET_FILTER_SPELLS). During encounters, accumulates damage/healing per player.
+2. `onEncounterStart()` — resets per-encounter accumulators.
+3. `onEncounterEnd()` — finalizes encounter stats, stores in completed encounters list.
+4. `forceEnd()` — handles encounters interrupted by log end.
+5. `getPlayerSummaries()` — returns raid-wide per-player aggregated damage/healing.
+
+**Damage calculation**: Useful damage = amount - overkill. Overkill of -1 (nil in WoW logs) treated as 0 via `Math.max(0, overkill)`. Friendly fire excluded via `isPlayer(destGuid)` and `isFriendly(destFlags)` checks.
+
+**Healing calculation**: Effective healing = amount - overheal. 100% overheal events (effective ≤ 0) are silently skipped.
+
+**Pet ownership detection** (persists across encounters):
+1. `SPELL_SUMMON` — Player summons pet → direct mapping.
+2. `PET_FILTER_SPELLS` (~90 spells from uwu-logs) — Bidirectional: if player is source and pet is dest (or vice versa), establish ownership. Covers Hunter (Mend Pet, Bestial Wrath, Kill Command), Warlock (Health Funnel, Soul Link, Dark Pact), DK (Ghoul Frenzy, Death Pact), and pet→owner auras (Kindred Spirits, Furious Howl, Call of the Wild).
+
+**Field extraction**: Uses `extractFieldInt(rawFields, index)` — counts commas to find the Nth field without splitting. Safe because `parseFields()` already stripped quotes from rawFields. SWING_DAMAGE: amount at index 0, overkill at 1. Spell events: amount at index 3, overkill/overheal at 4.
