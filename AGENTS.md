@@ -154,6 +154,40 @@ Pet damage is attributed to the owner player. Three detection methods:
 - Patchwerk: Egaroto +0.22%, Mopex exact match
 - Razuvious: Mareshall exact match
 
+## Deaths Tracking (parseLog only)
+
+Tracks player deaths during encounters with a "death recap" showing the last 10 damage/heal events before each death.
+
+### Implementation
+- New `DeathTracker` (`src/state/death-tracker.ts`) uses a rolling circular buffer (size 10) per player.
+- Buffer populated by damage events (SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD, ENVIRONMENTAL_DAMAGE) and healing events (SPELL_HEAL, SPELL_PERIODIC_HEAL) targeting players.
+- On `UNIT_DIED` for a player, buffer is snapshotted as recap, killing blow identified as last positive-amount event.
+- Healing events stored with negative amounts to distinguish from damage.
+- After snapshot, buffer is cleared (player might get battle-rezzed and die again).
+- `EncounterSummary.deaths` — `PlayerDeath[]` with recap, killing blow, time into encounter (seconds).
+- `PlayerInfo.deathCount` — total deaths across all encounters.
+
+## Externals Tracking (parseLog only)
+
+Tracks a curated list of 17 WotLK external buff spells cast by one player on another during encounters. Records count, uptime %, and individual start/end interval timestamps.
+
+### Categories
+- **Raid Cooldowns**: Bloodlust (2825), Heroism (32182)
+- **DPS Externals**: Power Infusion (10060), Tricks of the Trade (57934), Hysteria (49016), Focus Magic (54646)
+- **Healer Externals**: Innervate (29166)
+- **Tank/Utility**: Misdirection (34477), Hand of Salvation (1038), Hand of Freedom (1044)
+- **Defensive**: Hand of Sacrifice (6940), Hand of Protection (10278), Pain Suppression (33206), Guardian Spirit (47788), Divine Sacrifice (64205), Divine Guardian (70940), Intervene (3411)
+
+### Implementation
+- New `ExternalsTracker` (`src/state/externals-tracker.ts`) uses interval-based tracking via SPELL_AURA_APPLIED/REMOVED/REFRESH.
+- Data file: `src/data/external-data.ts` — curated Map of external spell IDs.
+- Cross-player only (source != dest). Self-buffs excluded.
+- Tracks same spell from different sources separately.
+- Buffs active at encounter start captured with start = encounter start time.
+- Open intervals closed at encounter end.
+- `EncounterSummary.externals` — `Record<destGuid, ExternalBuffUse[]>` with count, uptimePercent, intervals.
+- `PlayerInfo.externals` — `PlayerExternalsSummary` with raid-wide aggregate counts and uptime.
+
 ## Player Participation
 
 Both `scanLog` and `parseLog` filter player lists to only include players who actually participated in each encounter. Participation is determined by combat events — aura-only events (`SPELL_AURA_APPLIED`, `SPELL_AURA_REMOVED`, `SPELL_AURA_REFRESH`) do not count as participation.
