@@ -112,7 +112,15 @@ const MISS_EVENTS = new Set([
   "SWING_MISSED",
   "SPELL_MISSED",
   "RANGE_MISSED",
+  "DAMAGE_SHIELD_MISSED",
 ]);
+
+/** Tracks a single shield aura on a target. */
+interface ShieldEntry {
+  casterGuid: string;
+  removedAt: number | null;  // ms timestamp when AURA_REMOVED fired, null if active
+  appliedAt: number;         // ms timestamp of most recent APPLIED/REFRESH/DOSE
+}
 
 /** Per-encounter combat stats keyed by player GUID. */
 export type EncounterCombatStats = Record<string, PlayerCombatStats>;
@@ -140,11 +148,11 @@ export class CombatTracker {
   /** Pet GUID → owner (player) GUID. Persists across encounters. */
   private _petOwners = new Map<string, string>();
   /**
-   * Active absorb shields keyed by "destGuid|spellId" → caster GUID.
+   * Active absorb shields keyed by "destGuid|spellId" → ShieldEntry.
    * Multiple shields can be active on the same target simultaneously
    * (e.g., PW:S + Divine Aegis + Sacred Shield from different casters).
    */
-  private _activeShields = new Map<string, string>();
+  private _activeShields = new Map<string, ShieldEntry>();
   private _inEncounter = false;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
   private _completedEncounters: EncounterCombatStats[] = [];
@@ -177,16 +185,28 @@ export class CombatTracker {
         // Key by "destGuid|spellId" so multiple shields on the same target
         // are tracked independently.
         //
-        // We only record APPLIED events — we intentionally do NOT delete on
-        // REMOVED. In WoW 3.3.5 logs, when a shield fully absorbs damage
-        // the SPELL_AURA_REMOVED fires BEFORE (or same timestamp as) the
-        // damage event containing the absorbed amount. If we deleted on
-        // removal, the absorb would be unattributable. Keeping stale entries
-        // is safe because the next APPLIED for the same key overwrites it.
+        // We track APPLIED, REFRESH, APPLIED_DOSE, and REMOVED events.
+        // REMOVED marks the shield with a timestamp so the grace window in
+        // _findShieldCasters can handle WoW 3.3.5's ordering where
+        // SPELL_AURA_REMOVED fires at the same ms as the consuming damage.
         if (!isNaN(spellId) && ABSORB_SHIELD_SPELLS.has(spellId)) {
-          if (event.eventType === "SPELL_AURA_APPLIED") {
-            const shieldKey = event.destGuid + "|" + spellId;
-            this._activeShields.set(shieldKey, event.sourceGuid);
+          const shieldKey = event.destGuid + "|" + spellId;
+          const et = event.eventType;
+          if (
+            et === "SPELL_AURA_APPLIED" ||
+            et === "SPELL_AURA_REFRESH" ||
+            et === "SPELL_AURA_APPLIED_DOSE"
+          ) {
+            this._activeShields.set(shieldKey, {
+              casterGuid: event.sourceGuid,
+              removedAt: null,
+              appliedAt: event.timestamp,
+            });
+          } else if (et === "SPELL_AURA_REMOVED") {
+            const existing = this._activeShields.get(shieldKey);
+            if (existing) {
+              existing.removedAt = event.timestamp;
+            }
           }
         }
       }
@@ -206,7 +226,7 @@ export class CombatTracker {
       const absorbedFieldIndex = isSwing ? 5 : 8;
       const absorbedAmount = extractFieldInt(event.rawFields, absorbedFieldIndex);
       if (absorbedAmount > 0) {
-        this._creditAbsorb(event.destGuid, absorbedAmount);
+        this._creditAbsorb(event.destGuid, absorbedAmount, event.timestamp);
       }
 
       // Exclude friendly fire: skip if dest is a player or dest is friendly
@@ -259,7 +279,7 @@ export class CombatTracker {
       if (isNaN(absorbedAmount) || absorbedAmount <= 0) return;
 
       // Credit absorb to shield caster(s)
-      this._creditAbsorb(event.destGuid, absorbedAmount);
+      this._creditAbsorb(event.destGuid, absorbedAmount, event.timestamp);
     }
   }
 
@@ -301,18 +321,21 @@ export class CombatTracker {
   }
 
   /**
-   * Find all unique shield casters for a given target.
-   * Returns unique caster GUIDs with active shields on the target.
-   * Shields are keyed by "destGuid|spellId".
+   * Find active shield casters for a given target at the specified timestamp.
+   * Active = removedAt is null, or removedAt equals currentTimestamp (grace window
+   * for WoW 3.3.5 where SPELL_AURA_REMOVED fires at same ms as consuming damage).
    */
-  private _findShieldCasters(destGuid: string): string[] {
+  private _findShieldCasters(destGuid: string, currentTimestamp: number): string[] {
     const prefix = destGuid + "|";
     const casters: string[] = [];
     const seen = new Set<string>();
-    for (const [key, caster] of this._activeShields) {
-      if (key.startsWith(prefix) && !seen.has(caster)) {
-        seen.add(caster);
-        casters.push(caster);
+    for (const [key, entry] of this._activeShields) {
+      if (!key.startsWith(prefix)) continue;
+      // Skip shields removed before this timestamp
+      if (entry.removedAt !== null && currentTimestamp > entry.removedAt) continue;
+      if (!seen.has(entry.casterGuid)) {
+        seen.add(entry.casterGuid);
+        casters.push(entry.casterGuid);
       }
     }
     return casters;
@@ -321,12 +344,37 @@ export class CombatTracker {
   /**
    * Credit absorbed damage as healing to the active shield caster(s) on
    * a given target. When multiple casters have shields on the same target,
-   * the absorbed amount is split equally among them — the combat log doesn't
-   * tell us which specific shield absorbed the damage.
+   * the absorbed amount is split equally among them.
+   *
+   * If no active shields are found, falls back to the most recently applied
+   * shield on the target (overflow fallback — matches uwu-logs behavior
+   * where remaining absorb goes to the last known shield).
    */
-  private _creditAbsorb(destGuid: string, absorbedAmount: number): void {
-    const casters = this._findShieldCasters(destGuid);
-    if (casters.length === 0) return;
+  private _creditAbsorb(destGuid: string, absorbedAmount: number, currentTimestamp: number): void {
+    const casters = this._findShieldCasters(destGuid, currentTimestamp);
+
+    // Overflow fallback: if no active shields, find the most recently applied
+    // shield on this target (regardless of removedAt or spell ID) and credit it.
+    // This is cross-spell-ID and approximate — e.g., a late PW:S absorb might
+    // be attributed to a more recently applied Sacred Shield caster. Acceptable
+    // because WotLK 3.3.5 logs don't tell us which shield absorbed the hit.
+    if (casters.length === 0) {
+      const prefix = destGuid + "|";
+      let bestEntry: ShieldEntry | null = null;
+      for (const [key, entry] of this._activeShields) {
+        if (!key.startsWith(prefix)) continue;
+        if (bestEntry === null || entry.appliedAt > bestEntry.appliedAt) {
+          bestEntry = entry;
+        }
+      }
+      if (bestEntry !== null) {
+        const resolvedCaster = this._petOwners.get(bestEntry.casterGuid) ?? bestEntry.casterGuid;
+        if (isPlayer(resolvedCaster)) {
+          this._accumulate(resolvedCaster, 0, absorbedAmount);
+        }
+      }
+      return;
+    }
 
     const share = Math.round(absorbedAmount / casters.length);
     for (const caster of casters) {
