@@ -116,6 +116,8 @@ export class DeathTracker {
   private _buffers = new Map<string, CircularBuffer>();
   /** Deaths recorded in the current encounter. */
   private _currentDeaths: PlayerDeath[] = [];
+  /** Player GUIDs whose deaths were confirmed by a battle rez (SPELL_RESURRECT). */
+  private _confirmedDeaths = new Set<string>();
   /** Completed encounter death lists (for aggregate summaries). */
   private _completedEncounters: PlayerDeath[][] = [];
 
@@ -157,16 +159,27 @@ export class DeathTracker {
       return;
     }
 
+    // Battle rez detection: SPELL_RESURRECT targeting a player confirms their
+    // death as real (not Feign Death). After rez, they will act again — but the
+    // death should NOT be removed by the Feign Death filter below.
+    if (eventType === "SPELL_RESURRECT" && isPlayer(event.destGuid)) {
+      this._confirmedDeaths.add(event.destGuid);
+      return;
+    }
+
     // Feign Death detection: if a "dead" player produces an active combat event
     // as source, they used Feign Death (a real dead player can't act). Remove the death.
     // Only consider active actions — periodic effects (DoTs, HoTs) continue after death.
+    // Skip players whose death was confirmed by a battle rez (SPELL_RESURRECT).
     if (this._currentDeaths.length > 0 && isPlayer(event.sourceGuid)) {
       if (ACTIVE_PLAYER_EVENTS.has(eventType)) {
         const sourceGuid = event.sourceGuid;
-        for (let i = this._currentDeaths.length - 1; i >= 0; i--) {
-          if (this._currentDeaths[i].playerGuid === sourceGuid) {
-            this._currentDeaths.splice(i, 1);
-            break;
+        if (!this._confirmedDeaths.has(sourceGuid)) {
+          for (let i = this._currentDeaths.length - 1; i >= 0; i--) {
+            if (this._currentDeaths[i].playerGuid === sourceGuid) {
+              this._currentDeaths.splice(i, 1);
+              break;
+            }
           }
         }
       }
@@ -239,6 +252,7 @@ export class DeathTracker {
     this._inEncounter = true;
     this._encounterStartMs = startTimestamp;
     this._currentDeaths = [];
+    this._confirmedDeaths.clear();
     this._buffers.clear();
   }
 
@@ -247,6 +261,7 @@ export class DeathTracker {
     const result = this._currentDeaths;
     this._completedEncounters.push(result);
     this._currentDeaths = [];
+    this._confirmedDeaths.clear();
     this._buffers.clear();
     return result;
   }

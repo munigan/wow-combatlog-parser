@@ -791,6 +791,149 @@ describe("DeathTracker", () => {
       expect(deaths).toHaveLength(0); // Filtered: only heals, no damage
     });
 
+    it("filters Feign Death when player acts after UNIT_DIED with AoE damage in buffer", () => {
+      tracker.onEncounterStart(1000);
+
+      // AoE damage hits the hunter (incidental, non-lethal)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1050,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          sourceName: "Boss",
+          destGuid: PLAYER1,
+          destName: "Hunter",
+          rawFields: "12345,Disrupting Shout,0x01,3571,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      // Hunter uses Feign Death
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1100,
+          eventType: "UNIT_DIED",
+          destGuid: PLAYER1,
+          destName: "Hunter",
+        }),
+      );
+
+      // Hunter continues attacking (proves they're alive → Feign Death)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1200,
+          eventType: "RANGE_DAMAGE",
+          sourceGuid: PLAYER1,
+          sourceName: "Hunter",
+          destGuid: BOSS_GUID,
+          destName: "Boss",
+          rawFields: "75,Auto Shot,0x1,4000,0,1,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const deaths = tracker.onEncounterEnd();
+      expect(deaths).toHaveLength(0); // Filtered: player acted after "death"
+    });
+
+    it("keeps real death when player is battle-rezzed and acts after", () => {
+      tracker.onEncounterStart(1000);
+
+      // Real lethal damage
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1050,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          sourceName: "Boss",
+          destGuid: PLAYER1,
+          destName: "Tank",
+          rawFields: "12345,Shadow Bolt,0x20,50000,5000,0x20,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      // Player dies for real
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1100,
+          eventType: "UNIT_DIED",
+          destGuid: PLAYER1,
+          destName: "Tank",
+        }),
+      );
+
+      // Battle rez (SPELL_RESURRECT confirms the death was real)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1500,
+          eventType: "SPELL_RESURRECT",
+          sourceGuid: PLAYER2,
+          sourceName: "Druid",
+          destGuid: PLAYER1,
+          destName: "Tank",
+          rawFields: "48477,Rebirth,0x8",
+        }),
+      );
+
+      // Player acts again after rez — death should NOT be removed
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 2000,
+          eventType: "SPELL_CAST_SUCCESS",
+          sourceGuid: PLAYER1,
+          sourceName: "Tank",
+          destGuid: BOSS_GUID,
+          destName: "Boss",
+          rawFields: "12345,Shield Slam,0x1",
+        }),
+      );
+
+      const deaths = tracker.onEncounterEnd();
+      expect(deaths).toHaveLength(1); // Death kept: confirmed by battle rez
+      expect(deaths[0].playerGuid).toBe(PLAYER1);
+    });
+
+    it("DoT ticks from dead player do not remove real death", () => {
+      tracker.onEncounterStart(1000);
+
+      // Real damage
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1050,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          sourceName: "Boss",
+          destGuid: PLAYER1,
+          destName: "Warlock",
+          rawFields: "12345,Shadow Bolt,0x20,50000,5000,0x20,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      // Player dies
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1100,
+          eventType: "UNIT_DIED",
+          destGuid: PLAYER1,
+          destName: "Warlock",
+        }),
+      );
+
+      // DoT continues ticking after death (SPELL_PERIODIC_DAMAGE as source)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1200,
+          eventType: "SPELL_PERIODIC_DAMAGE",
+          sourceGuid: PLAYER1,
+          sourceName: "Warlock",
+          destGuid: BOSS_GUID,
+          destName: "Boss",
+          rawFields: "47813,Corruption,0x20,4000,0,32,0,0,0,nil,nil,nil",
+        }),
+      );
+
+      const deaths = tracker.onEncounterEnd();
+      expect(deaths).toHaveLength(1); // Death kept: DoT ticks don't prove alive
+    });
+
     it("only counts damage events (positive amount) for killing blow, not heals", () => {
       tracker.onEncounterStart(1000);
 
