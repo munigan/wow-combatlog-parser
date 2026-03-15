@@ -16,7 +16,9 @@ const EXTERNAL_SPELL_LIST: ExternalSpellInfo[] = [
 
   // DPS externals
   { spellId: 10060, displayName: "Power Infusion" },
-  { spellId: 57934, displayName: "Tricks of the Trade" },
+  // Tricks of the Trade: 57934 is the cast/self-buff on the rogue.
+  // 57933 is the actual buff aura applied to the recipient (cross-player).
+  { spellId: 57933, displayName: "Tricks of the Trade" },
   { spellId: 49016, displayName: "Hysteria" },
   { spellId: 54646, displayName: "Focus Magic" },
 
@@ -24,7 +26,7 @@ const EXTERNAL_SPELL_LIST: ExternalSpellInfo[] = [
   { spellId: 29166, displayName: "Innervate" },
 
   // Tank/utility externals
-  { spellId: 34477, displayName: "Misdirection" },
+  // Note: Misdirection (34477/35079) excluded — both auras are on the caster (self), not the tank.
   { spellId: 1038, displayName: "Hand of Salvation" },
   { spellId: 1044, displayName: "Hand of Freedom" },
 

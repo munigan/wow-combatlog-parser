@@ -127,6 +127,12 @@ export class DeathTracker {
         }
       }
 
+      // Filter out Feign Death: if no damage events in recap, this is a hunter
+      // using Feign Death which triggers UNIT_DIED in WotLK 3.3.5 logs.
+      // A real death always has at least one damage event in the buffer.
+      const hasDamage = recap.some((e) => e.amount > 0);
+      if (!hasDamage) return;
+
       this._currentDeaths.push({
         playerGuid,
         playerName: event.destName,

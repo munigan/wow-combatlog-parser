@@ -744,23 +744,51 @@ describe("DeathTracker", () => {
   });
 
   describe("edge cases", () => {
-    it("records mysterious death with null killingBlow when buffer is empty", () => {
+    it("filters out Feign Death (UNIT_DIED with no damage in buffer)", () => {
       tracker.onEncounterStart(1000);
 
-      // Player dies with no preceding damage events in buffer
+      // Player dies with no preceding damage events in buffer — this is
+      // Feign Death in WotLK 3.3.5 (triggers UNIT_DIED in the combat log)
       tracker.processEvent(
         makeEvent({
           timestamp: 1100,
           eventType: "UNIT_DIED",
           destGuid: PLAYER1,
-          destName: "Warrior",
+          destName: "Hunter",
         }),
       );
 
       const deaths = tracker.onEncounterEnd();
-      expect(deaths).toHaveLength(1);
-      expect(deaths[0].killingBlow).toBeNull();
-      expect(deaths[0].recap).toHaveLength(0);
+      expect(deaths).toHaveLength(0); // Filtered as Feign Death
+    });
+
+    it("filters out Feign Death even when heal events exist in buffer", () => {
+      tracker.onEncounterStart(1000);
+
+      // Only healing in the buffer, no damage — still Feign Death
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1050,
+          eventType: "SPELL_HEAL",
+          sourceGuid: PLAYER2,
+          sourceName: "Healer",
+          destGuid: PLAYER1,
+          destName: "Hunter",
+          rawFields: "12345,Flash Heal,0x2,5000,0,0",
+        }),
+      );
+
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1100,
+          eventType: "UNIT_DIED",
+          destGuid: PLAYER1,
+          destName: "Hunter",
+        }),
+      );
+
+      const deaths = tracker.onEncounterEnd();
+      expect(deaths).toHaveLength(0); // Filtered: only heals, no damage
     });
 
     it("only counts damage events (positive amount) for killing blow, not heals", () => {

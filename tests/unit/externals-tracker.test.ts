@@ -551,7 +551,7 @@ describe("ExternalsTracker", () => {
           sourceName: "Rogue",
           destGuid: PLAYER2,
           destName: "Mage",
-          rawFields: '57934,"Tricks of the Trade",0x01,BUFF',
+          rawFields: '57933,"Tricks of the Trade",0x01,BUFF',
         }),
       );
       tracker.processEvent(
@@ -562,7 +562,7 @@ describe("ExternalsTracker", () => {
           sourceName: "Rogue",
           destGuid: PLAYER2,
           destName: "Mage",
-          rawFields: '57934,"Tricks of the Trade",0x01,BUFF',
+          rawFields: '57933,"Tricks of the Trade",0x01,BUFF',
         }),
       );
       tracker.onEncounterEnd(50000, 20000);
@@ -578,7 +578,7 @@ describe("ExternalsTracker", () => {
       expect(mage.received.length).toBe(2);
 
       const pi = mage.received.find((r) => r.spellId === 10060);
-      const tricks = mage.received.find((r) => r.spellId === 57934);
+      const tricks = mage.received.find((r) => r.spellId === 57933);
 
       expect(pi).toBeDefined();
       expect(pi!.totalCount).toBe(2);
