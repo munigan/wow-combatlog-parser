@@ -21,6 +21,20 @@ const HEAL_EVENTS = new Set([
   "SPELL_PERIODIC_HEAL",
 ]);
 
+/**
+ * Active player events that prove a player is alive (not Feign Death).
+ * Periodic effects (SPELL_PERIODIC_DAMAGE, SPELL_PERIODIC_HEAL) are excluded
+ * because DoTs/HoTs continue ticking after a real death.
+ */
+const ACTIVE_PLAYER_EVENTS = new Set([
+  "SWING_DAMAGE",
+  "SPELL_DAMAGE",
+  "RANGE_DAMAGE",
+  "SPELL_CAST_SUCCESS",
+  "SPELL_CAST_START",
+  "SPELL_HEAL",
+]);
+
 /** Maximum events in the per-player rolling buffer. */
 const BUFFER_SIZE = 10;
 
@@ -127,9 +141,8 @@ export class DeathTracker {
         }
       }
 
-      // Filter out Feign Death: if no damage events in recap, this is a hunter
-      // using Feign Death which triggers UNIT_DIED in WotLK 3.3.5 logs.
-      // A real death always has at least one damage event in the buffer.
+      // Filter out Feign Death: if no damage events in recap, this is certainly
+      // a Feign Death (Hunter ability that triggers UNIT_DIED in WotLK 3.3.5 logs).
       const hasDamage = recap.some((e) => e.amount > 0);
       if (!hasDamage) return;
 
@@ -142,6 +155,21 @@ export class DeathTracker {
         recap,
       });
       return;
+    }
+
+    // Feign Death detection: if a "dead" player produces an active combat event
+    // as source, they used Feign Death (a real dead player can't act). Remove the death.
+    // Only consider active actions — periodic effects (DoTs, HoTs) continue after death.
+    if (this._currentDeaths.length > 0 && isPlayer(event.sourceGuid)) {
+      if (ACTIVE_PLAYER_EVENTS.has(eventType)) {
+        const sourceGuid = event.sourceGuid;
+        for (let i = this._currentDeaths.length - 1; i >= 0; i--) {
+          if (this._currentDeaths[i].playerGuid === sourceGuid) {
+            this._currentDeaths.splice(i, 1);
+            break;
+          }
+        }
+      }
     }
 
     // Buffer damage events targeting a player
