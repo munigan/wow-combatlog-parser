@@ -261,3 +261,11 @@ export interface ParseStreamSummary {
   raidDurationMs: number;
   players: PlayerInfo[];
 }
+
+/** Callbacks for parseLogStream() incremental processing. */
+export interface ParseStreamCallbacks {
+  /** Called after each boss encounter completes. Awaited if async (backpressure). */
+  onEncounter: (encounter: ParsedEncounter) => void | Promise<void>;
+  /** Called after the entire stream is processed with raid-wide aggregates. Awaited if async. */
+  onComplete: (summary: ParseStreamSummary) => void | Promise<void>;
+}

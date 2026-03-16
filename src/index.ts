@@ -29,6 +29,7 @@ export type {
   EncounterPlayer,
   ParsedEncounter,
   ParseStreamSummary,
+  ParseStreamCallbacks,
 } from "./types.js";
 
 export { scanLog } from "./scanner.js";

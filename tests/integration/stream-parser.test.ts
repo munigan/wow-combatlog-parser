@@ -23,7 +23,7 @@ const logExists = existsSync(LOG_PATH);
 describe.skipIf(!logExists)(
   "integration: parseLogStream and gzip support",
   () => {
-    it("parseLogStream yields encounters incrementally", async () => {
+    it("parseLogStream calls onEncounter for each boss and onComplete with summary", async () => {
       const content = readFileSync(LOG_PATH);
 
       // Scan first to get raid selections
@@ -39,36 +39,74 @@ describe.skipIf(!logExists)(
         timeRanges: firstRaid.timeRanges,
       };
 
-      // Use parseLogStream
-      const parseStream = fileToStream(content);
-      const gen = parseLogStream(parseStream, [selection]);
-
+      // Use parseLogStream with callbacks
       const encounters: ParsedEncounter[] = [];
       let summary: ParseStreamSummary | undefined;
 
-      for (;;) {
-        const result = await gen.next();
-        if (result.done) {
-          summary = result.value;
-          break;
-        }
-        const encounter = result.value;
+      await parseLogStream(
+        fileToStream(content),
+        [selection],
+        {
+          onEncounter: (encounter) => {
+            // Each encounter has expected fields
+            expect(encounter.bossName).toBeTruthy();
+            expect(encounter.duration).toBeGreaterThan(0);
+            expect(encounter.players.length).toBeGreaterThan(0);
+            encounters.push(encounter);
+          },
+          onComplete: (s) => {
+            summary = s;
+          },
+        },
+      );
 
-        // Each yielded encounter has expected fields
-        expect(encounter.bossName).toBeTruthy();
-        expect(encounter.duration).toBeGreaterThan(0);
-        expect(encounter.players.length).toBeGreaterThan(0);
-
-        encounters.push(encounter);
-      }
-
-      // Summary (return value) has raid-wide data
+      // onComplete was called with raid-wide data
       expect(summary).toBeDefined();
       expect(summary!.players.length).toBeGreaterThan(0);
       expect(summary!.raidDurationMs).toBeGreaterThan(0);
 
-      // We found encounters
+      // Encounters were yielded
       expect(encounters.length).toBeGreaterThan(0);
+    }, 60_000);
+
+    it("onEncounter awaits async callbacks (backpressure)", async () => {
+      const content = readFileSync(LOG_PATH);
+
+      const scanResult = await scanLog(fileToStream(content));
+      const firstRaid = scanResult.raids[0];
+      const selection = {
+        dates: firstRaid.dates,
+        startTime: firstRaid.startTime,
+        endTime: firstRaid.endTime,
+        timeRanges: firstRaid.timeRanges,
+      };
+
+      const order: string[] = [];
+
+      await parseLogStream(
+        fileToStream(content),
+        [selection],
+        {
+          onEncounter: async (encounter) => {
+            order.push(`start-${encounter.bossName}`);
+            // Simulate async DB write
+            await new Promise((r) => setTimeout(r, 1));
+            order.push(`end-${encounter.bossName}`);
+          },
+          onComplete: async () => {
+            order.push("complete");
+          },
+        },
+      );
+
+      // Verify callbacks were awaited (no interleaving)
+      for (let i = 0; i < order.length - 1; i++) {
+        if (order[i].startsWith("start-")) {
+          const bossName = order[i].substring(6);
+          expect(order[i + 1]).toBe(`end-${bossName}`);
+        }
+      }
+      expect(order[order.length - 1]).toBe("complete");
     }, 60_000);
 
     it("gzip support in scanLog", async () => {

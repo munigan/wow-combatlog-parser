@@ -3,8 +3,7 @@ import type {
   RaidSelection,
   PlayerInfo,
   ConsumableSummaryEntry,
-  ParsedEncounter,
-  ParseStreamSummary,
+  ParseStreamCallbacks,
   EncounterPlayer,
   EncounterSummary,
 } from "./types.js";
@@ -51,19 +50,32 @@ function buildEncounterPlayers(
 }
 
 /**
- * AsyncGenerator that parses a WoW combat log stream and yields
- * ParsedEncounter objects incrementally as each boss encounter completes.
+ * Streaming parse: processes a WoW combat log stream and calls callbacks
+ * incrementally as encounters complete.
  *
- * Returns a ParseStreamSummary with raid-level aggregates after the stream ends.
+ * - `callbacks.onEncounter(encounter)` — called after each boss encounter ends.
+ *   If the callback returns a Promise, the parser awaits it (backpressure).
+ * - `callbacks.onComplete(summary)` — called once after the stream is fully
+ *   consumed, with raid-wide player aggregates.
  *
- * Only supports a single RaidSelection (first selection used). For multi-selection
- * parsing, use parseLog() instead.
+ * @example
+ * ```typescript
+ * await parseLogStream(file.stream(), selections, {
+ *   onEncounter: async (encounter) => {
+ *     await db.encounters.insert(encounter);
+ *   },
+ *   onComplete: async (summary) => {
+ *     await db.raids.update({ raidId, ...summary });
+ *   },
+ * });
+ * ```
  */
-export async function* parseLogStream(
+export async function parseLogStream(
   stream: ReadableStream<Uint8Array>,
   raidSelections: RaidSelection[],
+  callbacks: ParseStreamCallbacks,
   options?: ParseOptions,
-): AsyncGenerator<ParsedEncounter, ParseStreamSummary> {
+): Promise<void> {
   const year = new Date().getFullYear();
 
   // Pre-process selections: convert ISO time ranges to epoch ms
@@ -113,9 +125,6 @@ export async function* parseLogStream(
   // Build pipeline with gzip + maxBytes support
   const { reader, getBytesRead } = await buildPipeline(stream, options?.maxBytes);
 
-  // Track all yielded encounters for summary computation
-  const yieldedEncounters: EncounterSummary[] = [];
-
   for (;;) {
     const { done, value: line } = await reader.read();
     if (done) break;
@@ -164,11 +173,10 @@ export async function* parseLogStream(
           completed.participants,
           ctx.stateMachine.getDetectedPlayers(),
         );
-        yieldedEncounters.push(completed.encounter);
-        yield {
+        await callbacks.onEncounter({
           ...completed.encounter,
           players,
-        };
+        });
       }
     }
 
@@ -196,16 +204,14 @@ export async function* parseLogStream(
         completed.participants,
         ctx.stateMachine.getDetectedPlayers(),
       );
-      yieldedEncounters.push(completed.encounter);
-      yield {
+      await callbacks.onEncounter({
         ...completed.encounter,
         players,
-      };
+      });
     }
   }
 
   // Build summary from the first selection (primary raid)
-  // For multi-selection support, aggregate across all contexts
   const ctx = contexts[0];
   const segments = ctx.stateMachine.getRaidSegments();
   const playerMap = ctx.stateMachine.getDetectedPlayers();
@@ -228,9 +234,9 @@ export async function* parseLogStream(
   const raidEndMs = lastTimestamps[0];
   const raidDurationMs = raidEndMs - raidStartMs;
 
-  // Build per-player consumable summaries from yielded encounters
+  // Build per-player consumable summaries
   const allEncounters = ctx.stateMachine.getEncounters()
-    .filter((enc) => enc.duration >= MIN_ENCOUNTER_DURATION_S);
+    .filter((enc: EncounterSummary) => enc.duration >= MIN_ENCOUNTER_DURATION_S);
   const playerConsumableSummaries = new Map<string, Record<number, ConsumableSummaryEntry>>();
   for (const enc of allEncounters) {
     if (enc.consumables === undefined) continue;
@@ -268,10 +274,11 @@ export async function* parseLogStream(
 
   // Get externals summaries
   const sortedEncounters = allEncounters.sort(
-    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+    (a: EncounterSummary, b: EncounterSummary) =>
+      new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
   );
   const totalEncounterDurationMs = sortedEncounters.reduce(
-    (sum, enc) => sum + enc.duration * 1000, 0,
+    (sum: number, enc: EncounterSummary) => sum + enc.duration * 1000, 0,
   );
   const externalsSummaries = ctx.stateMachine.getExternalsSummaries(totalEncounterDurationMs);
 
@@ -325,10 +332,10 @@ export async function* parseLogStream(
   }
   players.sort((a, b) => a.name.localeCompare(b.name));
 
-  return {
+  await callbacks.onComplete({
     raidInstance,
     raidDate,
     raidDurationMs,
     players,
-  };
+  });
 }
