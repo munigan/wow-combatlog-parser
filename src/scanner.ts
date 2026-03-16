@@ -9,7 +9,7 @@ import type {
 import { CombatLogStateMachine } from "./state/state-machine.js";
 import type { PlayerRecord } from "./state/state-machine.js";
 import type { RaidSegment } from "./state/raid-separator.js";
-import { createLineSplitter } from "./pipeline/line-splitter.js";
+import { buildPipeline } from "./pipeline/build-pipeline.js";
 import { parseLine } from "./pipeline/line-parser.js";
 import { epochToIso } from "./utils/timestamp.js";
 
@@ -61,7 +61,6 @@ export async function scanLog(
   const year = new Date().getFullYear();
   const stateMachine = new CombatLogStateMachine();
 
-  let bytesRead = 0;
   let lineCount = 0;
   let lastProgressBytes = 0;
   let lastTimestamp = 0;
@@ -70,23 +69,8 @@ export async function scanLog(
   const PROGRESS_BYTE_INTERVAL = 1024 * 1024; // ~1MB
   const PROGRESS_LINE_INTERVAL = 5000;
 
-  // Build pipeline: stream → byte counter → TextDecoder → LineSplitter
-  const byteCounter = new TransformStream<Uint8Array, Uint8Array>({
-    transform(chunk, controller) {
-      bytesRead += chunk.byteLength;
-      controller.enqueue(chunk);
-    },
-  });
-
-  const lineSplitter = createLineSplitter();
-
-  const textStream = stream
-    .pipeThrough(byteCounter)
-    .pipeThrough(new TextDecoderStream() as unknown as TransformStream<Uint8Array, string>);
-
-  const lineStream = textStream.pipeThrough(lineSplitter);
-
-  const reader = lineStream.getReader();
+  // Build pipeline with gzip + maxBytes support
+  const { reader, getBytesRead } = await buildPipeline(stream, options?.maxBytes);
 
   for (;;) {
     const { done, value: line } = await reader.read();
@@ -100,12 +84,13 @@ export async function scanLog(
 
     lineCount++;
     if (onProgress) {
+      const currentBytes = getBytesRead();
       if (
-        bytesRead - lastProgressBytes >= PROGRESS_BYTE_INTERVAL ||
+        currentBytes - lastProgressBytes >= PROGRESS_BYTE_INTERVAL ||
         lineCount % PROGRESS_LINE_INTERVAL === 0
       ) {
-        onProgress(bytesRead);
-        lastProgressBytes = bytesRead;
+        onProgress(currentBytes);
+        lastProgressBytes = currentBytes;
       }
     }
   }
