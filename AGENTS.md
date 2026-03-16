@@ -16,30 +16,38 @@ WoW combat log parser for WotLK 3.3.5. TypeScript library, zero runtime deps, st
 
 ```bash
 pnpm run build       # tsup → dist/
-pnpm run test        # vitest (182 tests)
+pnpm run test        # vitest (260 tests)
 pnpm run typecheck   # tsc --noEmit
+pnpm run bench <log> # memory/GC profiling (requires --expose-gc)
+pnpm run bench:micro # per-function benchmarks (vitest bench)
 ```
 
-**Important**: Scripts import from `../dist/index.js` — always run `pnpm run build` before running scan scripts. Example logs live in `tests/example-logs/` (gitignored).
+**Important**: Scripts import from `../dist/index.js` — always run `pnpm run build` before running scripts. Example logs live in `tests/example-logs/` (gitignored).
 
 ## Project Structure
 
 ```
 src/
-  index.ts              # Barrel exports
+  index.ts              # Barrel exports (3 functions, 1 error class, 32 types)
   types.ts              # Public interfaces (WowClass, WowSpec, ConsumableType, etc.)
   scanner.ts            # scanLog() implementation
-  parser.ts             # parseLog() implementation (with consumable + combat tracking)
+  parser.ts             # parseLog() implementation
+  stream-parser.ts      # parseLogStream() callback-based streaming parse
+  errors.ts             # FileTooLargeError, DEFAULT_MAX_BYTES
   pipeline/
+    build-pipeline.ts   # Shared: gzip detect → byte counter → TextDecoder → LineSplitter
+    decompress.ts       # maybeDecompress(): gzip magic byte detection
     line-splitter.ts    # TransformStream: bytes → lines
     line-parser.ts      # parseLine(): line → LogEvent, isBuffAura(), getSpellId()
   state/
-    state-machine.ts    # Composes tracker + separator + consumable + combat + player detection
+    state-machine.ts    # Composes all trackers + player detection
     encounter-tracker.ts # Boss encounter detection (kill/wipe/idle/coward)
     raid-separator.ts   # Segment tracking, Jaccard merging
     consumable-tracker.ts # Potion/bomb/flame cap tracking with pre-pot detection
-    combat-tracker.ts   # Per-player damage with pet→owner merging
+    combat-tracker.ts   # Per-player damage done/taken with pet→owner merging
     buff-uptime-tracker.ts # Flask/elixir/food buff uptime tracking
+    death-tracker.ts    # Death recap with circular buffer
+    externals-tracker.ts # Cross-player buff tracking (PI, Tricks, etc.)
   detection/
     class-detection.ts  # detectClass(spellId) → WowClass
     spec-detection.ts   # detectSpec(spellId, class) → WowSpec
@@ -50,32 +58,64 @@ src/
     difficulty-spells.ts # Boss difficulty spell tuples (ICC/ToC)
     consumable-data.ts  # 14 WotLK consumable spell IDs (potions/bombs/flame cap)
     buff-data.ts        # Flask, elixir, and food buff spell IDs (36 total)
+    external-data.ts    # 16 external buff spell IDs
+    encounter-npcs.ts   # Per-boss NPC whitelist for valid damage targets
   utils/
     timestamp.ts        # WotLK timestamp parsing (M/D HH:MM:SS.mmm, no year)
     guid.ts             # GUID type detection (player/NPC/pet/vehicle)
-    fields.ts           # Quote-aware CSV field parsing
+    fields.ts           # Quote-aware CSV field parsing + parseFieldsPartial
 tests/
-  unit/                 # 15 unit test files
-  integration/          # Real log file tests (scan-examples.test.ts, parse-combat-stats.test.ts)
-  example-logs/         # WoW combat log files (gitignored, example-log-{1..7}.txt)
+  unit/                 # 19 unit test files
+  integration/          # 4 integration test files (real log files, gzip, streaming)
+  bench/                # Vitest micro-benchmarks (parse-line.bench.ts)
+  example-logs/         # WoW combat log files (gitignored, example-log-{1..9}.txt)
 scripts/
+  bench.ts              # Memory/GC profiling script
   scan-all.ts           # Scans all example logs → JSON
   summarize.ts          # Pretty-prints scan results
   parse-log.ts          # Parse a single log file
-  parse-log-7.ts        # Scan + parse example-log-7.txt → result.json
+  parse-log-7.ts        # Scan + parse example-log-7.txt
   deep-investigate.ts   # Deep encounter timing investigation
-docs/plans/             # Design docs and implementation plans
+.github/workflows/
+  ci.yml                # CI: push/PR to main → typecheck + build + test
+  publish.yml           # Publish: tag v* → build + test + npm publish (OIDC) + GitHub Release
+.opencode/commands/
+  release.md            # /release command (patch/minor/major)
 ```
 
 ## Public API
 
 ### `scanLog(stream, options?): Promise<ScanResult>`
-Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables.
+Lightweight client-side scan. Detects raids, encounters, players with class/spec. Does NOT track consumables, combat stats, or other detailed data.
 
 ### `parseLog(stream, selections, options?): Promise<ParseResult>`
-Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables (potions, engineering bombs, flame cap) with pre-pot detection, per-player per-encounter damage stats with pet→owner merging, and flask/elixir/food buff uptime per player.
+Server-side extraction filtered by time ranges from `scanLog`. Tracks consumables, combat stats (damage done/taken), buff uptime, deaths with recap, and external buffs. Supports multiple `RaidSelection[]` for batch processing.
 
-**Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
+### `parseLogStream(stream, selections, callbacks, options?): Promise<void>`
+Callback-based streaming parse for incremental DB persistence. Calls `callbacks.onEncounter(encounter)` after each boss encounter ends, and `callbacks.onComplete(summary)` with raid-wide aggregates when the stream is fully consumed. Async callbacks are awaited (backpressure).
+
+```typescript
+await parseLogStream(file.stream(), selections, {
+  onEncounter: async (encounter) => {
+    await db.encounters.insert(encounter);
+  },
+  onComplete: async (summary) => {
+    await db.raids.update({ raidId, ...summary });
+  },
+});
+```
+
+**Typical flow**: `scanLog` → user picks raids → `parseLog` or `parseLogStream` with `RaidSelection[]`.
+
+## Gzip Support
+
+All three functions (`scanLog`, `parseLog`, `parseLogStream`) auto-detect gzip-compressed input. If the first two bytes are the gzip magic bytes (`0x1f 0x8b`), the stream is piped through `DecompressionStream('gzip')` before parsing. No configuration needed — pass `.txt` or `.txt.gz` files and it works.
+
+Compression ratios for WoW combat logs: 12-13x with gzip (591 MB → 48 MB).
+
+## File Size Limit
+
+All parse functions accept `maxBytes` option (default: 1 GB / 1,073,741_824 bytes). The limit applies to decompressed bytes. Exceeding it throws `FileTooLargeError`.
 
 ## Encounter Detection Logic
 
@@ -123,7 +163,7 @@ Tracks flask, elixir, and food buff uptime per player across the entire raid. Co
 - **Food Buffs** (15): Fish Feast + 14 individual food buffs
 
 ### Implementation
-- New `BuffUptimeTracker` (`src/state/buff-uptime-tracker.ts`) uses interval-based tracking via `SPELL_AURA_APPLIED` / `SPELL_AURA_REMOVED` / `SPELL_AURA_REFRESH` events.
+- `BuffUptimeTracker` (`src/state/buff-uptime-tracker.ts`) uses interval-based tracking via `SPELL_AURA_APPLIED` / `SPELL_AURA_REMOVED` / `SPELL_AURA_REFRESH` events.
 - `flaskUptimePercent`: union of all flask + elixir intervals (merged, no double-counting).
 - `foodUptimePercent`: union of all food buff intervals.
 - Per-buff breakdown in `BuffBreakdown[]` shows individual buff uptimes.
@@ -153,7 +193,7 @@ Tracks per-player per-encounter damage done and damage taken via `CombatTracker`
 - Stored on `PlayerCombatStats.damageTaken`, same per-encounter and raid-wide aggregation as damage done.
 
 ### Pet→Owner Merging
-Pet damage is attributed to the owner player. Three detection methods:
+Pet damage is attributed to the owner player. Two detection methods:
 1. **SPELL_SUMMON** — Player summons pet (DK Army, Gargoyle, Warlock demons, etc.)
 2. **PET_FILTER_SPELLS** (~90 spells) — Known pet↔owner interaction spells detect ownership bidirectionally. Covers Hunter (Mend Pet, Kill Command, Bestial Wrath), Warlock (Health Funnel, Soul Link, Dark Pact), DK (Ghoul Frenzy, Death Pact), and pet→owner auras (Kindred Spirits, Furious Howl, Call of the Wild). Sourced from uwu-logs.
 
@@ -174,7 +214,7 @@ Pet damage is attributed to the owner player. Three detection methods:
 Tracks player deaths during encounters with a "death recap" showing the last 10 damage/heal events before each death.
 
 ### Implementation
-- New `DeathTracker` (`src/state/death-tracker.ts`) uses a rolling circular buffer (size 10) per player.
+- `DeathTracker` (`src/state/death-tracker.ts`) uses a rolling circular buffer (size 10) per player.
 - Buffer populated by damage events (SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD, ENVIRONMENTAL_DAMAGE) and healing events (SPELL_HEAL, SPELL_PERIODIC_HEAL) targeting players.
 - On `UNIT_DIED` for a player, buffer is snapshotted as recap, killing blow identified as last positive-amount event.
 - Healing events stored with negative amounts to distinguish from damage.
@@ -184,24 +224,45 @@ Tracks player deaths during encounters with a "death recap" showing the last 10 
 
 ## Externals Tracking (parseLog only)
 
-Tracks a curated list of 17 WotLK external buff spells cast by one player on another during encounters. Records count, uptime %, and individual start/end interval timestamps.
+Tracks 16 WotLK external buff spells cast by one player on another during encounters. Records count, uptime %, and individual start/end interval timestamps.
 
 ### Categories
-- **Raid Cooldowns**: Bloodlust (2825), Heroism (32182)
-- **DPS Externals**: Power Infusion (10060), Tricks of the Trade (57934), Hysteria (49016), Focus Magic (54646)
-- **Healer Externals**: Innervate (29166)
-- **Tank/Utility**: Misdirection (34477), Hand of Salvation (1038), Hand of Freedom (1044)
-- **Defensive**: Hand of Sacrifice (6940), Hand of Protection (10278), Pain Suppression (33206), Guardian Spirit (47788), Divine Sacrifice (64205), Divine Guardian (70940), Intervene (3411)
+- **Raid Cooldowns** (2): Bloodlust (2825), Heroism (32182)
+- **DPS Externals** (4): Power Infusion (10060), Tricks of the Trade (57933, recipient buff), Hysteria (49016), Focus Magic (54646)
+- **Healer Externals** (1): Innervate (29166)
+- **Tank/Utility** (2): Hand of Salvation (1038), Hand of Freedom (1044)
+- **Defensive** (7): Hand of Sacrifice (6940), Hand of Protection (10278), Pain Suppression (33206), Guardian Spirit (47788), Divine Sacrifice (64205), Divine Guardian (70940), Intervene (3411)
 
 ### Implementation
-- New `ExternalsTracker` (`src/state/externals-tracker.ts`) uses interval-based tracking via SPELL_AURA_APPLIED/REMOVED/REFRESH.
-- Data file: `src/data/external-data.ts` — curated Map of external spell IDs.
+- `ExternalsTracker` (`src/state/externals-tracker.ts`) uses interval-based tracking via SPELL_AURA_APPLIED/REMOVED/REFRESH.
+- Data file: `src/data/external-data.ts` — curated Map of 16 external spell IDs.
 - Cross-player only (source != dest). Self-buffs excluded.
 - Tracks same spell from different sources separately.
 - Buffs active at encounter start captured with start = encounter start time.
 - Open intervals closed at encounter end.
 - `EncounterSummary.externals` — `Record<destGuid, ExternalBuffUse[]>` with count, uptimePercent, intervals.
 - `PlayerInfo.externals` — `PlayerExternalsSummary` with raid-wide aggregate counts and uptime.
+
+## Streaming Parse API (parseLogStream)
+
+`parseLogStream(stream, selections, callbacks, options)` is a callback-based streaming parser. It processes the log file in a single pass and calls:
+
+- `callbacks.onEncounter(encounter)` — after each boss encounter ends. The `ParsedEncounter` contains all per-encounter data (combatStats, consumables, deaths, externals, buffUptime, player list). If the callback returns a Promise, the parser awaits it (backpressure).
+- `callbacks.onComplete(summary)` — once after the stream is fully consumed. The `ParseStreamSummary` contains raid-wide aggregates (player list with total combatStats, buffUptime, consumables, deathCount, externals).
+
+Consumer usage for incremental DB persistence:
+```typescript
+await parseLogStream(file.stream(), selections, {
+  onEncounter: async (encounter) => {
+    await db.encounters.insert(encounter);  // save each encounter immediately
+  },
+  onComplete: async (summary) => {
+    await db.raids.update({ raidId, players: summary.players });
+  },
+});
+```
+
+Memory stays bounded: each encounter's data is delivered via callback and can be GC'd after saving.
 
 ## Player Participation
 
@@ -230,30 +291,12 @@ Encounter timing was aligned with [uwu-logs](https://github.com/Ridepad/uwu-logs
 
 Naxxramas (15), Obsidian Sanctum (1), Eye of Eternity (1), Vault of Archavon (4), Ulduar (14), Trial of the Crusader (5), Onyxia's Lair (1), Icecrown Citadel (12), Ruby Sanctum (1).
 
-## Gzip Support
+## CI/CD
 
-Both `scanLog` and `parseLog` (and `parseLogStream`) auto-detect gzip-compressed input. If the first two bytes are the gzip magic bytes (`0x1f 0x8b`), the stream is piped through `DecompressionStream('gzip')` before parsing. No configuration needed — pass `.txt` or `.txt.gz` files and it works.
-
-Compression ratios for WoW combat logs: 12-13x with gzip (591 MB → 48 MB).
-
-## File Size Limit
-
-All parse functions accept `maxBytes` option (default: 1 GB / 1,073,741,824 bytes). The limit applies to decompressed bytes. Exceeding it throws `FileTooLargeError`.
-
-## Streaming Parse API (parseLogStream)
-
-`parseLogStream(stream, selections, options)` is an AsyncGenerator that yields `ParsedEncounter` objects as each boss encounter completes. Returns `ParseStreamSummary` with raid-wide aggregates when done.
-
-Consumer usage for incremental DB persistence:
-```typescript
-const gen = parseLogStream(file.stream(), selections);
-for await (const encounter of gen) {
-  await db.encounters.insert(encounter);  // save each encounter immediately
-}
-```
-
-Memory stays bounded: each encounter's data is yielded, saved, and GC'd.
+- **CI** (`.github/workflows/ci.yml`): Runs on push/PR to `main`. Typecheck → build → test. pnpm 10, Node 22.
+- **Publish** (`.github/workflows/publish.yml`): Runs on tag push `v*`. Same checks + version verification + `npm publish` via OIDC trusted publishing (no tokens needed) + GitHub Release with auto-generated notes.
+- **Release flow**: `/release patch` (OpenCode command) or manually: bump version, commit, tag, push.
 
 ## Consumer
 
-This library is consumed by `~/www/wow-core` (Next.js app). It replaces `log-parser.ts`, `log-scanner.ts`, `log-scanner.worker.ts`, and `wow-raids.ts` in that project.
+This library is consumed by `~/www/wow-core` (Next.js app). Published as `@munigan/wow-combatlog-parser` on npm.

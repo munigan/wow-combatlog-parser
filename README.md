@@ -1,165 +1,129 @@
-# wow-combatlog-parser
+# @munigan/wow-combatlog-parser
 
 Streaming parser for World of Warcraft **WotLK 3.3.5** combat log files. Zero runtime dependencies, dual ESM/CJS, works in browser, Node 18+, Deno, and Bun.
 
 ## Install
 
 ```bash
-pnpm add wow-combatlog-parser
+pnpm add @munigan/wow-combatlog-parser
 ```
 
 ## API
 
-Two functions, one streaming pipeline:
+Three functions, one streaming pipeline:
 
 ### `scanLog(stream, options?)` — Detect raids
 
-Lightweight first pass. Reads the entire log in a single stream and returns detected raids, encounters, and players with class/spec. Does **not** track consumables.
+Lightweight first pass. Reads the entire log in a single stream and returns detected raids, encounters, and players with class/spec. Does **not** track consumables, combat stats, or other detailed data.
 
 ```ts
-import { scanLog } from "wow-combatlog-parser";
+import { scanLog } from "@munigan/wow-combatlog-parser";
 
-const stream = file.stream(); // ReadableStream<Uint8Array>
-const { raids } = await scanLog(stream, {
-  onProgress: (bytes) => console.log(`${bytes} bytes read`),
-});
+const stream = file.stream(); // ReadableStream<Uint8Array> (.txt or .txt.gz)
+const { raids } = await scanLog(stream);
 
 for (const raid of raids) {
-  console.log(raid.raidInstance, raid.dates, raid.encounters.length);
+  console.log(raid.raidInstance, raid.encounters.length, raid.playerCount);
 }
 ```
 
 ### `parseLog(stream, selections, options?)` — Extract raid details
 
-Second pass filtered by time ranges from `scanLog`. Processes events within selected raids and tracks consumable usage (potions, engineering bombs, flame cap) with pre-pot detection.
+Second pass filtered by time ranges from `scanLog`. Tracks consumables, combat stats (damage done/taken), buff uptime, deaths with recap, and external buffs.
 
 ```ts
-import { parseLog, type RaidSelection } from "wow-combatlog-parser";
+import { parseLog } from "@munigan/wow-combatlog-parser";
 
-const selection: RaidSelection = {
+const { raids } = await parseLog(file.stream(), [{
   dates: raid.dates,
   startTime: raid.startTime,
   endTime: raid.endTime,
   timeRanges: raid.timeRanges,
-};
+}]);
 
-const stream = file.stream();
-const { raids: parsed } = await parseLog(stream, [selection]);
-
-// Per-encounter consumable usage
-for (const encounter of parsed[0].encounters) {
-  console.log(encounter.bossName, encounter.consumables);
-}
-
-// Raid-wide per-player summary
-for (const player of parsed[0].players) {
-  console.log(player.name, player.consumables);
+for (const encounter of raids[0].encounters) {
+  console.log(encounter.bossName, encounter.combatStats, encounter.deaths);
 }
 ```
 
-**Typical flow**: `scanLog` → user picks raids → `parseLog` with `RaidSelection[]` from scan results.
+### `parseLogStream(stream, selections, callbacks, options?)` — Incremental parsing
 
-## What it detects
-
-- **Raids**: Naxxramas, Obsidian Sanctum, Eye of Eternity, Vault of Archavon, Ulduar, Trial of the Crusader, Onyxia's Lair, Icecrown Citadel, Ruby Sanctum (9 instances, 63 bosses)
-- **Encounters**: Kill/wipe detection via `UNIT_DIED` + idle timeout, multi-boss fights (Four Horsemen, Assembly of Iron, Blood Prince Council, Twin Val'kyr, Northrend Beasts), coward bosses (Kologarn, Hodir, Thorim, Freya, Algalon)
-- **Players**: GUID-based tracking, class detection (~380 spells), spec detection (~90 spells), per-encounter participation filtering
-- **Difficulty**: Spell-based 10N/25N/10H/25H detection with player-count fallback
-- **Raid separation**: Time gaps (30min), date changes, instance changes, Jaccard roster similarity (>= 0.5)
-- **Consumables** (parseLog only): Potions (Speed, Wild Magic, Indestructible, etc.), Flame Cap, mana/healing potions, engineering bombs — with pre-pot detection via buff aura lifecycle tracking
-- **Duration**: Millisecond precision (e.g., `88.573` seconds)
-
-## Types
+Callback-based streaming parse that delivers encounters one at a time. Ideal for saving to a database as you go — async callbacks are awaited (backpressure).
 
 ```ts
-interface DetectedRaid {
-  raidInstance: string | null;
-  dates: string[];
-  startTime: string;         // ISO-8601
-  endTime: string;           // ISO-8601
-  timeRanges: TimeRange[];
-  playerCount: number;
-  players: PlayerInfo[];
-  encounters: EncounterSummary[];
-}
+import { parseLogStream } from "@munigan/wow-combatlog-parser";
 
-interface PlayerInfo {
-  guid: string;
-  name: string;
-  class: WowClass | null;    // "warrior" | "paladin" | ... | "druid"
-  spec: WowSpec | null;      // "warrior-arms" | "paladin-holy" | ...
-  consumables?: Record<number, ConsumableSummaryEntry>; // parseLog only
-}
+await parseLogStream(file.stream(), selections, {
+  onEncounter: async (encounter) => {
+    await db.encounters.insert(encounter);
+  },
+  onComplete: async (summary) => {
+    await db.raids.update({ raidId, ...summary });
+  },
+});
+```
 
-interface EncounterSummary {
-  bossName: string;
-  startTime: string;
-  endTime: string;
-  duration: number;           // seconds (decimal, millisecond precision)
-  result: "kill" | "wipe";
-  difficulty: RaidDifficulty | null;
-  consumables?: Record<string, ConsumableUse[]>; // parseLog only (playerGuid → uses)
-}
+**Typical flow**: `scanLog` → user picks raids → `parseLog` or `parseLogStream` with `RaidSelection[]`.
 
-interface ConsumableUse {
-  spellId: number;
-  spellName: string;
-  type: ConsumableType;       // "potion" | "mana_potion" | "flame_cap" | "engineering"
-  prePot: boolean;
-  count: number;
-}
+## What it extracts
 
-interface ConsumableSummaryEntry {
-  spellName: string;
-  type: ConsumableType;
-  totalUses: number;
-  prePotCount: number;
-}
+**From `scanLog`** (lightweight, client-side):
+- Raid instance, dates, time ranges
+- Encounters: boss name, duration (ms precision), kill/wipe, difficulty
+- Players: name, class (~380 spells), spec (~90 spells)
+
+**From `parseLog` / `parseLogStream`** (server-side, full extraction):
+- Everything above, plus:
+- **Combat stats**: per-player damage done (useful) and damage taken (raw), with pet→owner merging and NPC whitelist filtering
+- **Consumables**: potions, engineering bombs, Flame Cap — with pre-pot detection
+- **Buff uptime**: flask/elixir and food uptime % (raid-wide and per-encounter)
+- **Deaths**: death recap with last 10 damage/heal events, killing blow identification
+- **Externals**: 16 tracked buffs (Bloodlust, Power Infusion, Tricks, Innervate, Hand of Salvation, etc.) with count and uptime
+
+## Gzip support
+
+Pass `.txt` or `.txt.gz` files — compression is auto-detected via gzip magic bytes. No configuration needed. WoW combat logs compress 12-13x with gzip (591 MB → 48 MB).
+
+## File size limit
+
+All functions accept `maxBytes` option (default: 1 GB decompressed). Exceeding it throws `FileTooLargeError`.
+
+## Supported raids
+
+9 instances, 63 bosses: Naxxramas (15), Obsidian Sanctum (1), Eye of Eternity (1), Vault of Archavon (4), Ulduar (14), Trial of the Crusader (5), Onyxia's Lair (1), Icecrown Citadel (12), Ruby Sanctum (1).
+
+## Architecture
+
+Single-pass streaming state machine. Constant memory — state is bounded by player/encounter count, not file size.
+
+```
+ReadableStream<Uint8Array>
+  → maybeDecompress (gzip auto-detect)
+  → byteCounter (maxBytes enforcement)
+  → TextDecoderStream
+  → LineSplitter
+  → parseLine() → LogEvent
+  → CombatLogStateMachine
+      ├─ EncounterTracker (boss detection, kill/wipe/idle/coward)
+      ├─ RaidSeparator (segment tracking, Jaccard merging)
+      ├─ CombatTracker (damage done/taken, pet→owner merging)
+      ├─ ConsumableTracker (potions/bombs/flame cap, pre-pot)
+      ├─ BuffUptimeTracker (flask/elixir/food intervals)
+      ├─ DeathTracker (circular buffer recap)
+      ├─ ExternalsTracker (cross-player buff intervals)
+      └─ Player detection (class/spec, participation)
+  → ScanResult / ParseResult / callbacks
 ```
 
 ## Development
 
 ```bash
 pnpm install
-pnpm run build       # tsup → dist/
-pnpm run test        # vitest (138 tests)
-pnpm run typecheck   # tsc --noEmit
-```
-
-Example logs live in `tests/example-logs/` (gitignored, `example-log-{1..7}.txt`).
-
-### Scripts
-
-```bash
-# Always build first — scripts import from dist/
-pnpm run build
-
-# Scan all example logs
-npx tsx scripts/scan-all.ts | npx tsx scripts/summarize.ts
-
-# Parse a specific log file
-npx tsx scripts/parse-log.ts tests/example-logs/example-log-7.txt
-
-# Scan + parse example-log-7 → result.json
-npx tsx scripts/parse-log-7.ts
-```
-
-## Architecture
-
-Single-pass streaming state machine. Constant memory, no storing all lines.
-
-```
-ReadableStream<Uint8Array>
-  → TextDecoderStream
-  → LineSplitter (TransformStream)
-  → parseLine() → LogEvent
-  → CombatLogStateMachine
-      ├─ EncounterTracker (boss detection, kill/wipe/idle/coward)
-      ├─ RaidSeparator (segment tracking, Jaccard merging)
-      ├─ ConsumableTracker (potion/bomb/flame cap, pre-pot detection) [parseLog only]
-      └─ Player detection (class/spec from spells, participation tracking)
-  → groupSegmentsIntoRaids()
-  → ScanResult / ParseResult
+pnpm run build        # tsup → dist/
+pnpm run test         # vitest (260 tests)
+pnpm run typecheck    # tsc --noEmit
+pnpm run bench <file> # memory/GC profiling
+pnpm run bench:micro  # per-function benchmarks
 ```
 
 ## License
