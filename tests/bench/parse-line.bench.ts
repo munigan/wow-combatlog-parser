@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 import { parseLine } from "../../src/pipeline/line-parser.js";
-import { parseFields } from "../../src/utils/fields.js";
+import { parseFields, parseFieldsPartial } from "../../src/utils/fields.js";
 
 // Realistic WoW combat log lines for benchmarking
 const SPELL_DAMAGE_LINE =
@@ -31,8 +31,12 @@ describe("parseLine", () => {
   });
 });
 
-describe("parseFields", () => {
-  bench("full 15-field event data", () => {
+describe("parseFields vs parseFieldsPartial", () => {
+  bench("parseFields (all fields)", () => {
     parseFields(FULL_EVENT_DATA);
+  });
+
+  bench("parseFieldsPartial (first 7 + rest)", () => {
+    parseFieldsPartial(FULL_EVENT_DATA, 7);
   });
 });
