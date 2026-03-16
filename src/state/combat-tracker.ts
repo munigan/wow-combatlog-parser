@@ -2,8 +2,9 @@
 
 import type { LogEvent } from "../pipeline/line-parser.js";
 import type { PlayerCombatStats } from "../types.js";
-import { isPlayer, isPet } from "../utils/guid.js";
+import { isPlayer, isPet, getNpcId } from "../utils/guid.js";
 import { getSpellId } from "../pipeline/line-parser.js";
+import { getEncounterValidNpcs } from "../data/encounter-npcs.js";
 
 /** Damage event types we track. */
 const DAMAGE_EVENTS = new Set([
@@ -111,6 +112,8 @@ export class CombatTracker {
   /** Pet GUID → owner (player) GUID. Persists across encounters. */
   private _petOwners = new Map<string, string>();
   private _inEncounter = false;
+  /** Valid NPC IDs for current encounter. Null = count all damage (fallback). */
+  private _validNpcs: Set<string> | null = null;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
   private _completedEncounters: EncounterCombatStats[] = [];
 
@@ -152,6 +155,13 @@ export class CombatTracker {
       if (isPlayer(event.destGuid)) return;
       if (isFriendly(event.destFlags)) return;
 
+      // If encounter has a valid NPC whitelist, only count damage to those NPCs.
+      // This prevents damage to trash pulled from other rooms from inflating DPS.
+      if (this._validNpcs !== null) {
+        const destNpcId = getNpcId(event.destGuid);
+        if (!this._validNpcs.has(destNpcId)) return;
+      }
+
       // Resolve source through pet map
       const sourceGuid = this._petOwners.get(event.sourceGuid) ?? event.sourceGuid;
 
@@ -169,8 +179,9 @@ export class CombatTracker {
     }
   }
 
-  onEncounterStart(): void {
+  onEncounterStart(bossName: string | null): void {
     this._inEncounter = true;
+    this._validNpcs = bossName !== null ? getEncounterValidNpcs(bossName) : null;
     this._currentEncounter.clear();
   }
 

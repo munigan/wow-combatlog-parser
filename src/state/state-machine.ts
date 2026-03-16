@@ -93,7 +93,8 @@ export class CombatLogStateMachine {
       this._consumableTracker.onEncounterStart();
     }
     if (encounterResult.encounterStarted && this._combatTracker !== null) {
-      this._combatTracker.onEncounterStart();
+      const bossName = this._encounterTracker.getCurrentBossName();
+      this._combatTracker.onEncounterStart(bossName);
     }
     if (encounterResult.encounterStarted && this._deathTracker !== null) {
       this._deathTracker.onEncounterStart(event.timestamp);
