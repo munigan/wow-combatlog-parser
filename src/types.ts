@@ -97,7 +97,8 @@ export interface ConsumableSummaryEntry {
 }
 
 export interface PlayerCombatStats {
-  damage: number;   // useful damage (raw - overkill), excludes friendly fire
+  damage: number;       // useful damage (raw - overkill), excludes friendly fire
+  damageTaken: number;  // raw damage taken (no overkill subtraction)
 }
 
 // === Deaths ===

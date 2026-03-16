@@ -221,6 +221,253 @@ describe("CombatTracker", () => {
     });
   });
 
+  describe("damage taken tracking", () => {
+    it("tracks SPELL_DAMAGE to a player as raw amount (no overkill subtraction)", () => {
+      tracker.onEncounterStart();
+      // Boss hits player: 15000 amount, 5000 overkill → damageTaken = 15000 (raw)
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,15000,5000,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].damageTaken).toBe(15000);
+    });
+
+    it("tracks SWING_DAMAGE to a player", () => {
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SWING_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "8000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damageTaken).toBe(8000);
+    });
+
+    it("tracks SPELL_PERIODIC_DAMAGE to a player", () => {
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_PERIODIC_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "70911,Unbound Plague,0x8,3000,0,0x8,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damageTaken).toBe(3000);
+    });
+
+    it("tracks RANGE_DAMAGE to a player", () => {
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "RANGE_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "70161,Shoot,0x1,2000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damageTaken).toBe(2000);
+    });
+
+    it("tracks DAMAGE_SHIELD to a player", () => {
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "DAMAGE_SHIELD",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "70952,Frost Aura,0x10,500,0,0x10,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damageTaken).toBe(500);
+    });
+
+    it("does not track damage taken for non-player dest (NPCs)", () => {
+      tracker.onEncounterStart();
+      // Player hitting boss — should NOT count as damageTaken for the boss
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: BOSS_GUID,
+          rawFields: "12345,Frostbolt,0x10,5000,0,0x10,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      // BOSS_GUID should not have damageTaken; PLAYER1 should have damage done
+      expect(stats[BOSS_GUID]).toBeUndefined();
+      expect(stats[PLAYER1].damage).toBe(5000);
+      expect(stats[PLAYER1].damageTaken).toBe(0);
+    });
+
+    it("sums damage taken from multiple sources", () => {
+      tracker.onEncounterStart();
+      // Boss hits player
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,10000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      // Another swing
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1001,
+          eventType: "SWING_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "5000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damageTaken).toBe(15000); // 10000 + 5000
+    });
+
+    it("tracks damage taken and damage done independently", () => {
+      tracker.onEncounterStart();
+      // Player deals 5000 (200 overkill) to boss
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: BOSS_GUID,
+          rawFields: "12345,Frostbolt,0x10,5000,200,0x10,0,0,0,nil,nil,nil",
+        }),
+      );
+      // Boss deals 10000 to player
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1001,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,10000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damage).toBe(4800); // 5000 - 200
+      expect(stats[PLAYER1].damageTaken).toBe(10000);
+    });
+
+    it("resets damage taken between encounters", () => {
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,8000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats1 = tracker.onEncounterEnd();
+      expect(stats1[PLAYER1].damageTaken).toBe(8000);
+
+      // Second encounter — fresh stats
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 2000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,3000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats2 = tracker.onEncounterEnd();
+      expect(stats2[PLAYER1].damageTaken).toBe(3000); // not 11000
+    });
+
+    it("aggregates damage taken across encounters in summaries", () => {
+      // Encounter 1
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,8000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      tracker.onEncounterEnd();
+
+      // Encounter 2
+      tracker.onEncounterStart();
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 2000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,5000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      tracker.onEncounterEnd();
+
+      const summaries = tracker.getPlayerSummaries();
+      expect(summaries.get(PLAYER1)!.damageTaken).toBe(13000); // 8000 + 5000
+    });
+
+    it("ignores damage taken outside an encounter", () => {
+      // Process event WITHOUT calling onEncounterStart()
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: BOSS_GUID,
+          destGuid: PLAYER1,
+          rawFields: "69901,Hateful Strike,0x1,10000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      // Start and immediately end an encounter
+      tracker.onEncounterStart();
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeUndefined();
+    });
+
+    it("counts damage from all sources regardless of NPC whitelist", () => {
+      // Use Patchwerk which has a whitelist
+      tracker.onEncounterStart("Patchwerk");
+      // Non-whitelisted trash NPC hits the player — should still count
+      const TRASH_GUID = "0xF130009999000001";
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: TRASH_GUID,
+          destGuid: PLAYER1,
+          rawFields: "55555,Trash Spell,0x1,7000,0,0x1,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1]).toBeDefined();
+      expect(stats[PLAYER1].damageTaken).toBe(7000);
+    });
+  });
+
   describe("pet resolution", () => {
     it("attributes pet damage to the owner via SPELL_SUMMON", () => {
       // Register pet ownership

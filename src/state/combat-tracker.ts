@@ -115,6 +115,7 @@ export class CombatTracker {
   /** Valid NPC IDs for current encounter. Null = count all damage (fallback). */
   private _validNpcs: Set<string> | null = null;
   private _currentEncounter = new Map<string, PlayerCombatStats>();
+  private _currentDamageTaken = new Map<string, number>();
   private _completedEncounters: EncounterCombatStats[] = [];
 
   processEvent(event: LogEvent): void {
@@ -151,8 +152,17 @@ export class CombatTracker {
     if (DAMAGE_EVENTS.has(eventType)) {
       const isSwing = eventType === "SWING_DAMAGE";
 
-      // Exclude friendly fire: skip if dest is a player or dest is friendly
-      if (isPlayer(event.destGuid)) return;
+      if (isPlayer(event.destGuid)) {
+        // Damage TO a player → damage taken (raw amount, no overkill subtraction)
+        const amount = extractFieldInt(event.rawFields, isSwing ? 0 : 3);
+        if (amount > 0) {
+          const existing = this._currentDamageTaken.get(event.destGuid) ?? 0;
+          this._currentDamageTaken.set(event.destGuid, existing + amount);
+        }
+        return; // Still skip damage-done for player targets (friendly fire exclusion)
+      }
+
+      // Damage-done tracking (existing logic, unchanged)
       if (isFriendly(event.destFlags)) return;
 
       // If encounter has a valid NPC whitelist, only count damage to those NPCs.
@@ -183,16 +193,27 @@ export class CombatTracker {
     this._inEncounter = true;
     this._validNpcs = bossName !== null ? getEncounterValidNpcs(bossName) : null;
     this._currentEncounter.clear();
+    this._currentDamageTaken.clear();
   }
 
   onEncounterEnd(): EncounterCombatStats {
     this._inEncounter = false;
     const result: EncounterCombatStats = {};
-    for (const [guid, stats] of this._currentEncounter) {
-      result[guid] = { damage: stats.damage };
+
+    // Collect all player GUIDs from both damage done and damage taken
+    const allGuids = new Set<string>();
+    for (const guid of this._currentEncounter.keys()) allGuids.add(guid);
+    for (const guid of this._currentDamageTaken.keys()) allGuids.add(guid);
+
+    for (const guid of allGuids) {
+      const damageDone = this._currentEncounter.get(guid)?.damage ?? 0;
+      const damageTaken = this._currentDamageTaken.get(guid) ?? 0;
+      result[guid] = { damage: damageDone, damageTaken };
     }
+
     this._completedEncounters.push(result);
     this._currentEncounter.clear();
+    this._currentDamageTaken.clear();
     return result;
   }
 
@@ -208,8 +229,9 @@ export class CombatTracker {
         const existing = summaries.get(guid);
         if (existing !== undefined) {
           existing.damage += stats.damage;
+          existing.damageTaken += stats.damageTaken;
         } else {
-          summaries.set(guid, { damage: stats.damage });
+          summaries.set(guid, { damage: stats.damage, damageTaken: stats.damageTaken });
         }
       }
     }
@@ -221,7 +243,7 @@ export class CombatTracker {
     if (existing !== undefined) {
       existing.damage += damage;
     } else {
-      this._currentEncounter.set(playerGuid, { damage });
+      this._currentEncounter.set(playerGuid, { damage, damageTaken: 0 });
     }
   }
 }
