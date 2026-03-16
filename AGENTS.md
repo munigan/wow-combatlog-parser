@@ -230,6 +230,30 @@ Encounter timing was aligned with [uwu-logs](https://github.com/Ridepad/uwu-logs
 
 Naxxramas (15), Obsidian Sanctum (1), Eye of Eternity (1), Vault of Archavon (4), Ulduar (14), Trial of the Crusader (5), Onyxia's Lair (1), Icecrown Citadel (12), Ruby Sanctum (1).
 
+## Gzip Support
+
+Both `scanLog` and `parseLog` (and `parseLogStream`) auto-detect gzip-compressed input. If the first two bytes are the gzip magic bytes (`0x1f 0x8b`), the stream is piped through `DecompressionStream('gzip')` before parsing. No configuration needed — pass `.txt` or `.txt.gz` files and it works.
+
+Compression ratios for WoW combat logs: 12-13x with gzip (591 MB → 48 MB).
+
+## File Size Limit
+
+All parse functions accept `maxBytes` option (default: 1 GB / 1,073,741,824 bytes). The limit applies to decompressed bytes. Exceeding it throws `FileTooLargeError`.
+
+## Streaming Parse API (parseLogStream)
+
+`parseLogStream(stream, selections, options)` is an AsyncGenerator that yields `ParsedEncounter` objects as each boss encounter completes. Returns `ParseStreamSummary` with raid-wide aggregates when done.
+
+Consumer usage for incremental DB persistence:
+```typescript
+const gen = parseLogStream(file.stream(), selections);
+for await (const encounter of gen) {
+  await db.encounters.insert(encounter);  // save each encounter immediately
+}
+```
+
+Memory stays bounded: each encounter's data is yielded, saved, and GC'd.
+
 ## Consumer
 
 This library is consumed by `~/www/wow-core` (Next.js app). It replaces `log-parser.ts`, `log-scanner.ts`, `log-scanner.worker.ts`, and `wow-raids.ts` in that project.
