@@ -44,3 +44,48 @@ export function parseFields(input: string): string[] {
 
   return fields;
 }
+
+/**
+ * Parse the first `stopAt` comma-separated fields, respecting quotes.
+ * Returns { fields, rest } where rest is the unparsed remainder after the
+ * stopAt-th field separator. Avoids allocating intermediate strings for
+ * fields beyond stopAt.
+ */
+export function parseFieldsPartial(
+  input: string,
+  stopAt: number,
+): { fields: string[]; rest: string } {
+  const fields: string[] = [];
+  const len = input.length;
+  let i = 0;
+
+  while (i <= len && fields.length < stopAt) {
+    if (i === len) {
+      fields.push("");
+      break;
+    }
+
+    if (input.charCodeAt(i) === 34) { // '"'
+      const closeQuote = input.indexOf('"', i + 1);
+      if (closeQuote === -1) {
+        fields.push(input.substring(i + 1));
+        i = len;
+        break;
+      }
+      fields.push(input.substring(i + 1, closeQuote));
+      i = closeQuote + 2; // skip closing quote + comma
+    } else {
+      const comma = input.indexOf(",", i);
+      if (comma === -1) {
+        fields.push(input.substring(i));
+        i = len;
+        break;
+      }
+      fields.push(input.substring(i, comma));
+      i = comma + 1;
+    }
+  }
+
+  const rest = i < len ? input.substring(i) : "";
+  return { fields, rest };
+}
