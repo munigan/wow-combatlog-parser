@@ -26,7 +26,11 @@ export type {
   RaidSelection,
   ParseResult,
   ParsedRaid,
+  EncounterPlayer,
+  ParsedEncounter,
+  ParseStreamSummary,
 } from "./types.js";
 
 export { scanLog } from "./scanner.js";
 export { parseLog } from "./parser.js";
+export { parseLogStream } from "./stream-parser.js";

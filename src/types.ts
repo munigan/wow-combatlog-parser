@@ -238,3 +238,26 @@ export interface ParsedRaid {
   /** Total raid time in ms (first event to last event), used as uptime denominator. */
   raidDurationMs: number;
 }
+
+// === Stream Parse API ===
+
+/** Player info scoped to a single encounter. */
+export interface EncounterPlayer {
+  guid: string;
+  name: string;
+  class: WowClass | null;
+  spec: WowSpec | null;
+}
+
+/** A fully-parsed encounter yielded incrementally by parseLogStream(). */
+export interface ParsedEncounter extends EncounterSummary {
+  players: EncounterPlayer[];
+}
+
+/** Summary returned after parseLogStream() completes. */
+export interface ParseStreamSummary {
+  raidInstance: string | null;
+  raidDate: Date;
+  raidDurationMs: number;
+  players: PlayerInfo[];
+}
