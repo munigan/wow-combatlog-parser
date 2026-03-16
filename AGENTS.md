@@ -150,9 +150,17 @@ Pet damage is attributed to the owner player. Three detection methods:
 1. **SPELL_SUMMON** — Player summons pet (DK Army, Gargoyle, Warlock demons, etc.)
 2. **PET_FILTER_SPELLS** (~90 spells) — Known pet↔owner interaction spells detect ownership bidirectionally. Covers Hunter (Mend Pet, Kill Command, Bestial Wrath), Warlock (Health Funnel, Soul Link, Dark Pact), DK (Ghoul Frenzy, Death Pact), and pet→owner auras (Kindred Spirits, Furious Howl, Call of the Wild). Sourced from uwu-logs.
 
+### Encounter-Valid NPC Whitelist
+- `src/data/encounter-npcs.ts` — per-boss whitelist of valid target NPC IDs (6-char hex from GUID).
+- Only damage to NPCs in the whitelist counts as encounter damage. Prevents trash pulled from other rooms from inflating DPS.
+- Data sourced from uwu-logs (`logs_dmg_useful.py` USEFUL + ALL_GUIDS). Covers all 9 WotLK raids (63 bosses).
+- Fallback: if no whitelist defined for an encounter, all non-friendly damage is counted.
+- `CombatTracker.onEncounterStart(bossName)` loads the whitelist via `getEncounterValidNpcs()`.
+
 ### Validated Numbers (vs wow-logs reference)
 - Patchwerk: Egaroto +0.22%, Mopex exact match
 - Razuvious: Mareshall exact match
+- Lord Marrowgar (ICC, log-9): all 21 players exact match with wow-logs
 
 ## Deaths Tracking (parseLog only)
 
