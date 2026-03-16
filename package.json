@@ -1,5 +1,5 @@
 {
-  "name": "wow-combatlog-parser",
+  "name": "@munigan/wow-combatlog-parser",
   "version": "0.1.0",
   "description": "Streaming parser for World of Warcraft WotLK 3.3.5 combat logs",
   "type": "module",
@@ -30,11 +30,14 @@
   "author": "diego3g",
   "repository": {
     "type": "git",
-    "url": "https://github.com/diego3g/wow-combatlog-parser"
+    "url": "https://github.com/munigan/wow-combatlog-parser"
   },
-  "homepage": "https://github.com/diego3g/wow-combatlog-parser#readme",
+  "homepage": "https://github.com/munigan/wow-combatlog-parser#readme",
   "bugs": {
-    "url": "https://github.com/diego3g/wow-combatlog-parser/issues"
+    "url": "https://github.com/munigan/wow-combatlog-parser/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
