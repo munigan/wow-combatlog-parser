@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { scanLog } from "../../src/scanner.js";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 function fileToStream(path: string): ReadableStream<Uint8Array> {
@@ -17,9 +17,11 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
 }
 
 const LOGS_DIR = join(__dirname, "../example-logs");
+const LOG3_EXISTS = existsSync(join(LOGS_DIR, "example-log-3.txt"));
+const LOG6_EXISTS = existsSync(join(LOGS_DIR, "example-log-6.txt"));
 
 describe("scanLog", () => {
-  it("detects raids from a single-raid log file", async () => {
+  it.skipIf(!LOG3_EXISTS)("detects raids from a single-raid log file", async () => {
     const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     expect(result.raids.length).toBeGreaterThanOrEqual(1);
@@ -29,7 +31,7 @@ describe("scanLog", () => {
     expect(raid.players.length).toBeGreaterThan(0);
   });
 
-  it("detects encounters within raids", async () => {
+  it.skipIf(!LOG3_EXISTS)("detects encounters within raids", async () => {
     const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     const raid = result.raids[0];
@@ -44,7 +46,7 @@ describe("scanLog", () => {
     expect(withDuration.length).toBeGreaterThan(0);
   });
 
-  it("detects player classes", async () => {
+  it.skipIf(!LOG3_EXISTS)("detects player classes", async () => {
     const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     const raid = result.raids[0];
@@ -52,14 +54,14 @@ describe("scanLog", () => {
     expect(withClass.length).toBeGreaterThan(0);
   });
 
-  it("reports progress", async () => {
+  it.skipIf(!LOG3_EXISTS)("reports progress", async () => {
     const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const progress: number[] = [];
     await scanLog(stream, { onProgress: (bytes) => progress.push(bytes) });
     expect(progress.length).toBeGreaterThan(0);
   });
 
-  it("produces valid ISO timestamps", async () => {
+  it.skipIf(!LOG3_EXISTS)("produces valid ISO timestamps", async () => {
     const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const result = await scanLog(stream);
     for (const raid of result.raids) {
@@ -72,7 +74,7 @@ describe("scanLog", () => {
     }
   });
 
-  it("detects multiple raids from a multi-raid log file", async () => {
+  it.skipIf(!LOG6_EXISTS)("detects multiple raids from a multi-raid log file", async () => {
     const stream = fileToStream(
       join(LOGS_DIR, "example-log-6.txt"),
     );

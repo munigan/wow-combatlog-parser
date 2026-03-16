@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { scanLog } from "../../src/scanner.js";
 import { parseLog } from "../../src/parser.js";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 function fileToStream(path: string): ReadableStream<Uint8Array> {
@@ -18,9 +18,11 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
 }
 
 const LOGS_DIR = join(__dirname, "../example-logs");
+const LOG3_EXISTS = existsSync(join(LOGS_DIR, "example-log-3.txt"));
+const LOG6_EXISTS = existsSync(join(LOGS_DIR, "example-log-6.txt"));
 
 describe("parseLog", () => {
-  it("parses a specific raid selection", async () => {
+  it.skipIf(!LOG3_EXISTS)("parses a specific raid selection", async () => {
     const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const scanResult = await scanLog(scanStream);
     const firstRaid = scanResult.raids[0];
@@ -40,7 +42,7 @@ describe("parseLog", () => {
     expect(parseResult.raids[0].raidDate).toBeInstanceOf(Date);
   });
 
-  it("includes encounters in parse results", async () => {
+  it.skipIf(!LOG3_EXISTS)("includes encounters in parse results", async () => {
     const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
     const scanResult = await scanLog(scanStream);
     const firstRaid = scanResult.raids[0];
@@ -58,7 +60,7 @@ describe("parseLog", () => {
     expect(parseResult.raids[0].encounters.length).toBeGreaterThan(0);
   });
 
-  it("filters players to the selected time range", async () => {
+  it.skipIf(!LOG6_EXISTS)("filters players to the selected time range", async () => {
     const scanStream = fileToStream(
       join(LOGS_DIR, "example-log-6.txt"),
     );

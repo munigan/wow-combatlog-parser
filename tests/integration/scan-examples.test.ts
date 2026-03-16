@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { scanLog, parseLog } from "../../src/index.js";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 function fileToStream(path: string): ReadableStream<Uint8Array> {
@@ -17,9 +17,12 @@ function fileToStream(path: string): ReadableStream<Uint8Array> {
 }
 
 const LOGS_DIR = join(__dirname, "../example-logs");
+const LOG1_EXISTS = existsSync(join(LOGS_DIR, "example-log-1.txt"));
+const LOG3_EXISTS = existsSync(join(LOGS_DIR, "example-log-3.txt"));
+const LOG6_EXISTS = existsSync(join(LOGS_DIR, "example-log-6.txt"));
 
 describe("integration: scan example logs", () => {
-  describe("example-log-3 - Vault of Archavon", () => {
+  describe.skipIf(!LOG3_EXISTS)("example-log-3 - Vault of Archavon", () => {
     it("detects at least one raid on date 2/22", async () => {
       const stream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
       const result = await scanLog(stream);
@@ -54,7 +57,7 @@ describe("integration: scan example logs", () => {
     });
   });
 
-  describe("example-log-1 - Naxxramas raid", () => {
+  describe.skipIf(!LOG1_EXISTS)("example-log-1 - Naxxramas raid", () => {
     it("detects Naxxramas as the raid instance", async () => {
       const stream = fileToStream(join(LOGS_DIR, "example-log-1.txt"));
       const result = await scanLog(stream);
@@ -78,7 +81,7 @@ describe("integration: scan example logs", () => {
     }, 30000);
   });
 
-  describe("example-log-6 - multiple raids", () => {
+  describe.skipIf(!LOG6_EXISTS)("example-log-6 - multiple raids", () => {
     it("detects multiple raids across different dates", async () => {
       const stream = fileToStream(join(LOGS_DIR, "example-log-6.txt"));
       const result = await scanLog(stream);
@@ -114,7 +117,7 @@ describe("integration: scan example logs", () => {
     }, 60000);
   });
 
-  describe("scan + parse roundtrip", () => {
+  describe.skipIf(!LOG3_EXISTS)("scan + parse roundtrip", () => {
     it("parse returns consistent data with scan results", async () => {
       // Scan first
       const scanStream = fileToStream(join(LOGS_DIR, "example-log-3.txt"));
