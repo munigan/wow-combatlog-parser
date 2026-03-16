@@ -37,6 +37,8 @@ export class CombatLogStateMachine {
   private _lastRaidInstance: string | null = null;
   /** All player GUIDs that actively participated in at least one encounter. */
   private _encounterParticipants = new Set<string>();
+  private _pendingEncounter: EncounterSummary | null = null;
+  private _pendingParticipants: Set<string> | null = null;
 
   /**
    * @param trackConsumables If true, enables consumable tracking (parseLog only).
@@ -49,6 +51,22 @@ export class CombatLogStateMachine {
       this._deathTracker = new DeathTracker();
       this._externalsTracker = new ExternalsTracker();
     }
+  }
+
+  /**
+   * Pop the most recently completed encounter, if any.
+   * Returns null if no encounter has completed since the last call.
+   * Used by parseLogStream() to yield encounters incrementally.
+   */
+  popCompletedEncounter(): { encounter: EncounterSummary; participants: Set<string> } | null {
+    if (this._pendingEncounter === null) return null;
+    const result = {
+      encounter: this._pendingEncounter,
+      participants: this._pendingParticipants!,
+    };
+    this._pendingEncounter = null;
+    this._pendingParticipants = null;
+    return result;
   }
 
   processEvent(event: LogEvent): void {
@@ -166,6 +184,9 @@ export class CombatLogStateMachine {
         encounterResult.encounter.externals = this._externalsTracker.onEncounterEnd(endMs, durationMs);
       }
 
+      this._pendingEncounter = encounterResult.encounter;
+      this._pendingParticipants = encounterResult.participants;
+
       this._encounters.push(encounterResult.encounter);
 
       // Accumulate encounter participants
@@ -215,6 +236,9 @@ export class CombatLogStateMachine {
         const endMs = new Date(forceResult.encounter.endTime).getTime();
         forceResult.encounter.externals = this._externalsTracker.forceEnd(endMs, durationMs) ?? {};
       }
+
+      this._pendingEncounter = forceResult.encounter;
+      this._pendingParticipants = forceResult.participants;
 
       this._encounters.push(forceResult.encounter);
 
