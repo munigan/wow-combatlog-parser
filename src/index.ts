@@ -34,3 +34,4 @@ export type {
 export { scanLog } from "./scanner.js";
 export { parseLog } from "./parser.js";
 export { parseLogStream } from "./stream-parser.js";
+export { FileTooLargeError } from "./errors.js";
