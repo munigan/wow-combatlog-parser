@@ -27,6 +27,15 @@
   },
   "keywords": ["wow", "warcraft", "combat-log", "parser", "wotlk"],
   "license": "MIT",
+  "author": "diego3g",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diego3g/wow-combatlog-parser"
+  },
+  "homepage": "https://github.com/diego3g/wow-combatlog-parser#readme",
+  "bugs": {
+    "url": "https://github.com/diego3g/wow-combatlog-parser/issues"
+  },
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.7.0",
