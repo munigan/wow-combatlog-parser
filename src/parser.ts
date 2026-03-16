@@ -103,20 +103,26 @@ export async function parseLog(
     const { done, value: line } = await reader.read();
     if (done) break;
 
+    // Fast date rejection: extract date from raw line before full parse.
+    // WotLK format: "M/D HH:MM:SS.mmm  EVENT..."
+    // The date is everything before the first space.
+    const spaceIdx = line.indexOf(" ");
+    if (spaceIdx > 0) {
+      const dateStr = line.substring(0, spaceIdx);
+      if (!allRelevantDates.has(dateStr)) {
+        lineCount++;
+        if (onProgress && lineCount % PROGRESS_LINE_INTERVAL === 0) {
+          if (bytesRead - lastProgressBytes >= PROGRESS_BYTE_INTERVAL) {
+            onProgress(bytesRead);
+            lastProgressBytes = bytesRead;
+          }
+        }
+        continue;
+      }
+    }
+
     const event = parseLine(line, year);
     if (event === null) continue;
-
-    // Fast date rejection
-    if (!allRelevantDates.has(event.date)) {
-      lineCount++;
-      if (onProgress && lineCount % PROGRESS_LINE_INTERVAL === 0) {
-        if (bytesRead - lastProgressBytes >= PROGRESS_BYTE_INTERVAL) {
-          onProgress(bytesRead);
-          lastProgressBytes = bytesRead;
-        }
-      }
-      continue;
-    }
 
     // Check each selection
     for (let i = 0; i < contexts.length; i++) {
