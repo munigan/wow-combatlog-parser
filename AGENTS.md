@@ -137,13 +137,20 @@ Tracks flask, elixir, and food buff uptime per player across the entire raid. Co
 
 ## Combat Stats Tracking (parseLog only)
 
-Tracks per-player per-encounter damage (useful) via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.
+Tracks per-player per-encounter damage done and damage taken via `CombatTracker`. Stored in `EncounterSummary.combatStats` and aggregated in `PlayerInfo.combatStats`.
 
-### Damage
+### Damage Done
 - **Useful damage** = amount - overkill (overkill of -1 treated as 0)
 - **Event types**: SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD
 - **Friendly fire excluded**: Damage to players (`isPlayer(destGuid)`) or friendly-flagged targets (`destFlags & 0x0010`) is skipped
 - **Field positions**: SWING_DAMAGE: amount at rawFields[0], overkill at [1]. All others: amount at rawFields[3], overkill at [4]
+
+### Damage Taken
+- **Raw amount** — no overkill subtraction (amount field only). Matches uwu-logs behavior for damage taken analysis.
+- **Event types**: Same 5 as damage done (SWING_DAMAGE, SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE, RANGE_DAMAGE, DAMAGE_SHIELD). No ENVIRONMENTAL_DAMAGE.
+- **Player dest only**: Only `isPlayer(destGuid)` targets counted.
+- **No source filtering**: All sources count regardless of NPC whitelist.
+- Stored on `PlayerCombatStats.damageTaken`, same per-encounter and raid-wide aggregation as damage done.
 
 ### Pet→Owner Merging
 Pet damage is attributed to the owner player. Three detection methods:
