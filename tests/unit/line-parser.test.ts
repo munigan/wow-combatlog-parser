@@ -63,6 +63,22 @@ describe("parseLine", () => {
     expect(parseLine("garbage data", 2026)).toBeNull();
     expect(parseLine("no  double space here", 2026)).toBeNull();
   });
+
+  it("rawFields matches full parseFields output for SPELL_DAMAGE", () => {
+    const raw =
+      '3/12 20:15:42.123  SPELL_DAMAGE,0x0E000000000A3A18,"Egaroto",0x514,0xF13000393F000001,"Instructor Razuvious",0xa48,49909,"Icy Touch",0x10,5000,200,0x10,0,0,0,nil,nil,nil';
+    const event = parseLine(raw, 2026);
+    expect(event).not.toBeNull();
+    expect(event!.rawFields).toBe('49909,"Icy Touch",0x10,5000,200,0x10,0,0,0,nil,nil,nil');
+  });
+
+  it("rawFields is empty for UNIT_DIED with exactly 7 fields", () => {
+    const raw =
+      '2/24 20:07:05.669  UNIT_DIED,0x0000000000000000,nil,0x80000000,0xF130003F6C0003DE,"Eye Stalk",0xa48';
+    const event = parseLine(raw, 2026);
+    expect(event).not.toBeNull();
+    expect(event!.rawFields).toBe("");
+  });
 });
 
 describe("getSpellId", () => {

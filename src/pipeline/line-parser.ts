@@ -1,6 +1,6 @@
 // src/pipeline/line-parser.ts
 import { parseTimestampToEpoch } from "../utils/timestamp.js";
-import { parseFields } from "../utils/fields.js";
+import { parseFieldsPartial } from "../utils/fields.js";
 
 export interface LogEvent {
   /** Epoch milliseconds (UTC) */
@@ -58,8 +58,8 @@ export function parseLine(raw: string, year: number): LogEvent | null {
     return null;
   }
 
-  // Parse the event fields with quote-aware parsing
-  const fields = parseFields(eventData);
+  // Parse only the first 7 fields, get the rest as rawFields directly
+  const { fields, rest: rawFields } = parseFieldsPartial(eventData, 7);
 
   // We need at least 7 fields: eventType, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags
   if (fields.length < 7) return null;
@@ -71,9 +71,6 @@ export function parseLine(raw: string, year: number): LogEvent | null {
   const destGuid = fields[4];
   const destName = fields[5];
   const destFlags = fields[6];
-
-  // Everything after the 7th field is rawFields
-  const rawFields = fields.length > 7 ? fields.slice(7).join(",") : "";
 
   return {
     timestamp,
