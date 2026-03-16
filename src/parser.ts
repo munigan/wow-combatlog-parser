@@ -7,7 +7,7 @@ import type {
   ConsumableSummaryEntry,
 } from "./types.js";
 import { CombatLogStateMachine } from "./state/state-machine.js";
-import { createLineSplitter } from "./pipeline/line-splitter.js";
+import { buildPipeline } from "./pipeline/build-pipeline.js";
 import { parseLine } from "./pipeline/line-parser.js";
 
 /**
@@ -72,7 +72,6 @@ export async function parseLog(
     }
   }
 
-  let bytesRead = 0;
   let lineCount = 0;
   let lastProgressBytes = 0;
   const lastTimestamps = new Array<number>(contexts.length).fill(0);
@@ -82,22 +81,8 @@ export async function parseLog(
   const PROGRESS_BYTE_INTERVAL = 1024 * 1024; // ~1MB
   const PROGRESS_LINE_INTERVAL = 5000;
 
-  // Build pipeline: stream → byte counter → TextDecoder → LineSplitter
-  const byteCounter = new TransformStream<Uint8Array, Uint8Array>({
-    transform(chunk, controller) {
-      bytesRead += chunk.byteLength;
-      controller.enqueue(chunk);
-    },
-  });
-
-  const lineSplitter = createLineSplitter();
-
-  const textStream = stream
-    .pipeThrough(byteCounter)
-    .pipeThrough(new TextDecoderStream() as unknown as TransformStream<Uint8Array, string>);
-
-  const lineStream = textStream.pipeThrough(lineSplitter);
-  const reader = lineStream.getReader();
+  // Build pipeline with gzip + maxBytes support
+  const { reader, getBytesRead } = await buildPipeline(stream, options?.maxBytes);
 
   for (;;) {
     const { done, value: line } = await reader.read();
@@ -112,9 +97,10 @@ export async function parseLog(
       if (!allRelevantDates.has(dateStr)) {
         lineCount++;
         if (onProgress && lineCount % PROGRESS_LINE_INTERVAL === 0) {
-          if (bytesRead - lastProgressBytes >= PROGRESS_BYTE_INTERVAL) {
-            onProgress(bytesRead);
-            lastProgressBytes = bytesRead;
+          const bytes = getBytesRead();
+          if (bytes - lastProgressBytes >= PROGRESS_BYTE_INTERVAL) {
+            onProgress(bytes);
+            lastProgressBytes = bytes;
           }
         }
         continue;
@@ -146,12 +132,13 @@ export async function parseLog(
 
     lineCount++;
     if (onProgress) {
+      const bytes = getBytesRead();
       if (
-        bytesRead - lastProgressBytes >= PROGRESS_BYTE_INTERVAL ||
+        bytes - lastProgressBytes >= PROGRESS_BYTE_INTERVAL ||
         lineCount % PROGRESS_LINE_INTERVAL === 0
       ) {
-        onProgress(bytesRead);
-        lastProgressBytes = bytesRead;
+        onProgress(bytes);
+        lastProgressBytes = bytes;
       }
     }
   }
