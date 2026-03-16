@@ -3,3 +3,11 @@ dist/
 *.tsbuildinfo
 .DS_Store
 tests/example-logs/
+
+# Generated output
+result.json
+scripts/*-output.json
+*.png
+
+# Design docs
+docs/plans/
