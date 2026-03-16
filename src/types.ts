@@ -192,6 +192,8 @@ export interface EncounterSummary {
 
 export interface ScanOptions {
   onProgress?: (bytesRead: number, totalBytes?: number) => void;
+  /** Maximum decompressed file size in bytes. Default: 1 GB. */
+  maxBytes?: number;
 }
 
 export interface ScanResult {
@@ -213,6 +215,8 @@ export interface DetectedRaid {
 
 export interface ParseOptions {
   onProgress?: (bytesRead: number, totalBytes?: number) => void;
+  /** Maximum decompressed file size in bytes. Default: 1 GB. */
+  maxBytes?: number;
 }
 
 export interface RaidSelection {
