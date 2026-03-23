@@ -79,8 +79,6 @@ scripts/
 .github/workflows/
   ci.yml                # CI: push/PR to main → typecheck + build + test
   publish.yml           # Publish: tag v* → build + test + npm publish (OIDC) + GitHub Release
-.opencode/commands/
-  release.md            # /release command (patch/minor/major)
 ```
 
 ## Public API

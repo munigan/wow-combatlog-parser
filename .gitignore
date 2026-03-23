@@ -11,3 +11,6 @@ scripts/*-output.json
 
 # Design docs
 docs/plans/
+
+# OpenCode
+.opencode/
