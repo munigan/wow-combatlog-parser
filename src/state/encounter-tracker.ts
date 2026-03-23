@@ -177,6 +177,36 @@ export class EncounterTracker {
         return this._maybeStartNewEncounter(event, bossNpcId, idleResult);
       }
 
+      // Different boss engaged while current encounter is active → end current as wipe
+      if (bossNpcId !== null && !this._bossNpcIds.has(bossNpcId)) {
+        // Check if this event would start a new encounter (same filters as _maybeStartNewEncounter)
+        const wouldStart =
+          !NEVER_START_ENCOUNTER_EVENTS.has(event.eventType) &&
+          !(AURA_APPLIED_EVENTS.has(event.eventType) && isBuffAura(event)) &&
+          !(getSpellId(event) !== null && IGNORED_ENCOUNTER_SPELL_IDS.has(getSpellId(event)!));
+
+        if (wouldStart) {
+          const candidateName = isMultiBoss(bossNpcId)
+            ? getMultiBossName(bossNpcId)!
+            : getBossName(bossNpcId)!;
+          const killTime = this._recentKills.get(candidateName);
+          const isNotOnCooldown =
+            killTime === undefined ||
+            event.timestamp - killTime >= POST_KILL_COOLDOWN_MS;
+
+          if (isNotOnCooldown) {
+            // End current encounter as wipe, then start the new one
+            const encounter = this._buildEncounter(this._lastBossEventTimestamp);
+            const participants = this._encounterParticipants;
+            this._reset();
+            result.encounterEnded = true;
+            result.encounter = encounter;
+            result.participants = participants;
+            return this._maybeStartNewEncounter(event, bossNpcId, result);
+          }
+        }
+      }
+
       // Track player participation during encounter.
       // Exclude pure aura/buff events — these indicate buff management
       // (e.g., Prayer of Fortitude refreshing on a raid member), not
