@@ -105,6 +105,27 @@ await parseLogStream(file.stream(), selections, {
 
 **Typical flow**: `scanLog` → user picks raids → `parseLog` or `parseLogStream` with `RaidSelection[]`.
 
+### `createRealtimeParser(options?): RealtimeParser`
+Real-time line-by-line parser for the companion overlay app. Feed raw combat log lines via `feedLine(line)`, receive encounter callbacks. Call `tick(currentTimeMs)` on a 1-second interval for wipe detection (idle timeout) when no new lines arrive.
+
+Returns a `RealtimeParser` with:
+- `feedLine(line)` — parse one raw line
+- `tick(currentTimeMs)` — check idle timeout without a new line (pass `Date.now()`)
+- `onEncounterStart(cb)` / `onEncounterEnd(cb)` / `onPlayerDetected(cb)` — register callbacks
+- `getActiveEncounter()` — live stats during a fight (boss name, duration, per-player DPS)
+- `getDetectedPlayers()` — all players seen so far
+- `destroy()` — cleanup
+
+```typescript
+const parser = createRealtimeParser();
+parser.onEncounterStart((info) => console.log(`Boss: ${info.bossName}`));
+parser.onEncounterEnd((enc) => console.log(`${enc.bossName} ${enc.result} in ${enc.duration}s`));
+// Feed lines from file watcher:
+parser.feedLine(rawLine);
+// Call every second for wipe detection:
+parser.tick(Date.now());
+```
+
 ## Gzip Support
 
 All three functions (`scanLog`, `parseLog`, `parseLogStream`) auto-detect gzip-compressed input. If the first two bytes are the gzip magic bytes (`0x1f 0x8b`), the stream is piped through `DecompressionStream('gzip')` before parsing. No configuration needed — pass `.txt` or `.txt.gz` files and it works.
