@@ -269,3 +269,35 @@ export interface ParseStreamCallbacks {
   /** Called after the entire stream is processed with raid-wide aggregates. Awaited if async. */
   onComplete: (summary: ParseStreamSummary) => void | Promise<void>;
 }
+
+// === Realtime Parser API ===
+
+export interface RealtimeParserOptions {
+  /** Year for timestamp parsing (WoW logs have no year). Defaults to current year. */
+  year?: number;
+}
+
+export interface EncounterStartInfo {
+  bossName: string;
+  startTime: number;
+  raidInstance: string | null;
+}
+
+export interface ActiveEncounterInfo {
+  bossName: string;
+  startTime: number;
+  currentDuration: number;
+  playerStats: Map<string, { name: string; damage: number; dps: number }>;
+  playerCount: number;
+}
+
+export interface RealtimeParser {
+  feedLine(line: string): void;
+  tick(currentTimeMs: number): void;
+  onEncounterStart(cb: (info: EncounterStartInfo) => void): void;
+  onEncounterEnd(cb: (encounter: ParsedEncounter) => void): void;
+  onPlayerDetected(cb: (player: PlayerInfo) => void): void;
+  getActiveEncounter(): ActiveEncounterInfo | null;
+  getDetectedPlayers(): Map<string, PlayerInfo>;
+  destroy(): void;
+}

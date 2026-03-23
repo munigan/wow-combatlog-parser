@@ -171,20 +171,10 @@ export class EncounterTracker {
 
     // If we're in an encounter, check for idle timeout first
     if (this._bossName !== null) {
-      if (
-        event.timestamp - this._lastBossEventTimestamp >
-        this._idleThreshold
-      ) {
-        // Idle timeout → wipe
-        const encounter = this._buildEncounter(this._lastBossEventTimestamp);
-        const participants = this._encounterParticipants;
-        this._reset();
-        result.encounterEnded = true;
-        result.encounter = encounter;
-        result.participants = participants;
-
-        // After ending, check if this event starts a new encounter
-        return this._maybeStartNewEncounter(event, bossNpcId, result);
+      const idleResult = this.checkIdleTimeout(event.timestamp);
+      if (idleResult.encounterEnded) {
+        // After ending via idle timeout, check if this event starts a new encounter
+        return this._maybeStartNewEncounter(event, bossNpcId, idleResult);
       }
 
       // Track player participation during encounter.
@@ -280,6 +270,32 @@ export class EncounterTracker {
     const participants = this._encounterParticipants;
     this._reset();
     return { encounter, participants };
+  }
+
+  /**
+   * Check if the current encounter has timed out due to inactivity.
+   * Can be called externally (e.g., from tick()) with a log-domain timestamp.
+   */
+  checkIdleTimeout(currentTimestamp: number): EncounterProcessResult {
+    const result: EncounterProcessResult = {
+      encounterStarted: false,
+      encounterEnded: false,
+      encounter: null,
+      participants: null,
+    };
+
+    if (this._bossName === null) return result;
+
+    if (currentTimestamp - this._lastBossEventTimestamp > this._idleThreshold) {
+      const encounter = this._buildEncounter(this._lastBossEventTimestamp);
+      const participants = this._encounterParticipants;
+      this._reset();
+      result.encounterEnded = true;
+      result.encounter = encounter;
+      result.participants = participants;
+    }
+
+    return result;
   }
 
   // --- Private helpers ---

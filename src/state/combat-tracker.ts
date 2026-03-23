@@ -222,6 +222,19 @@ export class CombatTracker {
     return this.onEncounterEnd();
   }
 
+  getActiveStats(): Map<string, PlayerCombatStats> {
+    const result = new Map<string, PlayerCombatStats>();
+    const allGuids = new Set<string>();
+    for (const guid of this._currentEncounter.keys()) allGuids.add(guid);
+    for (const guid of this._currentDamageTaken.keys()) allGuids.add(guid);
+    for (const guid of allGuids) {
+      const damageDone = this._currentEncounter.get(guid)?.damage ?? 0;
+      const damageTaken = this._currentDamageTaken.get(guid) ?? 0;
+      result.set(guid, { damage: damageDone, damageTaken });
+    }
+    return result;
+  }
+
   getPlayerSummaries(): Map<string, PlayerCombatStats> {
     const summaries = new Map<string, PlayerCombatStats>();
     for (const encounter of this._completedEncounters) {

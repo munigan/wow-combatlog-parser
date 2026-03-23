@@ -281,6 +281,74 @@ export class CombatLogStateMachine {
     return this._externalsTracker?.getPlayerSummaries(totalEncounterDurationMs) ?? null;
   }
 
+  getEncounterTracker(): EncounterTracker {
+    return this._encounterTracker;
+  }
+
+  getCurrentRaidInstance(): string | null {
+    return this._lastRaidInstance;
+  }
+
+  getActiveCombatStats(): Map<string, PlayerCombatStats> | null {
+    if (!this._combatTracker) return null;
+    return this._combatTracker.getActiveStats();
+  }
+
+  /**
+   * Check idle timeout on the encounter tracker and handle all side effects
+   * (collecting tracker data, setting _pendingEncounter) so that
+   * popCompletedEncounter() works correctly for tick()-triggered encounter ends.
+   */
+  checkIdleTimeout(currentTimestamp: number): void {
+    const encounterResult = this._encounterTracker.checkIdleTimeout(currentTimestamp);
+    if (encounterResult.encounterEnded && encounterResult.encounter !== null) {
+      if (encounterResult.encounter.difficulty === null) {
+        encounterResult.encounter.difficulty =
+          detectDifficultyByPlayerCount(this._players.size);
+      }
+
+      if (this._consumableTracker !== null) {
+        encounterResult.encounter.consumables =
+          this._consumableTracker.onEncounterEnd();
+      }
+      if (this._combatTracker !== null) {
+        encounterResult.encounter.combatStats =
+          this._combatTracker.onEncounterEnd();
+      }
+      if (this._buffUptimeTracker !== null) {
+        const startMs = new Date(encounterResult.encounter.startTime).getTime();
+        const endMs = new Date(encounterResult.encounter.endTime).getTime();
+        const buffUptime = this._buffUptimeTracker.computeUptimeForWindow(startMs, endMs);
+        if (buffUptime.size > 0) {
+          const record: Record<string, EncounterBuffUptime> = {};
+          for (const [guid, uptime] of buffUptime) {
+            record[guid] = uptime;
+          }
+          encounterResult.encounter.buffUptime = record;
+        }
+      }
+      if (this._deathTracker !== null) {
+        encounterResult.encounter.deaths = this._deathTracker.onEncounterEnd();
+      }
+      if (this._externalsTracker !== null) {
+        const durationMs = encounterResult.encounter.duration * 1000;
+        const endMs = new Date(encounterResult.encounter.endTime).getTime();
+        encounterResult.encounter.externals = this._externalsTracker.onEncounterEnd(endMs, durationMs);
+      }
+
+      this._pendingEncounter = encounterResult.encounter;
+      this._pendingParticipants = encounterResult.participants;
+
+      this._encounters.push(encounterResult.encounter);
+
+      if (encounterResult.participants !== null) {
+        for (const guid of encounterResult.participants) {
+          this._encounterParticipants.add(guid);
+        }
+      }
+    }
+  }
+
   // --- Private helpers ---
 
   private _trackPlayer(guid: string, name: string): void {
