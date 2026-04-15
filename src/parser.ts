@@ -9,6 +9,7 @@ import type {
 import { CombatLogStateMachine } from "./state/state-machine.js";
 import { buildPipeline } from "./pipeline/build-pipeline.js";
 import { parseLine } from "./pipeline/line-parser.js";
+import { earliestWowCalendarDateInSelection } from "./utils/timestamp.js";
 
 /**
  * Minimum encounter duration (seconds) to include in parse results.
@@ -161,9 +162,7 @@ export async function parseLog(
       }
     }
 
-    // Determine raid date from the first date in the selection
-    const firstDate = ctx.selection.dates[0] ?? "";
-    const raidDate = parseDateString(firstDate, year);
+    const raidDate = earliestWowCalendarDateInSelection(ctx.selection.dates, year);
 
     // Build per-player consumable summaries from encounter data
     const playerConsumableSummaries = new Map<string, Record<number, ConsumableSummaryEntry>>();
@@ -281,13 +280,4 @@ export async function parseLog(
   });
 
   return { raids };
-}
-
-/** Parse a "M/D" date string into a Date object with the given year. */
-function parseDateString(dateStr: string, year: number): Date {
-  const slashIdx = dateStr.indexOf("/");
-  if (slashIdx === -1) return new Date(year, 0, 1);
-  const month = parseInt(dateStr.substring(0, slashIdx), 10);
-  const day = parseInt(dateStr.substring(slashIdx + 1), 10);
-  return new Date(year, month - 1, day);
 }

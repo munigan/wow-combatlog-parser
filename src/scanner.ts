@@ -11,7 +11,7 @@ import type { PlayerRecord } from "./state/state-machine.js";
 import type { RaidSegment } from "./state/raid-separator.js";
 import { buildPipeline } from "./pipeline/build-pipeline.js";
 import { parseLine } from "./pipeline/line-parser.js";
-import { epochToIso } from "./utils/timestamp.js";
+import { enumerateWowLogDatesBetween, epochToIso } from "./utils/timestamp.js";
 
 /** Tolerance (ms) before a segment start for matching encounters to raids. */
 const ENCOUNTER_PRE_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
@@ -190,20 +190,29 @@ function buildDetectedRaid(
   playerMap: Map<string, PlayerRecord>,
   encounterParticipants: Set<string>,
 ): DetectedRaid {
-  // Collect unique dates
-  const dateSet = new Set<string>();
   let minTimestamp = Infinity;
   let maxTimestamp = -Infinity;
   const timeRanges: TimeRange[] = [];
 
   for (const seg of group.segments) {
-    dateSet.add(seg.date);
     if (seg.firstTimestamp < minTimestamp) minTimestamp = seg.firstTimestamp;
     if (seg.lastTimestamp > maxTimestamp) maxTimestamp = seg.lastTimestamp;
     timeRanges.push({
       startTime: epochToIso(seg.firstTimestamp),
       endTime: epochToIso(seg.lastTimestamp),
     });
+  }
+
+  // Every calendar day in this raid's time span. Merged RaidSegments only keep
+  // the first segment's raw `date` string; without this, multi-day raids omit
+  // later days and parseLog skips those lines entirely (fast date rejection).
+  let dates = enumerateWowLogDatesBetween(minTimestamp, maxTimestamp);
+  if (dates.length === 0) {
+    const fallback = new Set<string>();
+    for (const seg of group.segments) {
+      fallback.add(seg.date);
+    }
+    dates = [...fallback];
   }
 
   // Filter players to only those who actively participated in encounters.
@@ -247,7 +256,7 @@ function buildDetectedRaid(
 
   return {
     raidInstance: group.raidInstance,
-    dates: [...dateSet],
+    dates,
     startTime: epochToIso(minTimestamp),
     endTime: epochToIso(maxTimestamp),
     timeRanges,

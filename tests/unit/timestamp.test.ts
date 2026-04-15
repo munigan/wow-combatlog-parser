@@ -1,6 +1,10 @@
 // tests/unit/timestamp.test.ts
 import { describe, it, expect } from "vitest";
-import { parseTimestamp, parseTimestampToEpoch } from "../../src/utils/timestamp.js";
+import {
+  enumerateWowLogDatesBetween,
+  parseTimestamp,
+  parseTimestampToEpoch,
+} from "../../src/utils/timestamp.js";
 
 describe("parseTimestamp", () => {
   it("parses a standard timestamp", () => {
@@ -35,5 +39,23 @@ describe("parseTimestampToEpoch", () => {
     const epoch = parseTimestampToEpoch("2/11 18:30:00.000", 2026);
     const iso = new Date(epoch).toISOString();
     expect(iso).toBe("2026-02-11T18:30:00.000Z");
+  });
+});
+
+describe("enumerateWowLogDatesBetween", () => {
+  it("returns both days when range crosses midnight UTC", () => {
+    const start = Date.UTC(2026, 3, 9, 23, 0, 0, 0);
+    const end = Date.UTC(2026, 3, 10, 3, 0, 0, 0);
+    expect(enumerateWowLogDatesBetween(start, end)).toEqual(["4/9", "4/10"]);
+  });
+
+  it("returns a single day for same-day span", () => {
+    const start = Date.UTC(2026, 3, 9, 10, 0, 0, 0);
+    const end = Date.UTC(2026, 3, 9, 23, 59, 59, 999);
+    expect(enumerateWowLogDatesBetween(start, end)).toEqual(["4/9"]);
+  });
+
+  it("returns empty for invalid range", () => {
+    expect(enumerateWowLogDatesBetween(100, 50)).toEqual([]);
   });
 });
