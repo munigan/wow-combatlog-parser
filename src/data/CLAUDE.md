@@ -21,7 +21,7 @@ Static lookup tables for WotLK 3.3.5. No runtime logic — pure data exported as
 **Adding spells**: Add `spellId → WowClass` to `SPELL_TO_CLASS`, and optionally `spellId → WowSpec` to `SPELL_TO_SPEC` for spec-specific spells. Only add spells that are unambiguous indicators of a class/spec.
 
 ### consumable-data.ts
-14 WotLK consumable spell IDs across 4 types. Key exports:
+15 WotLK consumable spell ID entries across 4 types (Insane Strength Potion: two IDs). Key exports:
 
 - `CONSUMABLE_SPELLS` — `Map<string, ConsumableInfo>` for spell ID lookup.
 - `BUFF_CONSUMABLE_SPELL_IDS` — Set of spell IDs with trackable buff auras (used for pre-pot detection).

@@ -56,7 +56,7 @@ src/
     boss-data.ts        # 63 boss NPC IDs, 9 raid instances, idle thresholds
     spell-book.ts       # ~380 class spells, ~90 spec spells
     difficulty-spells.ts # Boss difficulty spell tuples (ICC/ToC)
-    consumable-data.ts  # 14 WotLK consumable spell IDs (potions/bombs/flame cap)
+    consumable-data.ts  # 15 WotLK consumable spell ID entries (potions/bombs/flame cap)
     buff-data.ts        # Flask, elixir, and food buff spell IDs (36 total)
     external-data.ts    # 16 external buff spell IDs
     encounter-npcs.ts   # Per-boss NPC whitelist for valid damage targets
@@ -163,8 +163,8 @@ Encounters shorter than 10 seconds are discarded (filters Grobbulus hallway pois
 
 ## Consumable Tracking (parseLog only)
 
-Tracks 14 WotLK consumable spell IDs across 4 categories:
-- **Potions** (6): Speed, Wild Magic, Indestructible, Insane Strength, Haste, Nightmares
+Tracks 15 WotLK consumable spell ID entries across 4 categories:
+- **Potions** (6): Speed, Wild Magic, Indestructible, Insane Strength (28494 + 28550), Haste, Nightmares
 - **Flame Cap** (1): Special handling — `SPELL_CAST_SUCCESS` has nil source GUID, tracked via `SPELL_AURA_APPLIED` dest
 - **Mana/Healing** (4): Runic Mana Potion, Runic Mana Injector, Runic Healing Potion, Runic Healing Injector
 - **Engineering** (3): Global Thermal Sapper, Saronite Bomb, Cobalt Frag Bomb

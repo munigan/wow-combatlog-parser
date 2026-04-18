@@ -29,7 +29,9 @@ const CONSUMABLE_LIST: ConsumableInfo[] = [
   { spellId: 53908, displayName: "Potion of Speed", type: "potion", hasBuff: true },
   { spellId: 53909, displayName: "Potion of Wild Magic", type: "potion", hasBuff: true },
   { spellId: 53762, displayName: "Indestructible Potion", type: "potion", hasBuff: true },
+  // Insane Strength: logs may use 28494 (buff) and/or 28550 (item trigger / cast line).
   { spellId: 28494, displayName: "Insane Strength Potion", type: "potion", hasBuff: true },
+  { spellId: 28550, displayName: "Insane Strength Potion", type: "potion", hasBuff: true },
   { spellId: 28507, displayName: "Haste Potion", type: "potion", hasBuff: true },
   { spellId: 53753, displayName: "Potion of Nightmares", type: "potion", hasBuff: true },
 

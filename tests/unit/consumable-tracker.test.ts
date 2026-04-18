@@ -73,6 +73,25 @@ describe("ConsumableTracker", () => {
       expect(result[PLAYER1_GUID][0].spellName).toBe("Potion of Wild Magic");
     });
 
+    it("tracks Insane Strength Potion via alternate cast spell id (28550)", () => {
+      tracker.onEncounterStart();
+
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000000,
+          eventType: "SPELL_CAST_SUCCESS",
+          sourceGuid: PLAYER1_GUID,
+          sourceName: "Warrior",
+          rawFields: "28550,Insane Strength Potion,0x1",
+        }),
+      );
+
+      const result = tracker.onEncounterEnd();
+      expect(result[PLAYER1_GUID][0].spellId).toBe(28550);
+      expect(result[PLAYER1_GUID][0].spellName).toBe("Insane Strength Potion");
+      expect(result[PLAYER1_GUID][0].type).toBe("potion");
+    });
+
     it("tracks mana potions via SPELL_CAST_SUCCESS", () => {
       tracker.onEncounterStart();
 
