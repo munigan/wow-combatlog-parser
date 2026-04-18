@@ -207,13 +207,25 @@ const MULTI_BOSS_IDS = new Map<string, string>([
   ["008938", "Northrend Beasts"],
   ["0087EF", "Northrend Beasts"],
   ["0087ED", "Northrend Beasts"],
-  // Mimiron — phase NPCs are killed sequentially; a true kill requires all four
-  // to die. On wipes, the encounter ends via idle timeout (60s).
+  // Mimiron — the fight has 4 phase NPCs (Leviathan Mk II, VX-001, Aerial
+  // Command Unit, Mimiron). We treat them as multi-boss so every phase keeps
+  // the idle timer alive, but kill detection uses "phase-based" semantics (see
+  // PHASE_BASED_MULTI_BOSSES): the first UNIT_DIED on any phase NPC marks the
+  // encounter as killed. Real servers rarely emit UNIT_DIED for every phase.
   ["008298", "Mimiron"], // Leviathan Mk II
   ["008373", "Mimiron"], // VX-001
   ["008386", "Mimiron"], // Aerial Command Unit
-  ["008246", "Mimiron"], // Mimiron (final phase cockpit)
+  ["008246", "Mimiron"], // Mimiron (cockpit)
 ]);
+
+/**
+ * Multi-boss encounters whose kill is detected on the FIRST sub-boss UNIT_DIED,
+ * not when all sub-bosses die. Phase-based fights (e.g. Mimiron on 3.3.5) often
+ * only emit UNIT_DIED on the final phase; the earlier phases transition without
+ * a death event. We rely on idle timeout to close the encounter after that
+ * death — so the kill timestamp reflects the last boss activity.
+ */
+const PHASE_BASED_MULTI_BOSSES = new Set<string>(["Mimiron"]);
 
 /** "Coward" bosses that don't die — they surrender/despawn. Detection uses aura removals. */
 export const COWARD_BOSSES = new Set([
@@ -262,4 +274,12 @@ export function getMultiBossNpcIds(encounterName: string): string[] {
  */
 export function isCowardBoss(bossName: string): boolean {
   return COWARD_BOSSES.has(bossName);
+}
+
+/**
+ * Check if a multi-boss encounter should register a kill on the first sub-boss
+ * UNIT_DIED instead of requiring every sub-boss to die.
+ */
+export function isPhaseBasedMultiBoss(encounterName: string): boolean {
+  return PHASE_BASED_MULTI_BOSSES.has(encounterName);
 }

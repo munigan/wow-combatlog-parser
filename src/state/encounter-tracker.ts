@@ -12,6 +12,7 @@ import {
   getMultiBossName,
   getMultiBossNpcIds,
   isCowardBoss,
+  isPhaseBasedMultiBoss,
 } from "../data/boss-data.js";
 import { detectDifficulty } from "../detection/difficulty.js";
 
@@ -70,6 +71,13 @@ const NEVER_START_ENCOUNTER_EVENTS = new Set([
   "SPELL_AURA_APPLIED_DOSE",
   "SPELL_CAST_SUCCESS",
   "SPELL_CAST_START",
+  // Missed/immune hits don't count as engagement. Yogg-Saron in particular is
+  // IMMUNE during early phases — blocking these prevents phantom
+  // "encounter started" / idle-timeout-wipe cycles while the raid hits adds.
+  "SPELL_MISSED",
+  "SWING_MISSED",
+  "RANGE_MISSED",
+  "DAMAGE_SHIELD_MISSED",
 ]);
 
 /**
@@ -134,6 +142,7 @@ export class EncounterTracker {
   private _bossKilled: boolean = false;
   private _difficulty: RaidDifficulty | null = null;
   private _isMultiBoss: boolean = false;
+  private _isPhaseBasedMultiBoss: boolean = false;
   private _isCoward: boolean = false;
   private _consecutiveAuraRemovals: number = 0;
   /** Player GUIDs that appeared in events during the current encounter. */
@@ -177,8 +186,23 @@ export class EncounterTracker {
         return this._maybeStartNewEncounter(event, bossNpcId, idleResult);
       }
 
-      // Different boss engaged while current encounter is active → end current as wipe
-      if (bossNpcId !== null && !this._bossNpcIds.has(bossNpcId)) {
+      // Different boss engaged while current encounter is active → end current as wipe.
+      // An event referencing a sub-boss (multi-boss) or an alternate NPC (e.g. another
+      // Mimiron phase) for the SAME encounter isn't really a different boss — it's
+      // either a lingering event after a sub-boss died, or a phase transition.
+      // Guard against splitting those into fake encounters.
+      const isSameEncounter =
+        bossNpcId !== null &&
+        ((this._isMultiBoss &&
+          isMultiBoss(bossNpcId) &&
+          getMultiBossName(bossNpcId) === this._bossName) ||
+          (!this._isMultiBoss && getBossName(bossNpcId) === this._bossName));
+
+      if (
+        bossNpcId !== null &&
+        !this._bossNpcIds.has(bossNpcId) &&
+        !isSameEncounter
+      ) {
         // Check if this event would start a new encounter (same filters as _maybeStartNewEncounter)
         const wouldStart =
           !NEVER_START_ENCOUNTER_EVENTS.has(event.eventType) &&
@@ -235,18 +259,28 @@ export class EncounterTracker {
           destNpcId !== null &&
           this._bossNpcIds.has(destNpcId)
         ) {
-          this._bossKilled = true;
-
-          // For multi-boss, remove this NPC; encounter ends when all are dead
           if (this._isMultiBoss) {
             this._bossNpcIds.delete(destNpcId);
-            if (this._bossNpcIds.size > 0) {
-              // Still more bosses alive
-              return result;
+
+            if (this._isPhaseBasedMultiBoss) {
+              // Phase-based encounters (e.g. Mimiron) only emit UNIT_DIED for
+              // one phase NPC at the end of a successful pull. Mark the kill
+              // here and let idle timeout close the encounter, so the kill
+              // timestamp reflects the last boss activity. If more NPCs are
+              // still alive, the encounter keeps running normally.
+              this._bossKilled = true;
+              if (this._bossNpcIds.size > 0) return result;
+            } else {
+              // All-dead semantics: a wipe that killed a subset of sub-bosses
+              // must not be reported as a kill.
+              if (this._bossNpcIds.size > 0) return result;
+              this._bossKilled = true;
             }
+          } else {
+            this._bossKilled = true;
           }
 
-          // Boss killed → end encounter
+          // Encounter ends here (single-boss, or multi-boss all dead).
           const encounter = this._buildEncounter(event.timestamp);
           const participants = this._encounterParticipants;
           this._recentKills.set(encounter.bossName, event.timestamp);
@@ -376,12 +410,14 @@ export class EncounterTracker {
       this._isMultiBoss = true;
       this._bossNpcIds = new Set(getMultiBossNpcIds(encounterName));
       this._idleThreshold = getBossIdleThreshold(encounterName);
+      this._isPhaseBasedMultiBoss = isPhaseBasedMultiBoss(encounterName);
     } else {
       const bossName = getBossName(bossNpcId)!;
       this._bossName = bossName;
       this._isMultiBoss = false;
       this._bossNpcIds = new Set([bossNpcId]);
       this._idleThreshold = getBossIdleThreshold(bossName);
+      this._isPhaseBasedMultiBoss = false;
     }
 
     this._startTimestamp = event.timestamp;
@@ -435,6 +471,7 @@ export class EncounterTracker {
     this._bossKilled = false;
     this._difficulty = null;
     this._isMultiBoss = false;
+    this._isPhaseBasedMultiBoss = false;
     this._isCoward = false;
     this._consecutiveAuraRemovals = 0;
     this._encounterParticipants = new Set();
