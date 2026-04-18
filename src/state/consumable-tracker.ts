@@ -50,6 +50,11 @@ interface InternalUse {
  * 2. onEncounterStart() called when an encounter begins.
  * 3. onEncounterEnd() called when an encounter ends → returns consumable data.
  *
+ * Raid-wide totals (`getRaidWideSummaries`) include every tracked consumable in
+ * the log window — trash, travel, and between boss pulls — not only uses during
+ * detected boss encounters. Per-encounter snapshots still only contain uses
+ * attributed to that fight (plus pre-pots at pull).
+ *
  * Pre-pot detection:
  * - Tracks active buff auras (SPELL_AURA_APPLIED/REMOVED for buff consumables).
  * - When an encounter starts, any player with an active buff consumable aura
@@ -70,6 +75,12 @@ export class ConsumableTracker {
    * Key: `${playerGuid}:${spellId}:${pre|mid}`
    */
   private _currentEncounter = new Map<string, InternalUse>();
+
+  /**
+   * Full raid-window consumable usage (same key shape as `_currentEncounter`).
+   * Never cleared — includes trash and out-of-encounter casts.
+   */
+  private _raidWide = new Map<string, InternalUse>();
 
   /** Completed encounter consumable records (one per encounter, in order). */
   private _completedEncounters: EncounterConsumables[] = [];
@@ -95,10 +106,19 @@ export class ConsumableTracker {
             spellName: info.displayName,
           });
 
-          // If we're in an encounter and a buff is applied, it's a mid-fight use.
-          // This handles Flame Cap during encounter (where SPELL_CAST_SUCCESS has nil source).
+          // Flame Cap: player from SPELL_AURA_APPLIED dest (SPELL_CAST_SUCCESS has nil source).
+          // Mid-fight use: count in both raid-wide and encounter maps. Pre-pull FC is counted
+          // at encounter start via active-buff pre-pot (counting it here when !inEncounter would
+          // duplicate that).
           if (this._inEncounter && spellId === FLAME_CAP_SPELL_ID) {
-            this._recordUsage(playerGuid, spellId, info.displayName, info.type, false);
+            this._recordUsage(
+              playerGuid,
+              spellId,
+              info.displayName,
+              info.type,
+              false,
+              true,
+            );
           }
         }
         return;
@@ -115,9 +135,8 @@ export class ConsumableTracker {
       }
     }
 
-    // During encounter: track SPELL_CAST_SUCCESS for consumables
-    if (!this._inEncounter) return;
-
+    // SPELL_CAST_SUCCESS for consumables: always roll into raid-wide totals; encounter
+    // snapshot only while a boss encounter is active.
     if (event.eventType !== "SPELL_CAST_SUCCESS") return;
 
     const info = CONSUMABLE_SPELLS.get(spellId);
@@ -129,7 +148,14 @@ export class ConsumableTracker {
     const playerGuid = event.sourceGuid;
     if (!isPlayer(playerGuid)) return;
 
-    this._recordUsage(playerGuid, spellId, info.displayName, info.type, false);
+    this._recordUsage(
+      playerGuid,
+      spellId,
+      info.displayName,
+      info.type,
+      false,
+      this._inEncounter,
+    );
   }
 
   /**
@@ -144,7 +170,7 @@ export class ConsumableTracker {
     for (const [playerGuid, buff] of this._activeBuffs) {
       const info = CONSUMABLE_SPELLS.get(buff.spellId);
       if (info === undefined) continue;
-      this._recordUsage(playerGuid, buff.spellId, info.displayName, info.type, true);
+      this._recordUsage(playerGuid, buff.spellId, info.displayName, info.type, true, true);
     }
   }
 
@@ -177,6 +203,34 @@ export class ConsumableTracker {
     return this._completedEncounters;
   }
 
+  /**
+   * Aggregated consumables for the full parsed time span (all players), including
+   * uses outside boss encounters.
+   */
+  getRaidWideSummaries(): Map<string, PlayerConsumableSummary> {
+    const byPlayer = new Map<string, PlayerConsumableSummary>();
+    for (const use of this._raidWide.values()) {
+      let summary = byPlayer.get(use.playerGuid);
+      if (summary === undefined) {
+        summary = {};
+        byPlayer.set(use.playerGuid, summary);
+      }
+      const existing = summary[use.spellId];
+      if (existing !== undefined) {
+        existing.totalUses += use.count;
+        if (use.prePot) existing.prePotCount += use.count;
+      } else {
+        summary[use.spellId] = {
+          spellName: use.spellName,
+          type: use.type,
+          totalUses: use.count,
+          prePotCount: use.prePot ? use.count : 0,
+        };
+      }
+    }
+    return byPlayer;
+  }
+
   /** Force-end the current encounter (e.g., end of log). */
   forceEnd(): EncounterConsumables | null {
     if (!this._inEncounter) return null;
@@ -191,13 +245,29 @@ export class ConsumableTracker {
     spellName: string,
     type: ConsumableType,
     prePot: boolean,
+    includeInEncounter: boolean,
   ): void {
     const key = `${playerGuid}:${spellId}:${prePot ? "pre" : "mid"}`;
-    const existing = this._currentEncounter.get(key);
+    this._incrementUseMap(this._raidWide, key, playerGuid, spellId, spellName, type, prePot);
+    if (includeInEncounter) {
+      this._incrementUseMap(this._currentEncounter, key, playerGuid, spellId, spellName, type, prePot);
+    }
+  }
+
+  private _incrementUseMap(
+    map: Map<string, InternalUse>,
+    key: string,
+    playerGuid: string,
+    spellId: string,
+    spellName: string,
+    type: ConsumableType,
+    prePot: boolean,
+  ): void {
+    const existing = map.get(key);
     if (existing !== undefined) {
       existing.count++;
     } else {
-      this._currentEncounter.set(key, {
+      map.set(key, {
         playerGuid,
         spellId: Number(spellId),
         spellName,

@@ -11,7 +11,7 @@ import { getRaidInstance } from "../data/boss-data.js";
 import { EncounterTracker } from "./encounter-tracker.js";
 import { RaidSeparator } from "./raid-separator.js";
 import type { RaidSegment } from "./raid-separator.js";
-import { ConsumableTracker } from "./consumable-tracker.js";
+import { ConsumableTracker, type PlayerConsumableSummary } from "./consumable-tracker.js";
 import { CombatTracker } from "./combat-tracker.js";
 import { BuffUptimeTracker } from "./buff-uptime-tracker.js";
 import { DeathTracker } from "./death-tracker.js";
@@ -106,47 +106,11 @@ export class CombatLogStateMachine {
     // 4. Feed event to encounter tracker
     const encounterResult = this._encounterTracker.processEvent(event);
 
-    // 5. Notify consumable tracker of encounter start
-    if (encounterResult.encounterStarted && this._consumableTracker !== null) {
-      this._consumableTracker.onEncounterStart();
-    }
-    if (encounterResult.encounterStarted && this._combatTracker !== null) {
-      const bossName = this._encounterTracker.getCurrentBossName();
-      this._combatTracker.onEncounterStart(bossName);
-    }
-    if (encounterResult.encounterStarted && this._deathTracker !== null) {
-      this._deathTracker.onEncounterStart(event.timestamp);
-    }
-    if (encounterResult.encounterStarted && this._externalsTracker !== null) {
-      this._externalsTracker.onEncounterStart(event.timestamp);
-    }
-
-    // 6. Determine raid instance from current boss
-    if (this._encounterTracker.isInEncounter()) {
-      const bossName = this._encounterTracker.getCurrentBossName();
-      if (bossName !== null) {
-        const instance = getRaidInstance(bossName);
-        if (instance !== null) {
-          this._lastRaidInstance = instance;
-        }
-      }
-    }
-
-    // 7. Feed to raid separator — use player GUID if source is a player
-    const playerGuid = isPlayer(event.sourceGuid)
-      ? event.sourceGuid
-      : isPlayer(event.destGuid)
-        ? event.destGuid
-        : null;
-
-    this._raidSeparator.processTimestamp(
-      event.timestamp,
-      event.date,
-      playerGuid,
-      this._lastRaidInstance,
-    );
-
-    // 8. Store completed encounters and their participants
+    // 5. Store completed encounter FIRST, then start a new one. A single event can
+    //    both end the old encounter and start a new one (the "different boss engaged"
+    //    branch in encounter-tracker). If we called onEncounterStart before
+    //    onEncounterEnd here, the new encounter's pre-pots / resets would overwrite
+    //    the old encounter's data and disable mid-fight recording for the new one.
     if (encounterResult.encounterEnded && encounterResult.encounter !== null) {
       // Apply fallback difficulty from player count if not detected
       if (encounterResult.encounter.difficulty === null) {
@@ -189,13 +153,52 @@ export class CombatLogStateMachine {
 
       this._encounters.push(encounterResult.encounter);
 
-      // Accumulate encounter participants
       if (encounterResult.participants !== null) {
         for (const guid of encounterResult.participants) {
           this._encounterParticipants.add(guid);
         }
       }
     }
+
+    // 6. Notify trackers of encounter start (after any pending end is flushed)
+    if (encounterResult.encounterStarted && this._consumableTracker !== null) {
+      this._consumableTracker.onEncounterStart();
+    }
+    if (encounterResult.encounterStarted && this._combatTracker !== null) {
+      const bossName = this._encounterTracker.getCurrentBossName();
+      this._combatTracker.onEncounterStart(bossName);
+    }
+    if (encounterResult.encounterStarted && this._deathTracker !== null) {
+      this._deathTracker.onEncounterStart(event.timestamp);
+    }
+    if (encounterResult.encounterStarted && this._externalsTracker !== null) {
+      this._externalsTracker.onEncounterStart(event.timestamp);
+    }
+
+    // 7. Determine raid instance from current boss
+    if (this._encounterTracker.isInEncounter()) {
+      const bossName = this._encounterTracker.getCurrentBossName();
+      if (bossName !== null) {
+        const instance = getRaidInstance(bossName);
+        if (instance !== null) {
+          this._lastRaidInstance = instance;
+        }
+      }
+    }
+
+    // 8. Feed to raid separator — use player GUID if source is a player
+    const playerGuid = isPlayer(event.sourceGuid)
+      ? event.sourceGuid
+      : isPlayer(event.destGuid)
+        ? event.destGuid
+        : null;
+
+    this._raidSeparator.processTimestamp(
+      event.timestamp,
+      event.date,
+      playerGuid,
+      this._lastRaidInstance,
+    );
   }
 
   finalize(lastTimestamp: number): void {
@@ -267,6 +270,11 @@ export class CombatLogStateMachine {
 
   getCombatPlayerSummaries(): Map<string, PlayerCombatStats> | null {
     return this._combatTracker?.getPlayerSummaries() ?? null;
+  }
+
+  /** Full raid-window consumable totals (includes trash / between bosses). parseLog only. */
+  getConsumableRaidSummaries(): Map<string, PlayerConsumableSummary> | null {
+    return this._consumableTracker?.getRaidWideSummaries() ?? null;
   }
 
   getBuffUptimeResults(raidStartMs: number, raidEndMs: number): Map<string, PlayerBuffUptime> | null {

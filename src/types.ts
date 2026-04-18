@@ -160,7 +160,10 @@ export interface PlayerInfo {
   name: string;
   class: WowClass | null;
   spec: WowSpec | null;
-  /** Raid-wide consumable summary (parseLog only). */
+  /**
+   * Raid-wide consumable summary (parseLog only): all tracked uses in the parsed
+   * time window, including trash and between boss encounters — not only boss fights.
+   */
   consumables?: Record<number, ConsumableSummaryEntry>;
   /** Raid-wide damage totals (parseLog only). */
   combatStats?: PlayerCombatStats;

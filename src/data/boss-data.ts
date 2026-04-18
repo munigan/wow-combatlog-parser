@@ -43,7 +43,13 @@ const BOSS_NPC_IDS = new Map<string, string>([
   ["00804D", "Hodir"],
   ["008061", "Thorim"],
   ["00808A", "Freya"],
+  // Mimiron: all phase NPCs map to the "Mimiron" encounter name.
+  // Each phase NPC emits UNIT_DIED when its phase ends; Mimiron himself (008246)
+  // emits UNIT_DIED at the end of the kill.
   ["008246", "Mimiron"],
+  ["008298", "Mimiron"], // Leviathan Mk II (Phase 1)
+  ["008373", "Mimiron"], // VX-001 (Phase 2)
+  ["008386", "Mimiron"], // Aerial Command Unit (Phase 3)
   ["0081F7", "General Vezax"],
   ["008208", "Yogg-Saron"],
   ["008067", "Algalon the Observer"],
@@ -201,6 +207,12 @@ const MULTI_BOSS_IDS = new Map<string, string>([
   ["008938", "Northrend Beasts"],
   ["0087EF", "Northrend Beasts"],
   ["0087ED", "Northrend Beasts"],
+  // Mimiron — phase NPCs are killed sequentially; a true kill requires all four
+  // to die. On wipes, the encounter ends via idle timeout (60s).
+  ["008298", "Mimiron"], // Leviathan Mk II
+  ["008373", "Mimiron"], // VX-001
+  ["008386", "Mimiron"], // Aerial Command Unit
+  ["008246", "Mimiron"], // Mimiron (final phase cockpit)
 ]);
 
 /** "Coward" bosses that don't die — they surrender/despawn. Detection uses aura removals. */

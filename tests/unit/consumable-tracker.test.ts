@@ -363,8 +363,8 @@ describe("ConsumableTracker", () => {
     });
   });
 
-  describe("ignores events outside encounters", () => {
-    it("does not track SPELL_CAST_SUCCESS outside encounters", () => {
+  describe("raid-wide vs encounter-scoped tracking", () => {
+    it("counts SPELL_CAST_SUCCESS outside encounters in getRaidWideSummaries only", () => {
       tracker.processEvent(
         makeEvent({
           timestamp: 1000000,
@@ -375,10 +375,13 @@ describe("ConsumableTracker", () => {
         }),
       );
 
-      // Start and immediately end an encounter
       tracker.onEncounterStart();
       const result = tracker.onEncounterEnd();
       expect(result[PLAYER1_GUID]).toBeUndefined();
+
+      const raid = tracker.getRaidWideSummaries();
+      expect(raid.get(PLAYER1_GUID)?.[53908]?.totalUses).toBe(1);
+      expect(raid.get(PLAYER1_GUID)?.[53908]?.spellName).toBe("Potion of Speed");
     });
 
     it("ignores non-consumable spells", () => {

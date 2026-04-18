@@ -224,34 +224,11 @@ export async function parseLogStream(
   const raidEndMs = lastTimestamps[0];
   const raidDurationMs = raidEndMs - raidStartMs;
 
-  // Build per-player consumable summaries
   const allEncounters = ctx.stateMachine.getEncounters()
     .filter((enc: EncounterSummary) => enc.duration >= MIN_ENCOUNTER_DURATION_S);
-  const playerConsumableSummaries = new Map<string, Record<number, ConsumableSummaryEntry>>();
-  for (const enc of allEncounters) {
-    if (enc.consumables === undefined) continue;
-    for (const [guid, uses] of Object.entries(enc.consumables)) {
-      let summary = playerConsumableSummaries.get(guid);
-      if (summary === undefined) {
-        summary = {};
-        playerConsumableSummaries.set(guid, summary);
-      }
-      for (const use of uses) {
-        const existing = summary[use.spellId];
-        if (existing !== undefined) {
-          existing.totalUses += use.count;
-          if (use.prePot) existing.prePotCount += use.count;
-        } else {
-          summary[use.spellId] = {
-            spellName: use.spellName,
-            type: use.type,
-            totalUses: use.count,
-            prePotCount: use.prePot ? use.count : 0,
-          };
-        }
-      }
-    }
-  }
+
+  const playerConsumableSummaries =
+    ctx.stateMachine.getConsumableRaidSummaries() ?? new Map<string, Record<number, ConsumableSummaryEntry>>();
 
   // Get per-player combat stat summaries
   const combatSummaries = ctx.stateMachine.getCombatPlayerSummaries();
