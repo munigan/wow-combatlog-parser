@@ -1,6 +1,6 @@
 {
   "name": "@munigan/wow-combatlog-parser",
-  "version": "0.2.3",
+  "version": "0.3.1",
   "description": "Streaming parser for World of Warcraft WotLK 3.3.5 combat logs",
   "type": "module",
   "main": "./dist/index.cjs",
