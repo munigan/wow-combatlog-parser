@@ -97,8 +97,11 @@ export interface ConsumableSummaryEntry {
 }
 
 export interface PlayerCombatStats {
-  damage: number;       // useful damage (raw - overkill), excludes friendly fire
-  damageTaken: number;  // raw damage taken (no overkill subtraction)
+  /** Useful damage (amount − overkill) to uwu-style encounter targets only. */
+  damage: number;
+  /** All hostile NPC damage (same filters as useful except no NPC whitelist). */
+  damageTotal: number;
+  damageTaken: number; // raw damage taken (no overkill subtraction)
 }
 
 // === Deaths ===
@@ -287,7 +290,16 @@ export interface ActiveEncounterInfo {
   bossName: string;
   startTime: number;
   currentDuration: number;
-  playerStats: Map<string, { name: string; damage: number; dps: number }>;
+  playerStats: Map<
+    string,
+    {
+      name: string;
+      damage: number;
+      damageTotal: number;
+      dps: number;
+      dpsTotal: number;
+    }
+  >;
   playerCount: number;
 }
 

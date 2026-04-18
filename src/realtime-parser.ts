@@ -142,7 +142,13 @@ export function createRealtimeParser(
 			const durationS = durationMs / 1000;
 			const playerStats = new Map<
 				string,
-				{ name: string; damage: number; dps: number }
+				{
+					name: string;
+					damage: number;
+					damageTotal: number;
+					dps: number;
+					dpsTotal: number;
+				}
 			>();
 
 			if (combatStats) {
@@ -150,10 +156,16 @@ export function createRealtimeParser(
 				for (const [guid, stats] of combatStats) {
 					const record = detectedPlayers.get(guid);
 					const name = record?.name ?? guid;
+					const dpsUseful =
+						durationS > 0 ? Math.round(stats.damage / durationS) : 0;
+					const dpsTotal =
+						durationS > 0 ? Math.round(stats.damageTotal / durationS) : 0;
 					playerStats.set(guid, {
 						name,
 						damage: stats.damage,
-						dps: durationS > 0 ? Math.round(stats.damage / durationS) : 0,
+						damageTotal: stats.damageTotal,
+						dps: dpsUseful,
+						dpsTotal,
 					});
 				}
 			}

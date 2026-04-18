@@ -35,11 +35,11 @@ describe.skipIf(!existsSync(LOG7_PATH))(
   () => {
     // Shared state: scan once, parse once, reuse across tests.
     let patchwerk: {
-      combatStats: Record<string, { damage: number }>;
+      combatStats: Record<string, { damage: number; damageTotal: number }>;
       players: Map<string, string>; // name → guid
     };
     let razuvious: {
-      combatStats: Record<string, { damage: number }>;
+      combatStats: Record<string, { damage: number; damageTotal: number }>;
       players: Map<string, string>;
     };
 
@@ -100,6 +100,7 @@ describe.skipIf(!existsSync(LOG7_PATH))(
       expect(stats).toBeDefined();
       // Our value: 814,785 — uwu-logs: 812,995 (+0.22%)
       expectWithinPct(stats.damage, 812_995, 2);
+      expect(stats.damageTotal).toBeGreaterThanOrEqual(stats.damage);
     });
 
     it("Patchwerk: Mopex damage within 2% of uwu-logs (766,634)", () => {
@@ -109,6 +110,7 @@ describe.skipIf(!existsSync(LOG7_PATH))(
       expect(stats).toBeDefined();
       // Our value: 766,634 — uwu-logs: 766,634 (exact match)
       expectWithinPct(stats.damage, 766_634, 2);
+      expect(stats.damageTotal).toBeGreaterThanOrEqual(stats.damage);
     });
 
     // --- Razuvious damage ---
@@ -120,6 +122,7 @@ describe.skipIf(!existsSync(LOG7_PATH))(
       expect(stats).toBeDefined();
       // Our value: 535,352 — uwu-logs: 535,352 (exact match)
       expectWithinPct(stats.damage, 535_352, 2);
+      expect(stats.damageTotal).toBeGreaterThanOrEqual(stats.damage);
     });
 
   },

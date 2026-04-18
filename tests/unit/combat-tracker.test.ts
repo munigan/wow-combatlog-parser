@@ -201,6 +201,36 @@ describe("CombatTracker", () => {
       const stats = tracker.onEncounterEnd();
       expect(stats[PLAYER1]).toBeDefined();
       expect(stats[PLAYER1].damage).toBe(9000);
+      expect(stats[PLAYER1].damageTotal).toBe(9000);
+    });
+
+    it("damageTotal counts non-whitelist NPCs on Patchwerk; useful does not", () => {
+      const PATCHWERK_BOSS = "0xF130003E9C000001";
+      const OFF_LIST_NPC = "0xF130009999000001";
+      tracker.onEncounterStart("Patchwerk");
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1000,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: PATCHWERK_BOSS,
+          destFlags: "0xa48",
+          rawFields: "12345,Frostbolt,0x10,1000,0,0x10,0,0,0,nil,nil,nil",
+        }),
+      );
+      tracker.processEvent(
+        makeEvent({
+          timestamp: 1001,
+          eventType: "SPELL_DAMAGE",
+          sourceGuid: PLAYER1,
+          destGuid: OFF_LIST_NPC,
+          destFlags: "0xa48",
+          rawFields: "12345,Frostbolt,0x10,5000,0,0x10,0,0,0,nil,nil,nil",
+        }),
+      );
+      const stats = tracker.onEncounterEnd();
+      expect(stats[PLAYER1].damage).toBe(1000);
+      expect(stats[PLAYER1].damageTotal).toBe(6000);
     });
 
     it("ignores damage events outside an encounter", () => {

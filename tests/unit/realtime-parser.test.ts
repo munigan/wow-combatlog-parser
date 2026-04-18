@@ -150,6 +150,13 @@ describe("createRealtimeParser", () => {
 		expect(active!.bossName).toBe("Patchwerk");
 		expect(active!.currentDuration).toBeCloseTo(10, 0);
 		expect(active!.playerCount).toBeGreaterThan(0);
+		const live = active!.playerStats.get(PLAYER1_GUID);
+		expect(live).toBeDefined();
+		// First damage line can occur before encounter combat window opens; the second line is reliably in-encounter.
+		expect(live!.damage).toBe(5000);
+		expect(live!.damageTotal).toBe(5000);
+		expect(live!.dps).toBe(500);
+		expect(live!.dpsTotal).toBe(500);
 	});
 
 	it("fires onPlayerDetected for new players", () => {

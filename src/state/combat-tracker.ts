@@ -162,30 +162,27 @@ export class CombatTracker {
         return; // Still skip damage-done for player targets (friendly fire exclusion)
       }
 
-      // Damage-done tracking (existing logic, unchanged)
+      // Damage-done tracking (useful = whitelist; total = all hostile NPC)
       if (isFriendly(event.destFlags)) return;
 
-      // If encounter has a valid NPC whitelist, only count damage to those NPCs.
-      // This prevents damage to trash pulled from other rooms from inflating DPS.
+      // Resolve source through pet map (same for useful and total)
+      const sourceGuid = this._petOwners.get(event.sourceGuid) ?? event.sourceGuid;
+      if (!isPlayer(sourceGuid)) return;
+
+      const amount = extractFieldInt(event.rawFields, isSwing ? 0 : 3);
+      const overkill = extractFieldInt(event.rawFields, isSwing ? 1 : 4);
+      const hit = amount - Math.max(0, overkill);
+      if (hit <= 0) return;
+
+      this._addTotalDamage(sourceGuid, hit);
+
+      // Useful: only NPCs in encounter whitelist (when defined)
       if (this._validNpcs !== null) {
         const destNpcId = getNpcId(event.destGuid);
         if (!this._validNpcs.has(destNpcId)) return;
       }
 
-      // Resolve source through pet map
-      const sourceGuid = this._petOwners.get(event.sourceGuid) ?? event.sourceGuid;
-
-      // Only count if resolved source is a player
-      if (!isPlayer(sourceGuid)) return;
-
-      // Extract amount and overkill
-      const amount = extractFieldInt(event.rawFields, isSwing ? 0 : 3);
-      const overkill = extractFieldInt(event.rawFields, isSwing ? 1 : 4);
-
-      const useful = amount - Math.max(0, overkill);
-      if (useful <= 0) return;
-
-      this._accumulate(sourceGuid, useful);
+      this._addUsefulDamage(sourceGuid, hit);
     }
   }
 
@@ -206,9 +203,11 @@ export class CombatTracker {
     for (const guid of this._currentDamageTaken.keys()) allGuids.add(guid);
 
     for (const guid of allGuids) {
-      const damageDone = this._currentEncounter.get(guid)?.damage ?? 0;
+      const row = this._currentEncounter.get(guid);
+      const damageDone = row?.damage ?? 0;
+      const damageTotal = row?.damageTotal ?? 0;
       const damageTaken = this._currentDamageTaken.get(guid) ?? 0;
-      result[guid] = { damage: damageDone, damageTaken };
+      result[guid] = { damage: damageDone, damageTotal, damageTaken };
     }
 
     this._completedEncounters.push(result);
@@ -228,9 +227,11 @@ export class CombatTracker {
     for (const guid of this._currentEncounter.keys()) allGuids.add(guid);
     for (const guid of this._currentDamageTaken.keys()) allGuids.add(guid);
     for (const guid of allGuids) {
-      const damageDone = this._currentEncounter.get(guid)?.damage ?? 0;
+      const row = this._currentEncounter.get(guid);
+      const damageDone = row?.damage ?? 0;
+      const damageTotal = row?.damageTotal ?? 0;
       const damageTaken = this._currentDamageTaken.get(guid) ?? 0;
-      result.set(guid, { damage: damageDone, damageTaken });
+      result.set(guid, { damage: damageDone, damageTotal, damageTaken });
     }
     return result;
   }
@@ -242,21 +243,36 @@ export class CombatTracker {
         const existing = summaries.get(guid);
         if (existing !== undefined) {
           existing.damage += stats.damage;
+          existing.damageTotal += stats.damageTotal;
           existing.damageTaken += stats.damageTaken;
         } else {
-          summaries.set(guid, { damage: stats.damage, damageTaken: stats.damageTaken });
+          summaries.set(guid, {
+            damage: stats.damage,
+            damageTotal: stats.damageTotal,
+            damageTaken: stats.damageTaken,
+          });
         }
       }
     }
     return summaries;
   }
 
-  private _accumulate(playerGuid: string, damage: number): void {
-    const existing = this._currentEncounter.get(playerGuid);
-    if (existing !== undefined) {
-      existing.damage += damage;
-    } else {
-      this._currentEncounter.set(playerGuid, { damage, damageTaken: 0 });
+  private _ensureRow(playerGuid: string): PlayerCombatStats {
+    let row = this._currentEncounter.get(playerGuid);
+    if (row === undefined) {
+      row = { damage: 0, damageTotal: 0, damageTaken: 0 };
+      this._currentEncounter.set(playerGuid, row);
     }
+    return row;
+  }
+
+  private _addUsefulDamage(playerGuid: string, hit: number): void {
+    const row = this._ensureRow(playerGuid);
+    row.damage += hit;
+  }
+
+  private _addTotalDamage(playerGuid: string, hit: number): void {
+    const row = this._ensureRow(playerGuid);
+    row.damageTotal += hit;
   }
 }
