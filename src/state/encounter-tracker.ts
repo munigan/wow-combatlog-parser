@@ -12,7 +12,7 @@ import {
   getMultiBossName,
   getMultiBossNpcIds,
   isCowardBoss,
-  isPhaseBasedMultiBoss,
+  getEncounterKillNpcIds,
 } from "../data/boss-data.js";
 import { detectDifficulty } from "../detection/difficulty.js";
 
@@ -142,7 +142,13 @@ export class EncounterTracker {
   private _bossKilled: boolean = false;
   private _difficulty: RaidDifficulty | null = null;
   private _isMultiBoss: boolean = false;
-  private _isPhaseBasedMultiBoss: boolean = false;
+  /**
+   * NPC ids whose UNIT_DIED counts as a kill for the current encounter. A
+   * subset of `_bossNpcIds` (engagement NPCs). Deaths outside this set —
+   * e.g. adds, intermediate phases, tentacles — keep the encounter alive but
+   * don't end it.
+   */
+  private _killNpcIds: Set<string> = new Set();
   private _isCoward: boolean = false;
   private _consecutiveAuraRemovals: number = 0;
   /** Player GUIDs that appeared in events during the current encounter. */
@@ -259,28 +265,23 @@ export class EncounterTracker {
           destNpcId !== null &&
           this._bossNpcIds.has(destNpcId)
         ) {
-          if (this._isMultiBoss) {
-            this._bossNpcIds.delete(destNpcId);
-
-            if (this._isPhaseBasedMultiBoss) {
-              // Phase-based encounters (e.g. Mimiron) only emit UNIT_DIED for
-              // one phase NPC at the end of a successful pull. Mark the kill
-              // here and let idle timeout close the encounter, so the kill
-              // timestamp reflects the last boss activity. If more NPCs are
-              // still alive, the encounter keeps running normally.
-              this._bossKilled = true;
-              if (this._bossNpcIds.size > 0) return result;
-            } else {
-              // All-dead semantics: a wipe that killed a subset of sub-bosses
-              // must not be reported as a kill.
-              if (this._bossNpcIds.size > 0) return result;
-              this._bossKilled = true;
-            }
-          } else {
-            this._bossKilled = true;
+          // Only NPCs in `_killNpcIds` count towards kill detection. This lets
+          // sub-NPCs (tentacles, adds, intermediate phases) die freely during
+          // the fight without ending the encounter.
+          if (!this._killNpcIds.has(destNpcId)) {
+            return result;
           }
 
-          // Encounter ends here (single-boss, or multi-boss all dead).
+          this._killNpcIds.delete(destNpcId);
+          if (this._killNpcIds.size > 0) {
+            // For "all-dead" encounters (Assembly of Iron etc.), some kill
+            // targets are still alive — encounter continues.
+            return result;
+          }
+
+          this._bossKilled = true;
+
+          // Encounter ends here (final kill target has died).
           const encounter = this._buildEncounter(event.timestamp);
           const participants = this._encounterParticipants;
           this._recentKills.set(encounter.bossName, event.timestamp);
@@ -410,15 +411,21 @@ export class EncounterTracker {
       this._isMultiBoss = true;
       this._bossNpcIds = new Set(getMultiBossNpcIds(encounterName));
       this._idleThreshold = getBossIdleThreshold(encounterName);
-      this._isPhaseBasedMultiBoss = isPhaseBasedMultiBoss(encounterName);
     } else {
       const bossName = getBossName(bossNpcId)!;
       this._bossName = bossName;
       this._isMultiBoss = false;
       this._bossNpcIds = new Set([bossNpcId]);
       this._idleThreshold = getBossIdleThreshold(bossName);
-      this._isPhaseBasedMultiBoss = false;
     }
+
+    // Kill-marking NPCs: honor any per-encounter override, otherwise default to
+    // the full engagement set (single-boss: the one NPC; multi-boss: every
+    // sub-boss must die).
+    const killOverride = getEncounterKillNpcIds(this._bossName);
+    this._killNpcIds = killOverride !== null
+      ? new Set(killOverride)
+      : new Set(this._bossNpcIds);
 
     this._startTimestamp = event.timestamp;
     this._lastBossEventTimestamp = event.timestamp;
@@ -471,7 +478,7 @@ export class EncounterTracker {
     this._bossKilled = false;
     this._difficulty = null;
     this._isMultiBoss = false;
-    this._isPhaseBasedMultiBoss = false;
+    this._killNpcIds.clear();
     this._isCoward = false;
     this._consecutiveAuraRemovals = 0;
     this._encounterParticipants = new Set();

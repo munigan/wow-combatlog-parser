@@ -43,15 +43,24 @@ const BOSS_NPC_IDS = new Map<string, string>([
   ["00804D", "Hodir"],
   ["008061", "Thorim"],
   ["00808A", "Freya"],
-  // Mimiron: all phase NPCs map to the "Mimiron" encounter name.
-  // Each phase NPC emits UNIT_DIED when its phase ends; Mimiron himself (008246)
-  // emits UNIT_DIED at the end of the kill.
-  ["008246", "Mimiron"],
+  // Mimiron: all phase NPCs map to the "Mimiron" encounter.
+  ["008246", "Mimiron"], // Mimiron (cockpit)
   ["008298", "Mimiron"], // Leviathan Mk II (Phase 1)
   ["008373", "Mimiron"], // VX-001 (Phase 2)
   ["008386", "Mimiron"], // Aerial Command Unit (Phase 3)
   ["0081F7", "General Vezax"],
-  ["008208", "Yogg-Saron"],
+  // Yogg-Saron: every phase NPC (Sara, guardians, clouds, tentacles,
+  // Yogg's body, brain room) maps to the "Yogg-Saron" encounter so events
+  // throughout the fight keep the encounter alive.
+  ["008208", "Yogg-Saron"], // Yogg-Saron (P3 body)
+  ["00816E", "Yogg-Saron"], // Sara (P1)
+  ["008170", "Yogg-Saron"], // Guardian of Yogg-Saron (P1 adds)
+  ["00820C", "Yogg-Saron"], // Ominous Cloud (P2)
+  ["0084AE", "Yogg-Saron"], // Crusher Tentacle (P2)
+  ["0084BF", "Yogg-Saron"], // Constrictor Tentacle (P2)
+  ["0084C1", "Yogg-Saron"], // Corruptor Tentacle (P2)
+  ["008462", "Yogg-Saron"], // Brain of Yogg-Saron (P2 mind realm)
+  ["00845A", "Yogg-Saron"], // Death Orb (P3)
   ["008067", "Algalon the Observer"],
   // Trial of the Crusader
   ["0087EC", "Gormok the Impaler"],
@@ -207,25 +216,40 @@ const MULTI_BOSS_IDS = new Map<string, string>([
   ["008938", "Northrend Beasts"],
   ["0087EF", "Northrend Beasts"],
   ["0087ED", "Northrend Beasts"],
-  // Mimiron — the fight has 4 phase NPCs (Leviathan Mk II, VX-001, Aerial
-  // Command Unit, Mimiron). We treat them as multi-boss so every phase keeps
-  // the idle timer alive, but kill detection uses "phase-based" semantics (see
-  // PHASE_BASED_MULTI_BOSSES): the first UNIT_DIED on any phase NPC marks the
-  // encounter as killed. Real servers rarely emit UNIT_DIED for every phase.
+  // Mimiron (4 phase NPCs — all can appear during the fight).
   ["008298", "Mimiron"], // Leviathan Mk II
   ["008373", "Mimiron"], // VX-001
   ["008386", "Mimiron"], // Aerial Command Unit
   ["008246", "Mimiron"], // Mimiron (cockpit)
+  // Yogg-Saron (Sara phase, adds, clouds, tentacles, Yogg's body, brain).
+  ["008208", "Yogg-Saron"],
+  ["00816E", "Yogg-Saron"],
+  ["008170", "Yogg-Saron"],
+  ["00820C", "Yogg-Saron"],
+  ["0084AE", "Yogg-Saron"],
+  ["0084BF", "Yogg-Saron"],
+  ["0084C1", "Yogg-Saron"],
+  ["008462", "Yogg-Saron"],
+  ["00845A", "Yogg-Saron"],
 ]);
 
 /**
- * Multi-boss encounters whose kill is detected on the FIRST sub-boss UNIT_DIED,
- * not when all sub-bosses die. Phase-based fights (e.g. Mimiron on 3.3.5) often
- * only emit UNIT_DIED on the final phase; the earlier phases transition without
- * a death event. We rely on idle timeout to close the encounter after that
- * death — so the kill timestamp reflects the last boss activity.
+ * Kill-marking NPC ids per encounter. On fights with many sub-NPCs that
+ * don't represent the final kill (tentacles, adds, intermediate phases),
+ * only these specific NPCs' UNIT_DIED counts as a kill; other deaths keep
+ * the encounter alive but don't end it.
+ *
+ * When an encounter isn't listed here, kill detection falls back to the
+ * default (single-boss: the entry NPC; multi-boss: every sub-boss must die).
  */
-const PHASE_BASED_MULTI_BOSSES = new Set<string>(["Mimiron"]);
+const ENCOUNTER_KILL_NPC_IDS = new Map<string, Set<string>>([
+  // Mimiron: only Leviathan Mk II's final body (008298) emits UNIT_DIED at
+  // the end of a kill on this server. VX-001 / Aerial Command Unit do not.
+  ["Mimiron", new Set(["008298"])],
+  // Yogg-Saron: tentacles and guardians die constantly throughout the fight
+  // as normal combat. Only Yogg-Saron (008208) dying marks the real kill.
+  ["Yogg-Saron", new Set(["008208"])],
+]);
 
 /** "Coward" bosses that don't die — they surrender/despawn. Detection uses aura removals. */
 export const COWARD_BOSSES = new Set([
@@ -277,9 +301,10 @@ export function isCowardBoss(bossName: string): boolean {
 }
 
 /**
- * Check if a multi-boss encounter should register a kill on the first sub-boss
- * UNIT_DIED instead of requiring every sub-boss to die.
+ * Returns the specific subset of NPC ids whose UNIT_DIED marks a kill for an
+ * encounter, or `null` when the default "all tracked NPCs must die" behavior
+ * should be used.
  */
-export function isPhaseBasedMultiBoss(encounterName: string): boolean {
-  return PHASE_BASED_MULTI_BOSSES.has(encounterName);
+export function getEncounterKillNpcIds(encounterName: string): Set<string> | null {
+  return ENCOUNTER_KILL_NPC_IDS.get(encounterName) ?? null;
 }
